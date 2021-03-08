@@ -1,0 +1,14 @@
+id: 15d549f8-c140-41d1-b976-76700763f3f6
+name: Standalone Server
+content:
+  formatVersion: 1
+  inputs: {}
+  resources:
+    Cloud_vSphere_Machine_1:
+      type: Cloud.vSphere.Machine
+      metadata:
+        layoutPosition: [0, 0]
+      properties: {imageRef: corp.local / smallVM, cpuCount: 2, totalMemoryMB: 4096,
+        awaitIp: false}
+description: ''
+requestScopeOrg: false
