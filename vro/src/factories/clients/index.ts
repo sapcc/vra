@@ -7,7 +7,5 @@
  * TODO: Define header text
  * #L%
  */
-
-export { stringify } from "./stringify";
-export { validateResponse } from "./validateResponse";
+export { VraClient } from "./VraClient";
 

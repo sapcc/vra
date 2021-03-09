@@ -13,7 +13,7 @@ exports = class {
     configure(input: any) {
         [
             "hostname",
-            "domain",
+            //"domain",
             "username",
             "password",
             // "refreshToken",

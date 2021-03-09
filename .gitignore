@@ -32,4 +32,4 @@ dist/
 **/META-INF/dunes-meta-inf.xml
 
 node_modules/
-package-lock.json
+vro/package-lock.json

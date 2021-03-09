@@ -8,6 +8,5 @@
  * #L%
  */
 
-export { stringify } from "./stringify";
-export { validateResponse } from "./validateResponse";
+export { HttpStatusCode } from "./HttpStatusCode";
 

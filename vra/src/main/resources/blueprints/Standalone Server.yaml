@@ -1,4 +1,4 @@
-id: 15d549f8-c140-41d1-b976-76700763f3f6
+id: 50b84319-d94d-4bf2-a85a-04a7143f2740
 name: Standalone Server
 content:
   formatVersion: 1
@@ -8,7 +8,7 @@ content:
       type: Cloud.vSphere.Machine
       metadata:
         layoutPosition: [0, 0]
-      properties: {imageRef: corp.local / smallVM, cpuCount: 2, totalMemoryMB: 4096,
-        awaitIp: false}
+      properties: {imageRef: wwcoe / Ubuntu_18.04_x64_minimal, cpuCount: 2, totalMemoryMB: 4096,
+        awaitIP: false}
 description: ''
 requestScopeOrg: false
