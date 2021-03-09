@@ -1,0 +1,14 @@
+!**/.eslintrc*
+node_modules*
+.o11n
+.vscode
+git-hooks
+license_data
+target
+*.svg
+*.ico
+*.json
+.gitignore
+*.md
+*.log
+*.lock

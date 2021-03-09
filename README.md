@@ -30,3 +30,27 @@ TODO: overview brief
 ### 1. kickstart script
 - place kistart.sh kickstart.yml (ansible) or kickstart.pyy inside the dev dir
 - edit hatchery release file on your hatchery  to  enable  autoamtic on-boot execution of your scripts 
+
+## Payload
+
+```json
+{
+  "vra": {
+    "hostname": "vra-l-01a.corp.local",
+    "port": 443,
+    "domain": "corp.local",
+    "username": "administrator",
+    "password": "VMware1!",
+    "refreshToken": "",
+    "projectID": "3782ae36-3990-414c-a465-7c00a57e92a5",
+    "orgID": "5a20d68e-6a37-49e1-8c55-87995f179127"
+  },
+  "pscoeLogLevel": "debug"
+}
+```
+
+## Install
+
+```shell
+./bin/installer environment.properties
+```

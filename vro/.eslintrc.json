@@ -1,0 +1,48 @@
+{
+    "env": {
+      "es6": true,
+      "jasmine": true
+    },
+    "ignorePatterns": ["*.d.ts"],
+    "globals": {
+      // Place all vRO object here
+      "exports": "writable",
+      "System": "writable",
+      "Properties": "writable",
+      "RESTHostManager": "writable",
+      "RESTAuthenticationManager": "writable",
+      "Config": "writable",
+      "DynamicTypesManager": "writable",
+      "VROES": "writable"
+    },
+    "extends": ["eslint:recommended"],
+    // Path to the TS ESLint Parser (Windows)
+    "parser": "C:\\Users\\stanimirt\\AppData\\Roaming\\npm\\node_modules\\@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module"
+    },
+    // Recommended Rules
+    "rules": {
+      "import/export": "off",
+      "import/named": "off",
+      "import/namespace": "off",
+      "no-duplicate-imports": "error",
+      "quotes": ["error", "double"],
+      "keyword-spacing": "error",
+      "no-multiple-empty-lines": [
+        "error",
+        {
+          "max": 1
+        }
+      ],
+      "no-empty-function": "warn",
+      "consistent-return": "error",
+      "no-unused-vars": "off",
+      "max-len": ["error", { "code": 120, "ignoreComments": true }],
+      "comma-dangle": "error",
+      "semi": ["error", "always"],
+      "eqeqeq": ["error", "smart"],
+      "object-shorthand": ["error", "always"]
+    }
+  }

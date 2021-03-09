@@ -1,0 +1,6 @@
+---
+
+blueprint: 
+  - Standalone Server
+  - Standalone Volume
+
