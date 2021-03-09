@@ -41,10 +41,7 @@ export class AttachWorkflow {
 
         logger.debug(`Machines=${stringify(content)}`);
 
-        const machine = content.filter(machine => {
-            logger.debug(`check=${stringify({ name: machine.name, resourceName, check: machine.name === resourceName })}`);
-            return machine.name === resourceName;
-        })[0];
+        const machine = content.filter(machine => machine.name === resourceName)[0];
 
         logger.debug(`Machine=${stringify(machine)}`);
 
