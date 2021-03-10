@@ -51,9 +51,7 @@ export class AttachWorkflow {
             const params: AttachMachineDiskParameters = {
                 path_id: machine.id,
                 body_body: {
-                    blockDeviceId: volumeId,
-                    description: "Attached volume",
-                    name: "Attached volume"
+                    blockDeviceId: volumeId
                 } as DiskAttachmentSpecification
             };
             const attachedMachineResponse = machinesService.attachMachineDisk(params);

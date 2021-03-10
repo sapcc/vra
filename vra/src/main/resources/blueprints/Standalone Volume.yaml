@@ -2,12 +2,48 @@ id: 28741867-21fd-408d-908e-bc02d1d7e770
 name: Standalone Volume
 content:
   formatVersion: 1
-  inputs: {}
+  inputs:
+    name: {type: string, title: name, description: Volume deployment name mapped to
+        the OpenStack Volume UUID, default: volume}
+    capacity: {type: number, title: Capacity, description: Volume size in GB, default: 3,
+      minimum: 0}
+    maxCapacity: {type: number, title: Max Capacity, description: The maximum capacity
+        of the volume in GB incorporating the resize operations, default: 5, minimum: 0}
+    persistent: {type: boolean, title: Persistent, description: The disk will survive
+        machine removal}
+    encrypted: {type: boolean, title: Encrypted, description: Encrypt volume data}
+    dataStore: {type: string, title: Datastore, description: vCenter Datastore Name
+        (optional), default: datastore-01a}
+    storagePolicy:
+      type: string
+      title: Storage Policy
+      description: |
+        Disk placement policy (optional)
+      default: Datastore default
+    provisioningType:
+      type: string
+      enum: [thin, thick, eagerZeroedThick]
+      title: Provisioning Type
+      description: ''
+      default: thin
+    constraintTags:
+      type: array
+      title: Constraint Tags
+      items:
+        title: tag
+        type: object
+        properties:
+          tag: {type: string, title: Tag}
+      default:
+      - {tag: 'Storage:STGB-Storage'}
   resources:
     Cloud_Volume_1:
       type: Cloud.Volume
       metadata:
         layoutPosition: [0, 0]
-      properties: {capacityGb: 1}
+      properties: {name: '${input.name}', capacityGb: '${input.capacity}', maxDiskCapacityInGB: '${input.maxCapacity}',
+        persistent: '${input.persistent}', encrypted: '${input.encrypted}', storagePolicy: '${input.storagePolicy}',
+        dataStore: '${input.dataStore}', provisioningType: '${input.provisioningType}',
+        constraints: '${input.constraintTags}'}
 description: ''
 requestScopeOrg: false
