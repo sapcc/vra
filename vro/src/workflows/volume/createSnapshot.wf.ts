@@ -19,7 +19,8 @@ import { BlockDevicesService } from "com.vmware.pscoe.ts.vra.iaas/services/Block
     path: "SAP/One Strike/Volume"
 })
 export class CreateSnapshotOfVolumeWorkflow {
-    public execute(@In volumeId: string, @Out snapshotId: string): void {
+
+    public execute(@In volumeName: string): void {
         const SingletonContextFactory = System.getModule("com.vmware.pscoe.library.context").SingletonContextFactory();
         const context: BaseContext = SingletonContextFactory.createLazy([
             "com.vmware.pscoe.library.context.workflow"
@@ -29,6 +30,19 @@ export class CreateSnapshotOfVolumeWorkflow {
 
         const vraClientCreator = new VraClientCreator();
         const blockDevicesService = new BlockDevicesService(vraClientCreator.createOperation());
+
+        const volumesResponse = blockDevicesService.getBlockDevices();
+        const { body: { content } } = volumesResponse;
+        logger.debug(`Volumes: ${stringify(content)}`);
+        const volume = content.filter(volume => volume.name === volumeName)[0];
+
+        if (!volume) {
+            throw Error(`Cannot create volume snapshot! Reason: No volume found with name '${volumeName}'.`)
+        }
+        
+        logger.debug(`Matched volume: ${stringify(volume)}`);
+
+        const volumeId = volume.id;
         const response = blockDevicesService.createFirstClassDiskSnapshot({
             "path_id": volumeId,
             "body_body": {
@@ -39,7 +53,7 @@ export class CreateSnapshotOfVolumeWorkflow {
 
         validateResponse(response);
 
-        snapshotId = response.body.id;
-        logger.info(`Created a snapshot with id '${snapshotId}' of volume with id '${volumeId}'.`);
+        logger.info(`Created a snapshot of volume with id '${volumeId}'.`);
     }
+    
 }
