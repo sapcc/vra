@@ -26,9 +26,9 @@ content:
       title: Provisioning Type
       description: ''
       default: thin
-    constraintTags:
+    tags:
       type: array
-      title: Constraint Tags
+      title: Tags
       items:
         title: tag
         type: object
@@ -41,9 +41,18 @@ content:
       type: Cloud.Volume
       metadata:
         layoutPosition: [0, 0]
-      properties: {name: '${input.name}', capacityGb: '${input.capacity}', maxDiskCapacityInGB: '${input.maxCapacity}',
-        persistent: '${input.persistent}', encrypted: '${input.encrypted}', storagePolicy: '${input.storagePolicy}',
-        dataStore: '${input.dataStore}', provisioningType: '${input.provisioningType}',
-        constraints: '${input.constraintTags}'}
+      properties:
+        name: ${input.name}
+        capacityGb: ${input.capacity}
+        maxDiskCapacityInGB: ${input.maxCapacity}
+        persistent: ${input.persistent}
+        encrypted: ${input.encrypted}
+        storagePolicy: ${input.storagePolicy}
+        dataStore: ${input.dataStore}
+        provisioningType: ${input.provisioningType}
+        tags:
+        - {key: Storage, value: STGB-Storage}
+        constraints:
+        - {tag: 'Storage:STGB-Storage'}
 description: ''
 requestScopeOrg: false
