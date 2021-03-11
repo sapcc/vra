@@ -14,7 +14,7 @@ content:
         the machine, could be templates, OVA or OVF links, snapshots/linked clone,
         content libraries.', default: wwcoe / Ubuntu_18.04_x64_minimal}
     bootDiskCapacityInGB: {type: number, title: Boot Disk Size, description: Expand
-        the boot disk size. Image volume size must be less than Boot Disk Size., default: 3,
+        the boot disk size. Image volume size must be less than Boot Disk Size., default: 8,
       minimum: 0}
     tags:
       type: array
@@ -27,6 +27,16 @@ content:
           value: {type: string, title: Value}
       default:
       - {key: test, value: test}
+    extraDisks:
+      type: array
+      title: Extra Disks
+      items:
+        title: Disk
+        type: object
+        properties:
+          source: {type: string, title: source}
+      default:
+      - {source: 7012a3bd-1cd5-4b56-a4e2-5164e7806ea4}
   resources:
     Cloud_vSphere_Machine_1:
       type: Cloud.vSphere.Machine
@@ -39,6 +49,7 @@ content:
         coreCount: ${input.cpuCount}
         totalMemoryMB: ${input.memory}
         awaitIP: false
+        attachedDisks: ${input.extraDisks}
         storage: {bootDiskCapacityInGB: '${input.bootDiskCapacityInGB}'}
         tags: ${input.tags}
 description: ''
