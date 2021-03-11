@@ -12,7 +12,7 @@ import { AttachMachineDiskParameters } from "com.vmware.pscoe.ts.vra.iaas/models
 import { DiskAttachmentSpecification } from "com.vmware.pscoe.ts.vra.iaas/models/DiskAttachmentSpecification";
 import { MachinesService } from "com.vmware.pscoe.ts.vra.iaas/services/MachinesService";
 import { Workflow } from "vrotsc-annotations";
-import { VraClientCreator } from "../../factories/creators";
+import { VraClientCreator } from "../../factories/creators/VraClientCreator";
 import { BaseContext } from "../../types/BaseContext";
 import { stringify, validateResponse } from "../../utils";
 
