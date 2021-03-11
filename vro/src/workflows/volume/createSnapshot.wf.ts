@@ -8,11 +8,12 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
-import { In, Out, Workflow } from "vrotsc-annotations";
-import { VraClientCreator } from "../../factories/creators";
+import { In, Workflow } from "vrotsc-annotations";
+import { VraClientCreator } from "../../factories/creators/VraClientCreator";
 import { BaseContext } from "../../types/BaseContext";
 import { stringify, validateResponse } from "../../utils";
 import { BlockDevicesService } from "com.vmware.pscoe.ts.vra.iaas/services/BlockDevicesService";
+import { DeploymentsService } from "com.vmware.pscoe.ts.vra.deployment/services/DeploymentsService";
 
 @Workflow({
     name: "Create Volume Snapshot",
@@ -27,14 +28,24 @@ export class CreateSnapshotOfVolumeWorkflow {
         ]);
         const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.volume/createSnapshot");
         logger.info(`Context=${stringify(context)}`);
+        const deploymentId = System.getContext().getParameter("__metadata_deploymentId");
+        if (!deploymentId) {
+            throw Error("Missing deployment ID!");
+        }
+        logger.debug(`Deployment ID: ${deploymentId}`);
 
         const vraClientCreator = new VraClientCreator();
-        const blockDevicesService = new BlockDevicesService(vraClientCreator.createOperation());
 
-        const volumesResponse = blockDevicesService.getBlockDevices();
-        const { body: { content } } = volumesResponse;
-        logger.debug(`Volumes: ${stringify(content)}`);
-        const volume = content.filter(volume => volume.name === volumeName)[0];
+        const deploymentService = new DeploymentsService(vraClientCreator.createOperation());
+        const deployment = deploymentService.getDeploymentByIdV3Using({
+            "path_depId": deploymentId,
+            "query_expand": ["resources"]
+        });
+        if (!deployment) {
+            throw Error(`No deployment found with id '${deploymentId}'!`)
+        }
+
+        const volume = deployment.body.resources.filter(resource => resource.name === volumeName)[0];
 
         if (!volume) {
             throw Error(`Cannot create volume snapshot! Reason: No volume found with name '${volumeName}'.`)
@@ -43,6 +54,8 @@ export class CreateSnapshotOfVolumeWorkflow {
         logger.debug(`Matched volume: ${stringify(volume)}`);
 
         const volumeId = volume.id;
+
+        const blockDevicesService = new BlockDevicesService(vraClientCreator.createOperation());
         const response = blockDevicesService.createFirstClassDiskSnapshot({
             "path_id": volumeId,
             "body_body": {
