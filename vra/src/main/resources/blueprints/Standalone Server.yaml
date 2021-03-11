@@ -1,14 +1,22 @@
-id: 15d549f8-c140-41d1-b976-76700763f3f6
+id: 50b84319-d94d-4bf2-a85a-04a7143f2740
 name: Standalone Server
 content:
   formatVersion: 1
-  inputs: {}
+  inputs:
+    name: {type: string, title: Name, description: Machine deployment name mapped
+        to the OpenStack Server UUID, default: machine}
+    cpuCount: {type: number, title: cpuCount, description: Number of allocated CPUs,
+      default: 2}
+    coreCount: {type: number, title: cpuCount, description: Number of allocated CPU
+        cores, default: 2}
+    memory: {type: number, title: Memory, description: Amount of allocated RAM, default: 4096}
   resources:
     Cloud_vSphere_Machine_1:
       type: Cloud.vSphere.Machine
       metadata:
         layoutPosition: [0, 0]
-      properties: {imageRef: corp.local / smallVM, cpuCount: 2, totalMemoryMB: 4096,
-        awaitIp: false}
+      properties: {name: '${input.name}', imageRef: wwcoe / Ubuntu_18.04_x64_minimal,
+        cpuCount: '${input.cpuCount}', coreCount: '${input.cpuCount}', totalMemoryMB: '${input.memory}',
+        awaitIP: false}
 description: ''
 requestScopeOrg: false
