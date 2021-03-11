@@ -13,7 +13,6 @@ import { DiskAttachmentSpecification } from "com.vmware.pscoe.ts.vra.iaas/models
 import { MachinesService } from "com.vmware.pscoe.ts.vra.iaas/services/MachinesService";
 import { Workflow } from "vrotsc-annotations";
 import { VraClientCreator } from "../../factories/creators/VraClientCreator";
-import { BaseContext } from "../../types/BaseContext";
 import { stringify, validateResponse } from "../../utils";
 
 @Workflow({
@@ -22,14 +21,7 @@ import { stringify, validateResponse } from "../../utils";
 })
 export class AttachWorkflow {
     public execute(volumeId: string, resourceName: string): void {
-        const SingletonContextFactory = System.getModule("com.vmware.pscoe.library.context").SingletonContextFactory();
-
-        const context: BaseContext = SingletonContextFactory.createLazy([
-            "com.vmware.pscoe.library.context.workflow"
-        ]);
-
         const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.volume/attach");
-        logger.info(`Context=${stringify(context)}`);
 
         const vraClientCreator = new VraClientCreator();
         const machinesService = new MachinesService(vraClientCreator.createOperation());
