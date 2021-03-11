@@ -28,7 +28,7 @@ export class CreateSnapshotOfVolumeWorkflow {
         ]);
         const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.volume/createSnapshot");
         logger.info(`Context=${stringify(context)}`);
-        const deploymentId = System.getContext().getParameter("__metadata_deploymentId");
+        const deploymentId = context.system.__metadata_deploymentId;
         if (!deploymentId) {
             throw Error("Missing deployment ID!");
         }
