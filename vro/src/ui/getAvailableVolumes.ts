@@ -9,7 +9,7 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { BlockDevicesService } from "com.vmware.pscoe.ts.vra.iaas/services/BlockDevicesService";
-import { VraClientCreator } from "../factories/creators";
+import { VraClientCreator } from "../factories/creators/VraClientCreator";
 import { stringify, validateResponse } from "../utils";
 
 /**

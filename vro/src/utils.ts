@@ -7,8 +7,10 @@
  * TODO: Define header text
  * #L%
  */
-import { HttpStatusCode } from "../enums";
-import { stringify } from "./stringify";
+import { HttpStatusCode } from "./enums/HttpStatusCode";
+
+const SPACE = 4;
+export const stringify = (object: Object) => JSON.stringify(object, null, SPACE);
 
 const STATUS_KEY = "status";
 const isSuccessfulResponse = (response: any): boolean =>

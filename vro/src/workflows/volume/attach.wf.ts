@@ -12,24 +12,16 @@ import { AttachMachineDiskParameters } from "com.vmware.pscoe.ts.vra.iaas/models
 import { DiskAttachmentSpecification } from "com.vmware.pscoe.ts.vra.iaas/models/DiskAttachmentSpecification";
 import { MachinesService } from "com.vmware.pscoe.ts.vra.iaas/services/MachinesService";
 import { Workflow } from "vrotsc-annotations";
-import { VraClientCreator } from "../../factories/creators";
-import { BaseContext } from "../../types/BaseContext";
+import { VraClientCreator } from "../../factories/creators/VraClientCreator";
 import { stringify, validateResponse } from "../../utils";
 
 @Workflow({
-    name: "Attach Standalone Volume",
-    path: "SAP/One Strike/Standalone Server"
+    name: "Attach Volume",
+    path: "SAP/One Strike/Volume"
 })
 export class AttachWorkflow {
     public execute(volumeId: string, resourceName: string): void {
-        const SingletonContextFactory = System.getModule("com.vmware.pscoe.library.context").SingletonContextFactory();
-
-        const context: BaseContext = SingletonContextFactory.createLazy([
-            "com.vmware.pscoe.library.context.workflow"
-        ]);
-
         const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.volume/attach");
-        logger.info(`Context=${stringify(context)}`);
 
         const vraClientCreator = new VraClientCreator();
         const machinesService = new MachinesService(vraClientCreator.createOperation());
