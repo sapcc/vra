@@ -33,6 +33,17 @@ content:
         title: tag
         type: object
         properties:
+          key: {type: string, title: Key}
+          value: {type: string, title: Value}
+      default:
+      - {key: test, value: test}
+    constraintTags:
+      type: array
+      title: Constraint Tags
+      items:
+        title: tag
+        type: object
+        properties:
           tag: {type: string, title: Tag}
       default:
       - {tag: 'Storage:STGB-Storage'}
@@ -41,18 +52,9 @@ content:
       type: Cloud.Volume
       metadata:
         layoutPosition: [0, 0]
-      properties:
-        name: ${input.name}
-        capacityGb: ${input.capacity}
-        maxDiskCapacityInGB: ${input.maxCapacity}
-        persistent: ${input.persistent}
-        encrypted: ${input.encrypted}
-        storagePolicy: ${input.storagePolicy}
-        dataStore: ${input.dataStore}
-        provisioningType: ${input.provisioningType}
-        tags:
-        - {key: Storage, value: STGB-Storage}
-        constraints:
-        - {tag: 'Storage:STGB-Storage'}
+      properties: {name: '${input.name}', capacityGb: '${input.capacity}', maxDiskCapacityInGB: '${input.maxCapacity}',
+        persistent: '${input.persistent}', encrypted: '${input.encrypted}', storagePolicy: '${input.storagePolicy}',
+        dataStore: '${input.dataStore}', provisioningType: '${input.provisioningType}',
+        tags: '${input.tags}', constraints: '${input.constraintTags}'}
 description: ''
 requestScopeOrg: false
