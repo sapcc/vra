@@ -16,8 +16,8 @@ import { VraClientCreator } from "../../factories/creators/VraClientCreator";
 import { stringify, validateResponse } from "../../utils";
 
 @Workflow({
-    name: "Attach Standalone Volume",
-    path: "SAP/One Strike/Standalone Server"
+    name: "Attach Volume",
+    path: "SAP/One Strike/Volume"
 })
 export class AttachWorkflow {
     public execute(volumeId: string, resourceName: string): void {
