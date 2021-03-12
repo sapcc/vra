@@ -1,0 +1,18 @@
+id: f36526e6-e5b4-48c1-ad28-fffca164c016
+name: Standalone Security Group
+content:
+  formatVersion: 1
+  inputs:
+    name: {type: string, title: Security group name, minLength: 1}
+  resources:
+    Cloud_SecurityGroup_1:
+      type: Cloud.SecurityGroup
+      metadata:
+        layoutPosition: [0, 0]
+      properties:
+        securityGroupType: new
+        name: ${input.name}
+        rules:
+        - {name: Deny-All-Egress, direction: outbound, destination: ANY, access: Deny}
+description: ''
+requestScopeOrg: false
