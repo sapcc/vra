@@ -3,4 +3,5 @@
 blueprint: 
   - Standalone Server
   - Standalone Volume
+  - Standalone Security Group
 
