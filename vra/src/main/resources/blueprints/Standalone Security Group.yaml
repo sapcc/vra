@@ -9,6 +9,10 @@ content:
       type: Cloud.SecurityGroup
       metadata:
         layoutPosition: [0, 0]
-      properties: {securityGroupType: new, name: '${input.name}'}
+      properties:
+        securityGroupType: new
+        name: ${input.name}
+        rules:
+        - {name: Deny-All-Egress, direction: outbound, destination: ANY, access: Deny}
 description: ''
 requestScopeOrg: false
