@@ -16,6 +16,8 @@ content:
     bootDiskCapacityInGB: {type: number, title: Boot Disk Size, description: Expand
         the boot disk size. Image volume size must be less than Boot Disk Size., default: 8,
       minimum: 0}
+    cloudConfig: {type: string, title: Cloud Config, description: Cloud-init script
+        that will be injected into the machine}
     tags:
       type: array
       title: Tags
@@ -27,16 +29,6 @@ content:
           value: {type: string, title: Value}
       default:
       - {key: test, value: test}
-    extraDisks:
-      type: array
-      title: Extra Disks
-      items:
-        title: Disk
-        type: object
-        properties:
-          source: {type: string, title: source}
-      default:
-      - {source: 7012a3bd-1cd5-4b56-a4e2-5164e7806ea4}
   resources:
     Cloud_vSphere_Machine_1:
       type: Cloud.vSphere.Machine
@@ -49,8 +41,8 @@ content:
         coreCount: ${input.cpuCount}
         totalMemoryMB: ${input.memory}
         awaitIP: false
-        attachedDisks: ${input.extraDisks}
         storage: {bootDiskCapacityInGB: '${input.bootDiskCapacityInGB}'}
+        cloudConfig: ${input.cloudConfig}
         tags: ${input.tags}
 description: ''
 requestScopeOrg: false
