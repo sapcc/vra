@@ -5,9 +5,8 @@ content:
   inputs:
     name: {type: string, title: Name, description: Machine deployment name mapped
         to the OpenStack Server UUID, default: machine}
-    cpuCount: {type: number, title: cpuCount, description: Number of allocated CPUs,
-      default: 2}
-    coreCount: {type: number, title: cpuCount, description: Number of allocated CPU
+    cpuCount: {type: number, title: CPUs, description: Number of allocated CPUs, default: 2}
+    coreCount: {type: number, title: CPU Cores, description: Number of allocated CPU
         cores, default: 2}
     memory: {type: number, title: Memory, description: Amount of allocated RAM, default: 4096}
     imageRef: {type: string, title: Image Ref, description: 'Image used for creating
@@ -38,7 +37,7 @@ content:
         name: ${input.name}
         imageRef: ${input.imageRef}
         cpuCount: ${input.cpuCount}
-        coreCount: ${input.cpuCount}
+        coreCount: ${input.coreCount}
         totalMemoryMB: ${input.memory}
         awaitIP: false
         storage: {bootDiskCapacityInGB: '${input.bootDiskCapacityInGB}'}
