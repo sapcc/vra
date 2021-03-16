@@ -2,9 +2,9 @@
  * #%L
  * ccloud.vro
  * %%
- * Copyright (C) 2021 TODO: Enter Organization name
+ * Copyright (C) 2021 VMware&SAP
  * %%
- * TODO: Define header text
+ * SAP One Strike Openstack vRA adapter - vRA/vRO Artifacts
  * #L%
  */
 import { VRA_CONFIGURATION_PATH } from "../../constants";

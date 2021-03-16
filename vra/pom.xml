@@ -15,9 +15,9 @@
     </properties>
 
     <scm>
-        <developerConnection>scm:git:ssh://git@stash.pscoe.vmware.com:7999/sap/sap-ccloud-vra.git</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+        <developerConnection>${scmDeveloperConnection}</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
     <dependencies>
      <dependency>
       <groupId>com.vmware.pscoe.sap</groupId>
