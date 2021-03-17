@@ -2,9 +2,9 @@
  * #%L
  * ccloud.vro
  * %%
- * Copyright (C) 2021: SAP
+ * Copyright (C) 2021 VMware&SAP
  * %%
- * Create Volume Snapshot
+ * SAP One Strike Openstack vRA adapter - vRA/vRO Artifacts
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";

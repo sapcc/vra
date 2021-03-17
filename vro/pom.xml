@@ -13,8 +13,8 @@
   <packaging>package</packaging>
 
   <scm>
-    <developerConnection>scm:git:ssh://git@stash.pscoe.vmware.com:7999/sap/sap-ccloud-vra.git</developerConnection>
-    <tag>HEAD</tag>
+      <developerConnection>${scmDeveloperConnection}</developerConnection>
+      <tag>HEAD</tag>
   </scm>
       
   <description>
@@ -29,7 +29,7 @@
   </licenses>
   <properties>
     <generated.from>package-typescript-archetype</generated.from>
-    <license.organizationName>TODO: Enter Organization name</license.organizationName>
+    <license.organizationName>VMware&amp;SAP</license.organizationName>
     <license.includes>**/*.js,**/*.ts</license.includes>
     <license.excludes>**/*.test.ts,**/*Test.js</license.excludes>
   </properties>
