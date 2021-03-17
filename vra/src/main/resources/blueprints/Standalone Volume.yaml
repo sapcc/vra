@@ -10,8 +10,9 @@ content:
     maxCapacity: {type: number, title: Max Capacity, description: The maximum capacity
         of the volume in GB incorporating the resize operations, default: 5, minimum: 0}
     persistent: {type: boolean, title: Persistent, description: The disk will survive
-        machine removal}
-    encrypted: {type: boolean, title: Encrypted, description: Encrypt volume data}
+        machine removal, default: true}
+    encrypted: {type: boolean, title: Encrypted, description: Encrypt volume data,
+      default: true}
     dataStore: {type: string, title: Datastore, description: vCenter Datastore Name
         (optional), default: datastore-01a}
     storagePolicy:
