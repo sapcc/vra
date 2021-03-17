@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.vmware.pscoe.o11n</groupId>
+    <artifactId>typescript-project-all</artifactId>
+    <version>2.12.4</version>
+  </parent>
+
+  <groupId>com.vmware.pscoe.sap</groupId>
+  <artifactId>ccloud.vro</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>package</packaging>
+
+  <scm>
+      <developerConnection>${scmDeveloperConnection}</developerConnection>
+      <tag>HEAD</tag>
+  </scm>
+      
+  <description>
+    This package is licensed under null
+  </description>
+  <licenses>
+    <license>
+      <name>TODO: Enter License name</name>
+      <url>null</url>
+      <distribution>pom</distribution>
+    </license>
+  </licenses>
+  <properties>
+    <generated.from>package-typescript-archetype</generated.from>
+    <license.organizationName>VMware&amp;SAP</license.organizationName>
+    <license.includes>**/*.js,**/*.ts</license.includes>
+    <license.excludes>**/*.test.ts,**/*Test.js</license.excludes>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>com.vmware.pscoe.ts</groupId>
+      <artifactId>vro</artifactId>
+      <type>pom</type>
+      <version>7.0.13</version>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Http -->
+    <dependency>
+      <groupId>com.vmware.pscoe.library.ts</groupId>
+      <artifactId>http</artifactId>
+      <type>package</type>
+      <version>2.0.6</version>
+    </dependency>
+    <dependency>
+      <groupId>com.vmware.pscoe.library.ts</groupId>
+      <artifactId>http</artifactId>
+      <type>tgz</type>
+      <version>2.0.6</version>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Logging -->
+    <dependency>
+      <groupId>com.vmware.pscoe.library.ts</groupId>
+      <artifactId>logging</artifactId>
+      <type>package</type>
+      <version>2.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.vmware.pscoe.library.ts</groupId>
+      <artifactId>logging</artifactId>
+      <type>tgz</type>
+      <version>2.1.0</version>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Install -->
+    <dependency>
+      <groupId>com.vmware.pscoe.library</groupId>
+      <artifactId>install</artifactId>
+      <type>package</type>
+      <version>1.7.0</version>
+    </dependency>
+    <!-- vRA -->
+    <dependency>
+      <groupId>com.vmware.pscoe.library.ts.vra</groupId>
+      <artifactId>authentication</artifactId>
+      <type>package</type>
+      <version>2.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.vmware.pscoe.library.ts.vra</groupId>
+      <artifactId>authentication</artifactId>
+      <version>2.0.3</version>
+      <type>tgz</type>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.vmware.pscoe.ts.vra</groupId>
+      <artifactId>iaas</artifactId>
+      <type>package</type>
+      <version>2.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.vmware.pscoe.ts.vra</groupId>
+      <artifactId>iaas</artifactId>
+      <version>2.0.3</version>
+      <type>tgz</type>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.vmware.pscoe.ts.vra</groupId>
+      <artifactId>deployment</artifactId>
+      <type>package</type>
+      <version>2.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.vmware.pscoe.ts.vra</groupId>
+      <artifactId>deployment</artifactId>
+      <version>2.0.3</version>
+      <type>tgz</type>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Mocks -->
+    <dependency>
+      <groupId>com.vmware.pscoe.library.ts</groupId>
+      <artifactId>mock</artifactId>
+      <type>package</type>
+      <version>2.0.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.vmware.pscoe.library.ts</groupId>
+      <artifactId>mock</artifactId>
+      <version>2.0.3</version>
+      <type>tgz</type>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Context -->
+    <dependency>
+      <groupId>com.vmware.pscoe.library</groupId>
+      <artifactId>context</artifactId>
+      <type>package</type>
+      <version>2.1.5</version>
+    </dependency>
+  </dependencies>
+</project>
