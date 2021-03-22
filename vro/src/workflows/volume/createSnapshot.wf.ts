@@ -42,13 +42,13 @@ export class CreateSnapshotOfVolumeWorkflow {
             "query_expand": ["resources"]
         });
         if (!deployment) {
-            throw Error(`No deployment found with id '${deploymentId}'!`)
+            throw Error(`No deployment found with id '${deploymentId}'!`);
         }
 
         const volume = deployment.body.resources.filter(resource => resource.name === volumeName)[0];
 
         if (!volume) {
-            throw Error(`Cannot create volume snapshot! Reason: No volume found with name '${volumeName}'.`)
+            throw Error(`Cannot create volume snapshot! Reason: No volume found with name '${volumeName}'.`);
         }
         
         logger.debug(`Matched volume: ${stringify(volume)}`);
