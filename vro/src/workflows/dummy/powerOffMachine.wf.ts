@@ -13,8 +13,8 @@ import { In, Workflow } from "vrotsc-annotations";
 import { VraClientCreator } from "../../factories/creators/VraClientCreator";
 
 @Workflow({
-    name: "Power Off Machine",
-    path: "SAP/One Strike/Machine",
+    name: "Power Off VM",
+    path: "SAP/One Strike/VM",
     input: {
         inputProperties: {
             type: "Properties"
@@ -31,6 +31,6 @@ export class PowerOffMachineWorkflow {
 
         machinesService.powerOffMachine({ path_id: resourceIds });
 
-        logger.debug(`Machine '${resourceIds[0]}' has been powered off.`);
+        logger.debug(`VM with id '${resourceIds[0]}' has been powered off.`);
     }
 }

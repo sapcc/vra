@@ -144,5 +144,12 @@
       <type>package</type>
       <version>2.1.5</version>
     </dependency>
+    <!-- Pipeline -->
+    <dependency>
+      <groupId>com.vmware.pscoe.library</groupId>
+      <artifactId>pipeline</artifactId>
+      <type>package</type>
+      <version>1.2.5</version>
+    </dependency>
   </dependencies>
 </project>
