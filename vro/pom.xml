@@ -116,6 +116,13 @@
       <type>tgz</type>
       <scope>compile</scope>
     </dependency>
+    <!-- vCenter -->
+    <dependency>
+      <groupId>com.vmware.pscoe.library</groupId>
+      <artifactId>vc</artifactId>
+      <type>package</type>
+      <version>1.4.1</version>
+    </dependency>
     <!-- Mocks -->
     <dependency>
       <groupId>com.vmware.pscoe.library.ts</groupId>

@@ -5,15 +5,14 @@
     },
     "ignorePatterns": ["*.d.ts"],
     "globals": {
-      // Place all vRO object here
       "exports": "writable",
       "System": "writable",
       "Properties": "writable",
-      "RESTHostManager": "writable",
-      "RESTAuthenticationManager": "writable",
-      "Config": "writable",
-      "DynamicTypesManager": "writable",
-      "VROES": "writable"
+      "VROES": "writable",
+      "VcPlugin": "writable",
+      "VcVirtualDeviceConfigSpec": "writable",
+      "VcVirtualDeviceConfigSpecOperation": "writable",
+      "VcVirtualDevice": "writable"
     },
     "extends": ["eslint:recommended"],
     // Path to the TS ESLint Parser (Windows)
@@ -39,7 +38,7 @@
       "no-empty-function": "warn",
       "consistent-return": "error",
       "no-unused-vars": "off",
-      "max-len": ["error", { "code": 120, "ignoreComments": true }],
+      "max-len": ["error", { "code": 140, "ignoreComments": true }],
       "comma-dangle": "error",
       "semi": ["error", "always"],
       "eqeqeq": ["error", "smart"],

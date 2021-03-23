@@ -23,7 +23,7 @@ import { VraClientCreator } from "../../factories/creators/VraClientCreator";
 })
 export class PowerOffMachineWorkflow {
     public execute(@In inputProperties: Properties): void {
-        const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows/powerOffMachine");
+        const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.dummy/powerOffMachine");
         const { resourceIds } = inputProperties;
 
         const vraClientCreator = new VraClientCreator();
