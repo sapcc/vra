@@ -1,0 +1,21 @@
+{
+  "id": "sub_1616514562723",
+  "type": "RUNNABLE",
+  "eventTopicId": "security.group.provision.post",
+  "name": "Set membership criteria of Security Group",
+  "ownerId": "configurationadmin",
+  "subscriberId": "vro-gateway-L9revv3xR5DgcSrx",
+  "blocking": true,
+  "description": "",
+  "criteria": "",
+  "constraints": {
+    "projectId": null
+  },
+  "timeout": 0,
+  "broadcast": false,
+  "priority": 10,
+  "disabled": false,
+  "system": false,
+  "runnableType": "extensibility.vro",
+  "runnableId": "7721de97-a5c2-4af1-ad86-f6626533d82b"
+}
