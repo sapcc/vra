@@ -12,7 +12,8 @@ export const VRA_CONFIGURATION_PATH = "PS CoE/Library/vRA/VraConfiguration";
 const PATH_ROOT = "Berkeley/vRA Extensibility";
 
 export const PATHS = {
-    CONFIG: `${PATH_ROOT}/Config`
+    CONFIG: `${PATH_ROOT}/Config`,
+    ENDPOINTS_CONFIG: "SAP/One Strike/Endpoints"
 };
 
 export const BACKUP_TAGS_SEPARATOR = "-";
@@ -31,3 +32,6 @@ const PATH_REA_ROOT = "vra-extensibility/elements/resource/";
 export const BACKUP_TAGS_REA_PATH = `${PATH_REA_ROOT}backupTagsRegister.json`;
 export const OS_TYPE_REA_PATH = `${PATH_REA_ROOT}osType.json`;
 export const BERKELEY_CUSTOM_PROPERTIES_REA_PATH = `${PATH_REA_ROOT}berkeleyCustomProperties.json`;
+
+export const DOMAIN_ID = "default";
+export const SEGMENT_PORT_TAG_VALUE = "security_group";

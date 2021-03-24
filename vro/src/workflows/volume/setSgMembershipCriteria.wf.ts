@@ -14,6 +14,8 @@ import { BaseContext } from "../../types/BaseContext";
 import { stringify, validateResponse } from "../../utils";
 import { SecurityGroupsService } from "com.vmware.pscoe.ts.vra.iaas/services/SecurityGroupsService";
 import { PolicyService } from "com.vmware.pscoe.library.ts.nsxt.policy/services/PolicyService";
+import { NsxtClientCreator } from "../../factories/creators/NsxtClientCreator";
+import { DOMAIN_ID, SEGMENT_PORT_TAG_VALUE } from "../../constants";
 
 @Workflow({
     id: "7721de97-a5c2-4af1-ad86-f6626533d82b",
@@ -42,24 +44,9 @@ export class SetSecurityGroupMembershipCriteria {
         const securityGroupService = new SecurityGroupsService(vraClientCreator.createOperation());
         const securityGroup = securityGroupService.getSecurityGroups().body.content.filter(sg => sg.deploymentId == deploymentId)[0];
         if (!securityGroup) {
-            throw new Error(`No Security group found for deployment with id '${deploymentId}'!`);
+            throw new Error(`No Security group found for deployment with ID '${deploymentId}'!`);
         }
 
-        const policyService = new PolicyService(vraClientCreator.createOperation());
-        logger.info(`NSXT SG: ${stringify(policyService.readGroupForDomain({
-            "path_domain-id": "default",
-	        "path_group-id": securityGroup.externalId
-        }))}`);
-        logger.info(`TIMEOUT start;`);
-        System.sleep(600000); // 10 min
-        logger.info(`TIMEOUT finish;`);
-        logger.info(`NSXT SG: ${stringify(policyService.readGroupForDomain({
-            "path_domain-id": "default",
-	        "path_group-id": securityGroup.externalId
-        }))}`);
-
-        const domainId = "default";
-        const segmentPortTagValue = "security_group";
         const segmentPortTagKey = inputProperties.customProperties.securityGroupId; // OpenStack UUID for SG
         const patchInfraPayload = {
             body_Infra: {
@@ -69,7 +56,7 @@ export class SetSecurityGroupMembershipCriteria {
                         resource_type: "ChildDomain",
                         marked_for_delete: false,
                         Domain: {
-                            id: domainId,
+                            id: DOMAIN_ID,
                             resource_type: "Domain",
                             marked_for_delete: false,
                             children: [
@@ -82,7 +69,7 @@ export class SetSecurityGroupMembershipCriteria {
                                         display_name: securityGroup.name,
                                         expression: [
                                             {
-                                                value: `${segmentPortTagValue}|${segmentPortTagKey}`,
+                                                value: `${SEGMENT_PORT_TAG_VALUE}|${segmentPortTagKey}`,
                                                 member_type: "SegmentPort",
                                                 key: "Tag",
                                                 operator: "EQUALS",
@@ -96,11 +83,12 @@ export class SetSecurityGroupMembershipCriteria {
                     }
                 ]
             }
-        }
+        };
 
-        logger.debug(`Patch infra request payload: ${stringify(patchInfraPayload)}`)
+        logger.debug(`Patch infra request payload: ${stringify(patchInfraPayload)}`);
+        const policyService = new PolicyService(NsxtClientCreator.build());
         const response = policyService.patchInfra(patchInfraPayload);
-        logger.debug(`Add membership criteria to Security group with id '${securityGroup.id}' response: ${stringify(response)}`);
+        logger.debug(`Add membership criteria to Security group with ID '${securityGroup.id}' response: ${stringify(response)}`);
         validateResponse(response);
         logger.info(`Added membership criteria to Security group.`);
     }
