@@ -8,36 +8,37 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
-import { VcenterService } from "../services/VcenterService";
-import { UpdateNicsMacAddressesContext } from "../types/UpdateNicsMacAddressesContext";
+import { VcenterService } from "../../services/VcenterService";
+import { UpdateNicsMacAddressesContext } from "../../types/UpdateNicsMacAddressesContext";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
 
 export class ResolveVcenterVM extends Task {
     private readonly logger: Logger;
+    private vCenterService: VcenterService;
 
     constructor(context: UpdateNicsMacAddressesContext) {
         super(context);
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.tasks/ResolveVcenterVM");
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.tasks.updateNicsMacAddresses/ResolveVcenterVM");
     }
 
     prepare() {
-        // no-op
+        this.vCenterService = new VcenterService();
     }
     
     validate() {
-        if (!this.context.instanceUUID) {
-            throw Error("Cannot get instanceUUID!");
+        if (!this.context.externalId) {
+            throw Error("'externalId' is not set!");
         }
     }
 
     execute() {
-        const vCenterService = new VcenterService();
-        const vcVM = vCenterService.getVmById(this.context.instanceUUID);
+        const { externalId } = this.context;
+        const vcVM = this.vCenterService.getVmById(externalId);
 
         if (!vcVM) {
-            throw Error(`Cannot get vCenter VM! Reason: No VM found with instanceUUID '${this.context.instanceUUID}'.`);
+            throw Error(`Cannot get vCenter VM! Reason: No VM found with instanceUUID '${externalId}'.`);
         }
 
         this.logger.info(`Found VM from vCenter with name '${vcVM.name}'.`);

@@ -10,9 +10,8 @@ import { NicsMacAddress } from "./NicsMacAddress";
  * #L%
  */
 export interface UpdateNicsMacAddressesContext {
-    deploymentId: string;
     resourceId: string;
+    externalId: string;
     nicsMacAddresses?: NicsMacAddress[];
-    instanceUUID?: string;
     vcVM?: VcVirtualMachine;
 }

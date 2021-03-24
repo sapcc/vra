@@ -7,11 +7,10 @@
  * SAP One Strike Openstack vRA adapter - vRA/vRO Artifacts
  * #L%
  */
-import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { In, Workflow } from "vrotsc-annotations";
-import { PerformUpdateNicsMacAddresses } from "../../tasks/PerformUpdateNicsMacAddresses";
-import { ResolveResourceCustomProperties } from "../../tasks/ResolveResourceCustomProperties";
-import { ResolveVcenterVM } from "../../tasks/ResolveVcenterVM";
+import { GetVmNicsMacAddresses } from "../../tasks/updateNicsMacAddresses/GetVmNicsMacAddresses";
+import { PerformUpdateNicsMacAddresses } from "../../tasks/updateNicsMacAddresses/PerformUpdateNicsMacAddresses";
+import { ResolveVcenterVM } from "../../tasks/updateNicsMacAddresses/ResolveVcenterVM";
 import { UpdateNicsMacAddressesContext } from "../../types/UpdateNicsMacAddressesContext";
 
 @Workflow({
@@ -25,27 +24,26 @@ import { UpdateNicsMacAddressesContext } from "../../types/UpdateNicsMacAddresse
 })
 export class UpdateNicsMacAddressesWorkflow {
     public execute(@In inputProperties: Properties): void {
-        const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.vm/UpdateNicsMacAddressesWorkflow");
-        const { resourceNames, resourceIds, deploymentId } = inputProperties;
+        const { externalIds, resourceIds } = inputProperties;
 
         const initialContext: UpdateNicsMacAddressesContext = {
-            deploymentId,
-            resourceId: resourceIds[0]
+            resourceId: resourceIds[0],
+            externalId: externalIds[0]
         };
 
         const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
         const PipelineBuilder = VROES.import("default").from("com.vmware.pscoe.library.pipeline.PipelineBuilder");
         const ExecutionStrategy = VROES.import("default").from("com.vmware.pscoe.library.pipeline.ExecutionStrategy");
-//, (context: UpdateNicsMacAddressesContext) => context.nicsMacAddresses?.length > 0
+        
         const pipeline = new PipelineBuilder()
-            .name(`Update Nics MAC addresses for resource with name '${resourceNames[0]}'.`)
+            .name("Update Nics MAC addresses")
             .context(initialContext)
-            .stage("Resolve Resource Custom Properties")
+            .stage("Get VM NICs MAC addresses")
             .exec(
-                ResolveResourceCustomProperties
+                GetVmNicsMacAddresses
             )
             .done()
-            .stage("Perform Update Nics MAC addresses")
+            .stage("Perform Update Nics MAC addresses", (context: UpdateNicsMacAddressesContext) => context.nicsMacAddresses?.length > 0)
             .exec(
                 ResolveVcenterVM,
                 PerformUpdateNicsMacAddresses
