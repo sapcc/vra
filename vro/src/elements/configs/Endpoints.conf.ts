@@ -16,4 +16,6 @@ import { Configuration } from "vrotsc-annotations";
         nsxtRestHost: "REST:RESTHost"
     },
 })
-export class Endpoints {}
+export class Endpoints {
+    nsxtRestHost: RESTHost
+}

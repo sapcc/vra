@@ -32,7 +32,7 @@ export class SetSecurityGroupMembershipCriteria {
         const context: BaseContext = SingletonContextFactory.createLazy([
             "com.vmware.pscoe.library.context.workflow"
         ]);
-        const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.volume/createSnapshot");
+        const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.network/setSgMembershipCriteria");
         logger.info(`Context=${stringify(context)}`);
         const deploymentId = inputProperties.deploymentId;
         if (!deploymentId) {
