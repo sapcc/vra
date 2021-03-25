@@ -18,7 +18,7 @@ import { AttachNetworkToVmContext } from "../../types/network/AttachNetworkToVmC
     name: "Attach Network",
     path: "SAP/One Strike/Network"
 })
-export class NetworkWorkflow {
+export class AttachNetworkWorkflow {
     public execute(machineId: string, name: string, macAddress: string): void {
         const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.network/attach");
 
