@@ -10,7 +10,7 @@
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { MachinesService } from "com.vmware.pscoe.ts.vra.iaas/services/MachinesService";
 import { VraClientCreator } from "../../factories/creators/VraClientCreator";
-import { BaseNetworkContext } from "../../types/network/BaseNetworkContext";
+import { BaseNicContext } from "../../types/nic/BaseNicContext";
 import { stringify, validateResponse } from "../../utils";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
@@ -21,9 +21,9 @@ export class GetVmNicsMacAddresses extends Task {
     private vraClientCreator: VraClientCreator;
     private machinesService: MachinesService;
 
-    constructor(context: BaseNetworkContext) {
+    constructor(context: BaseNicContext) {
         super(context);
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.network/GetVmNicsMacAddresses");
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.nic/GetVmNicsMacAddresses");
     }
 
     prepare() {

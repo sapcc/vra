@@ -9,42 +9,34 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { Workflow } from "vrotsc-annotations";
-import { CreateNewNetwork } from "../../tasks/network/CreateNewNetwork";
-import { ReconfigureVmNetworks } from "../../tasks/network/ReconfigureVmNetworks";
+import { DestroyNic } from "../../tasks/network/DestroyNic";
 import { ResolveVcenterVm } from "../../tasks/network/ResolveVcenterVm";
-import { AttachNetworkToVmContext } from "../../types/network/AttachNetworkToVmContext";
+import { DetachNicFromVmContext } from "../../types/nic/DetachNicFromVmContext";
 
 @Workflow({
-    name: "Attach Network",
-    path: "SAP/One Strike/Network"
+    name: "Detach Nic",
+    path: "SAP/One Strike/Nic"
 })
-export class AttachNetworkWorkflow {
-    public execute(machineId: string, name: string, macAddress: string): void {
-        const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.network/attach");
+export class DetachNicWorkflow {
+    public execute(machineId: string, deviceIndex: number): void {
+        const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.nic/detach");
 
         const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
         const PipelineBuilder = VROES.import("default").from("com.vmware.pscoe.library.pipeline.PipelineBuilder");
         const ExecutionStrategy = VROES.import("default").from("com.vmware.pscoe.library.pipeline.ExecutionStrategy");
 
-        const initialContext: AttachNetworkToVmContext = {
+        const initialContext: DetachNicFromVmContext = {
             machineId,
-            networkName: name,
-            macAddress,
-            networks: []
+            deviceIndex
         };
 
         const pipeline = new PipelineBuilder()
-            .name("Attach newly created network to VM")
+            .name("Detach Nic to VM")
             .context(initialContext)
-            .stage("Create new network")
-            .exec(
-                CreateNewNetwork
-            )
-            .done()
-            .stage("Perform attach network to VM")
+            .stage("Perform detach Nic to VM")
             .exec(
                 ResolveVcenterVm,
-                ReconfigureVmNetworks
+                DestroyNic
             )
             .done()
             .build();

@@ -8,7 +8,7 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
-import { NicsMacAddress } from "../types/network/NicsMacAddress";
+import { NicsMacAddress } from "../types/nic/NicsMacAddress";
 
 const Class = System.getModule("com.vmware.pscoe.library.class").Class();
 
@@ -71,10 +71,22 @@ export class VcenterService {
             const deviceConfigSpec = new VcVirtualDeviceConfigSpec();
             deviceConfigSpec.device = nic;
             deviceConfigSpec.operation = VcVirtualDeviceConfigSpecOperation.edit;
-            
+
             return deviceConfigSpec;
         });
     };
+
+    public destroyNic(vcVM: VcVirtualMachine, deviceIndex: number): void {
+        this.logger.info("About to destroy nic ...");
+
+        const Networking = Class.load("com.vmware.pscoe.library.vc", "Networking");
+        const vmNetworking = new Networking(vcVM);
+        
+        const nic = this.getNicByNumber(vmNetworking, deviceIndex);
+        
+        vmNetworking.destroyNic(nic);
+        this.logger.info("Done.");
+    }
 
     public reconfigureVM(vcVM: VcVirtualMachine, deviceConfigSpec: VcVirtualDeviceConfigSpec): void {
         const ReconfigurationTransaction =
@@ -91,7 +103,7 @@ export class VcenterService {
         this.logger.info("Done.");
     }
 
-    public createNewNetwork = (name: string, macAddress: string): VcVirtualDeviceConfigSpec => {
+    public createNic = (name: string, macAddress: string): VcVirtualDeviceConfigSpec => {
         this.logger.info("Creating connectable info for network ...");
         const connectInfo = new VcVirtualDeviceConnectInfo();
 

@@ -10,9 +10,9 @@
 import { In, Workflow } from "vrotsc-annotations";
 import { GetVmNicsMacAddresses } from "../../tasks/network/GetVmNicsMacAddresses";
 import { PerformUpdateNicsMacAddresses } from "../../tasks/network/PerformUpdateNicsMacAddresses";
-import { ReconfigureVmNetworks } from "../../tasks/network/ReconfigureVmNetworks";
+import { ReconfigureVmNics } from "../../tasks/network/ReconfigureVmNetworks";
 import { ResolveVcenterVm } from "../../tasks/network/ResolveVcenterVm";
-import { UpdateNicsMacAddressesContext } from "../../types/network/UpdateNicsMacAddressesContext";
+import { UpdateNicsMacAddressesContext } from "../../types/nic/UpdateNicsMacAddressesContext";
 
 @Workflow({
     name: "Update VM NICs MAC addresses",
@@ -30,7 +30,7 @@ export class UpdateNicsMacAddressesWorkflow {
         const initialContext: UpdateNicsMacAddressesContext = {
             resourceId: resourceIds[0],
             machineId: externalIds[0],
-            networks: []
+            nics: []
         };
 
         const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
@@ -49,7 +49,7 @@ export class UpdateNicsMacAddressesWorkflow {
             .exec(
                 ResolveVcenterVm,
                 PerformUpdateNicsMacAddresses,
-                ReconfigureVmNetworks
+                ReconfigureVmNics
             )
             .done()
             .build();

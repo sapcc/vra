@@ -1,4 +1,4 @@
-import { BaseNetworkContext } from "./BaseNetworkContext";
+import { BaseNicContext } from "./BaseNicContext";
 import { NicsMacAddress } from "./NicsMacAddress";
 
 /*-
@@ -10,7 +10,7 @@ import { NicsMacAddress } from "./NicsMacAddress";
  * SAP One Strike Openstack vRA adapter - vRA/vRO Artifacts
  * #L%
  */
-export interface UpdateNicsMacAddressesContext extends BaseNetworkContext {
+export interface UpdateNicsMacAddressesContext extends BaseNicContext {
     resourceId: string;
     nicsMacAddresses?: NicsMacAddress[];
 }

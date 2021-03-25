@@ -9,18 +9,18 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { VcenterService } from "../../services/VcenterService";
-import { BaseNetworkContext } from "../../types/network/BaseNetworkContext";
+import { BaseNicContext } from "../../types/nic/BaseNicContext";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
 
-export class ReconfigureVmNetworks extends Task {
+export class ReconfigureVmNics extends Task {
     private readonly logger: Logger;
     private vCenterService: VcenterService;
 
-    constructor(context: BaseNetworkContext) {
+    constructor(context: BaseNicContext) {
         super(context);
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.network/CreateNewNetwork");
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.nic/ReconfigureVmNics");
     }
 
     prepare() {
@@ -28,8 +28,8 @@ export class ReconfigureVmNetworks extends Task {
     }
 
     validate() {
-        if (!this.context.networks) {
-            throw Error("'networks' is not set!");
+        if (!this.context.nics) {
+            throw Error("'nics' is not set!");
         }
 
         if (!this.context.vcVM) {
@@ -38,8 +38,8 @@ export class ReconfigureVmNetworks extends Task {
     }
 
     execute() {
-        const { vcVM, networks } = this.context;
+        const { vcVM, nics } = this.context;
 
-        networks.forEach((network: VcVirtualDeviceConfigSpec) => this.vCenterService.reconfigureVM(vcVM, network));
+        nics.forEach((nic: VcVirtualDeviceConfigSpec) => this.vCenterService.reconfigureVM(vcVM, nic));
     }
 }

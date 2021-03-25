@@ -7,8 +7,8 @@
  * SAP One Strike Openstack vRA adapter - vRA/vRO Artifacts
  * #L%
  */
-export interface BaseNetworkContext {
+export interface BaseNicContext {
     machineId: string;
     vcVM?: VcVirtualMachine;
-    networks?: VcVirtualDeviceConfigSpec[];
+    nics?: VcVirtualDeviceConfigSpec[];
 }

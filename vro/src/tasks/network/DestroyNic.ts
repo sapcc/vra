@@ -14,12 +14,12 @@ import { BaseNicContext } from "../../types/nic/BaseNicContext";
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
 
-export class PerformUpdateNicsMacAddresses extends Task {
+export class DestroyNic extends Task {
     private vCenterService: VcenterService;
 
     constructor(context: BaseNicContext) {
         super(context);
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.tasks.nic/PerformUpdateNicsMacAddresses");
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.tasks.nic/DestroyNic");
     }
 
     prepare() {
@@ -31,16 +31,14 @@ export class PerformUpdateNicsMacAddresses extends Task {
             throw Error("vCenter VM is not set!");
         }
 
-        if (!this.context.nicsMacAddresses) {
-            throw Error("NICs MAC addresses are not set!");
+        if (!this.context.deviceIndex) {
+            throw Error("'deviceIndex' are not set!");
         }
     }
 
     execute() {
-        this.logger.info("About to change the MAC address of the existing VM (no duplicates allowed).");
+        const { vcVM, deviceIndex } = this.context;
         
-        const { vcVM, nicsMacAddresses } = this.context;
-        
-        this.context.networks = this.vCenterService.updateVmNicsMac(vcVM, nicsMacAddresses);
+        this.vCenterService.destroyNic(vcVM, deviceIndex);
     }
 }
