@@ -19,7 +19,7 @@ import { stringify, validateResponse } from "../../utils";
     name: "Attach Volume",
     path: "SAP/One Strike/Volume"
 })
-export class AttachWorkflow {
+export class AttachVolumeWorkflow {
     public execute(volumeId: string, resourceName: string): void {
         const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.volume/attach");
 

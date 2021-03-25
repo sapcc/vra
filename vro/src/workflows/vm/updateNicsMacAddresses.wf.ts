@@ -8,10 +8,10 @@
  * #L%
  */
 import { In, Workflow } from "vrotsc-annotations";
-import { GetVmNicsMacAddresses } from "../../tasks/network/GetVmNicsMacAddresses";
-import { PerformUpdateNicsMacAddresses } from "../../tasks/network/PerformUpdateNicsMacAddresses";
-import { ReconfigureVmNics } from "../../tasks/network/ReconfigureVmNetworks";
-import { ResolveVcenterVm } from "../../tasks/network/ResolveVcenterVm";
+import { GetVmNicsMacAddresses } from "../../tasks/nic/GetVmNicsMacAddresses";
+import { PerformUpdateNicsMacAddresses } from "../../tasks/nic/PerformUpdateNicsMacAddresses";
+import { ReconfigureVmNics } from "../../tasks/nic/ReconfigureVmNetworks";
+import { ResolveVcenterVm } from "../../tasks/nic/ResolveVcenterVm";
 import { UpdateNicsMacAddressesContext } from "../../types/nic/UpdateNicsMacAddressesContext";
 
 @Workflow({

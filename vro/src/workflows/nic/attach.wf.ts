@@ -9,10 +9,10 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { Workflow } from "vrotsc-annotations";
-import { CreateNic } from "../../tasks/network/CreateNic";
-import { ReconfigureVmNics } from "../../tasks/network/ReconfigureVmNetworks";
-import { ResolveVcenterVm } from "../../tasks/network/ResolveVcenterVm";
-import { AttachNetworkToVmContext } from "../../types/nic/AttachNicToVmContext";
+import { CreateNic } from "../../tasks/nic/CreateNic";
+import { ReconfigureVmNics } from "../../tasks/nic/ReconfigureVmNetworks";
+import { ResolveVcenterVm } from "../../tasks/nic/ResolveVcenterVm";
+import { AttachNicToVmContext } from "../../types/nic/AttachNicToVmContext";
 
 @Workflow({
     name: "Attach Nic",
@@ -26,7 +26,7 @@ export class AttachNicWorkflow {
         const PipelineBuilder = VROES.import("default").from("com.vmware.pscoe.library.pipeline.PipelineBuilder");
         const ExecutionStrategy = VROES.import("default").from("com.vmware.pscoe.library.pipeline.ExecutionStrategy");
 
-        const initialContext: AttachNetworkToVmContext = {
+        const initialContext: AttachNicToVmContext = {
             machineId,
             networkName: name,
             macAddress,

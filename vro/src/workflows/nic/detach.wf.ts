@@ -9,8 +9,8 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { Workflow } from "vrotsc-annotations";
-import { DestroyNic } from "../../tasks/network/DestroyNic";
-import { ResolveVcenterVm } from "../../tasks/network/ResolveVcenterVm";
+import { DestroyNic } from "../../tasks/nic/DestroyNic";
+import { ResolveVcenterVm } from "../../tasks/nic/ResolveVcenterVm";
 import { DetachNicFromVmContext } from "../../types/nic/DetachNicFromVmContext";
 
 @Workflow({
@@ -31,9 +31,9 @@ export class DetachNicWorkflow {
         };
 
         const pipeline = new PipelineBuilder()
-            .name("Detach Nic to VM")
+            .name("Detach Nic from VM")
             .context(initialContext)
-            .stage("Perform detach Nic to VM")
+            .stage("Perform detach Nic from VM")
             .exec(
                 ResolveVcenterVm,
                 DestroyNic
