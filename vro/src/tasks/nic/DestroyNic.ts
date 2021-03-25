@@ -31,14 +31,14 @@ export class DestroyNic extends Task {
             throw Error("vCenter VM is not set!");
         }
 
-        if (!this.context.deviceIndex) {
-            throw Error("'deviceIndex' are not set!");
+        if (!this.context.macAddress) {
+            throw Error("'macAddress' are not set!");
         }
     }
 
     execute() {
-        const { vcVM, deviceIndex } = this.context;
+        const { vcVM, macAddress } = this.context;
         
-        this.vCenterService.destroyNic(vcVM, deviceIndex);
+        this.vCenterService.destroyNic(vcVM, macAddress);
     }
 }

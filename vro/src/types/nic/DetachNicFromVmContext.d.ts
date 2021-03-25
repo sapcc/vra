@@ -10,5 +10,5 @@ import { BaseNicContext } from "./BaseNicContext";
  * #L%
  */
 export interface DetachNicFromVmContext extends BaseNicContext {
-    deviceIndex: number;
+    macAddress: string;
 }

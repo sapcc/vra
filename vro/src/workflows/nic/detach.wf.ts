@@ -18,7 +18,7 @@ import { DetachNicFromVmContext } from "../../types/nic/DetachNicFromVmContext";
     path: "SAP/One Strike/Nic"
 })
 export class DetachNicWorkflow {
-    public execute(machineId: string, deviceIndex: number): void {
+    public execute(machineId: string, macAddress: string): void {
         const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.nic/detach");
 
         const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
@@ -27,7 +27,7 @@ export class DetachNicWorkflow {
 
         const initialContext: DetachNicFromVmContext = {
             machineId,
-            deviceIndex
+            macAddress
         };
 
         const pipeline = new PipelineBuilder()

@@ -69,39 +69,13 @@ export class VcenterService {
             this.logger.info("About to prepare VcVirtualDeviceConfigSpec ...");
 
             const deviceConfigSpec = new VcVirtualDeviceConfigSpec();
+            
             deviceConfigSpec.device = nic;
             deviceConfigSpec.operation = VcVirtualDeviceConfigSpecOperation.edit;
 
             return deviceConfigSpec;
         });
     };
-
-    public destroyNic(vcVM: VcVirtualMachine, deviceIndex: number): void {
-        this.logger.info("About to destroy nic ...");
-
-        const Networking = Class.load("com.vmware.pscoe.library.vc", "Networking");
-        const vmNetworking = new Networking(vcVM);
-        
-        const nic = this.getNicByNumber(vmNetworking, deviceIndex);
-        
-        vmNetworking.destroyNic(nic);
-        this.logger.info("Done.");
-    }
-
-    public reconfigureVM(vcVM: VcVirtualMachine, deviceConfigSpec: VcVirtualDeviceConfigSpec): void {
-        const ReconfigurationTransaction =
-            Class.load("com.vmware.pscoe.library.vc.config", "ReconfigurationTransaction");
-
-        this.logger.info("About to create ReconfigurationTransaction ...");
-
-        const transaction = new ReconfigurationTransaction(vcVM);
-        transaction.add(deviceConfigSpec);
-
-        this.logger.info("About to commit ReconfigurationTransaction ...");
-        transaction.commit();
-
-        this.logger.info("Done.");
-    }
 
     public createNic = (name: string, macAddress: string): VcVirtualDeviceConfigSpec => {
         this.logger.info("Creating connectable info for network ...");
@@ -134,5 +108,36 @@ export class VcenterService {
         deviceConfigSpec.operation = VcVirtualDeviceConfigSpecOperation.add;
 
         return deviceConfigSpec;
+    }
+
+    public destroyNic(vcVM: VcVirtualMachine, macAddress: string): void {
+        this.logger.info("About to destroy Nic ...");
+
+        const Networking = Class.load("com.vmware.pscoe.library.vc", "Networking");
+        const vmNetworking = new Networking(vcVM);
+
+        const nic = vmNetworking.getNicByMac(macAddress);
+
+        if (!nic) {
+            throw new Error(`Cannot find Nic with MAC address '${macAddress}.`);
+        }
+
+        vmNetworking.destroyNic(nic);
+        this.logger.info("Done.");
+    }
+
+    public reconfigureVM(vcVM: VcVirtualMachine, deviceConfigSpec: VcVirtualDeviceConfigSpec): void {
+        const ReconfigurationTransaction =
+            Class.load("com.vmware.pscoe.library.vc.config", "ReconfigurationTransaction");
+
+        this.logger.info("About to create ReconfigurationTransaction ...");
+
+        const transaction = new ReconfigurationTransaction(vcVM);
+        transaction.add(deviceConfigSpec);
+
+        this.logger.info("About to commit ReconfigurationTransaction ...");
+        transaction.commit();
+
+        this.logger.info("Done.");
     }
 }
