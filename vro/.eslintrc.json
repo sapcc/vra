@@ -12,7 +12,10 @@
       "VcPlugin": "writable",
       "VcVirtualDeviceConfigSpec": "writable",
       "VcVirtualDeviceConfigSpecOperation": "writable",
-      "VcVirtualDevice": "writable"
+      "VcVirtualDevice": "writable",
+      "VcVirtualDeviceConnectInfo": "writable",
+      "VcVirtualEthernetCardNetworkBackingInfo": "writable",
+      "VcVirtualVmxnet3": "writable"
     },
     "extends": ["eslint:recommended"],
     // Path to the TS ESLint Parser (Windows)

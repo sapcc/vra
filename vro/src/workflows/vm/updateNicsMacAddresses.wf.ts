@@ -8,10 +8,11 @@
  * #L%
  */
 import { In, Workflow } from "vrotsc-annotations";
-import { GetVmNicsMacAddresses } from "../../tasks/updateNicsMacAddresses/GetVmNicsMacAddresses";
-import { PerformUpdateNicsMacAddresses } from "../../tasks/updateNicsMacAddresses/PerformUpdateNicsMacAddresses";
-import { ResolveVcenterVM } from "../../tasks/updateNicsMacAddresses/ResolveVcenterVM";
-import { UpdateNicsMacAddressesContext } from "../../types/UpdateNicsMacAddressesContext";
+import { GetVmNicsMacAddresses } from "../../tasks/network/GetVmNicsMacAddresses";
+import { PerformUpdateNicsMacAddresses } from "../../tasks/network/PerformUpdateNicsMacAddresses";
+import { ReconfigureVmNetworks } from "../../tasks/network/ReconfigureVmNetworks";
+import { ResolveVcenterVm } from "../../tasks/network/ResolveVcenterVm";
+import { UpdateNicsMacAddressesContext } from "../../types/network/UpdateNicsMacAddressesContext";
 
 @Workflow({
     name: "Update VM NICs MAC addresses",
@@ -28,7 +29,8 @@ export class UpdateNicsMacAddressesWorkflow {
 
         const initialContext: UpdateNicsMacAddressesContext = {
             resourceId: resourceIds[0],
-            externalId: externalIds[0]
+            machineId: externalIds[0],
+            networks: []
         };
 
         const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
@@ -45,8 +47,9 @@ export class UpdateNicsMacAddressesWorkflow {
             .done()
             .stage("Perform Update Nics MAC addresses", (context: UpdateNicsMacAddressesContext) => context.nicsMacAddresses?.length > 0)
             .exec(
-                ResolveVcenterVM,
-                PerformUpdateNicsMacAddresses
+                ResolveVcenterVm,
+                PerformUpdateNicsMacAddresses,
+                ReconfigureVmNetworks
             )
             .done()
             .build();

@@ -9,7 +9,7 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { VcenterService } from "../../services/VcenterService";
-import { UpdateNicsMacAddressesContext } from "../../types/UpdateNicsMacAddressesContext";
+import { BaseNetworkContext } from "../../types/network/BaseNetworkContext";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
@@ -17,9 +17,9 @@ const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Tas
 export class PerformUpdateNicsMacAddresses extends Task {
     private vCenterService: VcenterService;
 
-    constructor(context: UpdateNicsMacAddressesContext) {
+    constructor(context: BaseNetworkContext) {
         super(context);
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.tasks.updateNicsMacAddresses/PerformUpdateNicsMacAddresses");
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.tasks.network/PerformUpdateNicsMacAddresses");
     }
 
     prepare() {
@@ -38,7 +38,9 @@ export class PerformUpdateNicsMacAddresses extends Task {
 
     execute() {
         this.logger.info("About to change the MAC address of the existing VM (no duplicates allowed).");
+        
         const { vcVM, nicsMacAddresses } = this.context;
-        this.vCenterService.updateVmNicsMac(vcVM, nicsMacAddresses);
+        
+        this.context.networks = this.vCenterService.updateVmNicsMac(vcVM, nicsMacAddresses);
     }
 }

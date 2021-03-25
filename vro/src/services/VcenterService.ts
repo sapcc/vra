@@ -8,7 +8,22 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
-import { NicsMacAddress } from "../types/NicsMacAddress";
+import { NicsMacAddress } from "../types/network/NicsMacAddress";
+
+const Class = System.getModule("com.vmware.pscoe.library.class").Class();
+
+// TODO: Move to constants
+const CONNECT_INFO_DEFAULTS = {
+    ALLOW_GUEST_CONTROL: false,
+    CONNECTED: false,
+    START_CONNECTED: true
+};
+
+const NETWORK_DEFAULTS = {
+    KEY: 0,
+    UNIT_NUMBER: 0,
+    ADDRESS_TYPE: "Manual"
+};
 
 export class VcenterService {
     private readonly logger: Logger;
@@ -38,14 +53,11 @@ export class VcenterService {
         return networkAdapters[0];
     };
 
-    public updateVmNicsMac = (vcVM: VcVirtualMachine, macAddresses: NicsMacAddress[]) => {
-        const Class = System.getModule("com.vmware.pscoe.library.class").Class();
+    public updateVmNicsMac = (vcVM: VcVirtualMachine, macAddresses: NicsMacAddress[]): VcVirtualDeviceConfigSpec[] => {
         const Networking = Class.load("com.vmware.pscoe.library.vc", "Networking");
-        const ReconfigurationTransaction =
-            Class.load("com.vmware.pscoe.library.vc.config", "ReconfigurationTransaction");
         const vmNetworking = new Networking(vcVM);
 
-        macAddresses.forEach(({ deviceIndex, macAddress }) => {
+        return macAddresses.map(({ deviceIndex, macAddress }) => {
             const nic = this.getNicByNumber(vmNetworking, deviceIndex);
 
             this.logger.info(`Found NIC '${nic.toString()}'.`);
@@ -59,16 +71,56 @@ export class VcenterService {
             const deviceConfigSpec = new VcVirtualDeviceConfigSpec();
             deviceConfigSpec.device = nic;
             deviceConfigSpec.operation = VcVirtualDeviceConfigSpecOperation.edit;
-
-            this.logger.info("About to create ReconfigurationTransaction ...");
-
-            const transaction = new ReconfigurationTransaction(vcVM);
-            transaction.add(deviceConfigSpec);
-
-            this.logger.info("About to commit ReconfigurationTransaction ...");
-            transaction.commit();
-
-            this.logger.info(`updateVmNic${deviceIndex} - VM NIC${deviceIndex} Mac updated successfully. - '${macAddress}'.`);
+            
+            return deviceConfigSpec;
         });
     };
+
+    public reconfigureVM(vcVM: VcVirtualMachine, deviceConfigSpec: VcVirtualDeviceConfigSpec): void {
+        const ReconfigurationTransaction =
+            Class.load("com.vmware.pscoe.library.vc.config", "ReconfigurationTransaction");
+
+        this.logger.info("About to create ReconfigurationTransaction ...");
+
+        const transaction = new ReconfigurationTransaction(vcVM);
+        transaction.add(deviceConfigSpec);
+
+        this.logger.info("About to commit ReconfigurationTransaction ...");
+        transaction.commit();
+
+        this.logger.info("Done.");
+    }
+
+    public createNewNetwork = (name: string, macAddress: string): VcVirtualDeviceConfigSpec => {
+        this.logger.info("Creating connectable info for network ...");
+        const connectInfo = new VcVirtualDeviceConnectInfo();
+
+        connectInfo.allowGuestControl = CONNECT_INFO_DEFAULTS.ALLOW_GUEST_CONTROL;
+        connectInfo.connected = CONNECT_INFO_DEFAULTS.CONNECTED;
+        connectInfo.startConnected = CONNECT_INFO_DEFAULTS.START_CONNECTED;
+
+        this.logger.info("Creating Network BackingInfo ...");
+        const netBackingInfo = new VcVirtualEthernetCardNetworkBackingInfo();
+
+        netBackingInfo.deviceName = name;
+
+        this.logger.info("Creating Virtual Network ...");
+
+        const vNetwork = new VcVirtualVmxnet3();
+
+        vNetwork.backing = netBackingInfo;
+        vNetwork.key = NETWORK_DEFAULTS.KEY;
+        vNetwork.unitNumber = NETWORK_DEFAULTS.UNIT_NUMBER;
+        vNetwork.addressType = NETWORK_DEFAULTS.ADDRESS_TYPE;
+        vNetwork.macAddress = macAddress;
+        vNetwork.connectable = connectInfo;
+
+        this.logger.info("Creating Network ConfigSpec ...");
+        const deviceConfigSpec = new VcVirtualDeviceConfigSpec();
+
+        deviceConfigSpec.device = vNetwork;
+        deviceConfigSpec.operation = VcVirtualDeviceConfigSpecOperation.add;
+
+        return deviceConfigSpec;
+    }
 }
