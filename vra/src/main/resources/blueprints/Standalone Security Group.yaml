@@ -8,11 +8,12 @@ content:
     Cloud_SecurityGroup_1:
       type: Cloud.SecurityGroup
       metadata:
-        layoutPosition: [0, 0]
+        layoutPosition: [1, 0]
       properties:
         securityGroupType: new
         name: ${input.name}
         rules:
         - {name: Deny-All-Egress, direction: outbound, destination: ANY, access: Deny}
+        securityGroupId: ${input.name}
 description: ''
 requestScopeOrg: false

@@ -4,4 +4,6 @@ blueprint:
   - Standalone Server
   - Standalone Volume
   - Standalone Security Group
+subscription:
+  - Set membership criteria of Security Group
 
