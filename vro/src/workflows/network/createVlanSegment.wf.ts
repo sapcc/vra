@@ -68,10 +68,8 @@ export class CreateVlanSegmentWorkflow {
         if (networkProfile._links["fabric-networks"]) {
             fabricNetworksIds = networkProfile._links["fabric-networks"]
                 .hrefs
-                .map(function (href) {
-                    // Example HREF to fabric network - "/iaas/api/fabric-networks/f199daf4-001e-40bd-935b-86560f729a61"
-                    return href.split("/")[4];
-                });
+                // Example HREF to fabric network - "/iaas/api/fabric-networks/f199daf4-001e-40bd-935b-86560f729a61"
+                .map(href => href.split("/")[4]);
         }
 
         logger.info(`fabricNetworksIds:\n${stringify(fabricNetworksIds)}`);
@@ -83,5 +81,7 @@ export class CreateVlanSegmentWorkflow {
                 fabricNetworkIds: [response.body.content[0].id, ...fabricNetworksIds]
             } as NetworkProfileSpecification
         } as UpdateNetworkProfileParameters);
+        
+        logger.info("Added Fabric Network to Network Profile.");
     }
 }
