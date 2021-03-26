@@ -8,6 +8,7 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
+import { GetNetworkProfileParameters } from "com.vmware.pscoe.ts.vra.iaas/models/GetNetworkProfileParameters";
 import { NetworkProfileSpecification } from "com.vmware.pscoe.ts.vra.iaas/models/NetworkProfileSpecification";
 import { UpdateNetworkProfileParameters } from "com.vmware.pscoe.ts.vra.iaas/models/UpdateNetworkProfileParameters";
 import { FabricNetworksService } from "com.vmware.pscoe.ts.vra.iaas/services/FabricNetworksService";
@@ -50,14 +51,29 @@ export class CreateVlanSegmentWorkflow {
 
         const networkProfileService = new NetworkProfilesService(vraClientCreator.createOperation());
 
-        // const networkProfile = networkProfileService.getNetworkProfile({
-        //     path_id: "dced940b-7280-459c-913b-ab9e7b3fc882"
-        // } as GetNetworkProfileParameters).body;
+        const networkProfile = networkProfileService.getNetworkProfile({
+            path_id: "dced940b-7280-459c-913b-ab9e7b3fc882"
+        } as GetNetworkProfileParameters).body;
+
+        logger.info(`Network Profile:\n${stringify(networkProfile)}`);
+
+        let fabricNetworksIds = [];
+
+        if (networkProfile._links["fabric-networks"]) {
+            fabricNetworksIds = networkProfile._links["fabric-networks"]
+                .hrefs
+                .map(function (href) {
+                    // Example HREF to fabric network - "/iaas/api/fabric-networks/f199daf4-001e-40bd-935b-86560f729a61"
+                    return href.split("/")[4];
+                });
+        }
+
+        logger.info(`fabricNetworksIds:\n${stringify(fabricNetworksIds)}`);
 
         networkProfileService.updateNetworkProfile({
             path_id: "dced940b-7280-459c-913b-ab9e7b3fc882",
             body_body: {
-                fabricNetworkIds: [response.body.content[0].id]
+                fabricNetworkIds: [response.body.content[0].id, ...fabricNetworksIds]
             } as NetworkProfileSpecification
         } as UpdateNetworkProfileParameters);
 
