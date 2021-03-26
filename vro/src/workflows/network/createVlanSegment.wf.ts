@@ -28,20 +28,23 @@ export class CreateVlanSegmentWorkflow {
     public execute(name: string, vlanId: string): void {
         const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.network/CreateVlanSegmentWorkflow");
 
+        // TODO: CreateVlanSegment
         const nsxService = new NsxService(NsxtClientCreator.build());
 
         logger.info("Creating Vlan segment ...");
         const segment = nsxService.createVlanSegments(`${name}_vlanId`, "a95c914d-748d-497c-94ab-10d4647daeba", vlanId);
-        logger.info(`Created Vlan Segment:\n${stringify(segment)}`);
+        logger.info(`Created Vlan segment:\n${stringify(segment)}`);
 
+        // TODO: TagVlanSegment
         const tags = [{
             scope: "openstack",
             tag: `openstack_id:${name}`
         }];
 
         nsxService.applyTagToSegment(segment, tags);
-        logger.info("Tag Vlan segment ...");
+        logger.info("Tagged Vlan segment.");
 
+        // TODO: WaitForFabricNetwork
         logger.info("Waiting for Vlan segment to be collected in vRA ...");
         const vraClientCreator = new VraClientCreator();
         const execution = new WaitForFabricNetwork(new FabricNetworksService(vraClientCreator.createOperation()), `${name}_vlanId`);
@@ -49,10 +52,13 @@ export class CreateVlanSegmentWorkflow {
         const response = execution.get(10 * 60, 15);
         logger.info(`Found Fabric Network:\n${stringify(response)}`);
 
+        // TODO: AddFabricNetworkToNetworkProfile
+
+        // TODO: GetFabricNetworksFromNetworkProfile
         const networkProfileService = new NetworkProfilesService(vraClientCreator.createOperation());
 
         const networkProfile = networkProfileService.getNetworkProfile({
-            path_id: "dced940b-7280-459c-913b-ab9e7b3fc882"
+            path_id: "fa5f5cd5-247d-4641-a004-62ecb5b4e8b3"
         } as GetNetworkProfileParameters).body;
 
         logger.info(`Network Profile:\n${stringify(networkProfile)}`);
@@ -70,12 +76,12 @@ export class CreateVlanSegmentWorkflow {
 
         logger.info(`fabricNetworksIds:\n${stringify(fabricNetworksIds)}`);
 
+        // TODO: UpdateFabricNetworksInNetworkProfile
         networkProfileService.updateNetworkProfile({
-            path_id: "dced940b-7280-459c-913b-ab9e7b3fc882",
+            path_id: "fa5f5cd5-247d-4641-a004-62ecb5b4e8b3",
             body_body: {
                 fabricNetworkIds: [response.body.content[0].id, ...fabricNetworksIds]
             } as NetworkProfileSpecification
         } as UpdateNetworkProfileParameters);
-
     }
 }
