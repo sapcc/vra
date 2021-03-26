@@ -8,22 +8,10 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
+import { CONNECT_INFO_DEFAULTS, NETWORK_DEFAULTS } from "../constants";
 import { NicsMacAddress } from "../types/nic/NicsMacAddress";
 
 const Class = System.getModule("com.vmware.pscoe.library.class").Class();
-
-// TODO: Move to constants
-const CONNECT_INFO_DEFAULTS = {
-    ALLOW_GUEST_CONTROL: false,
-    CONNECTED: false,
-    START_CONNECTED: true
-};
-
-const NETWORK_DEFAULTS = {
-    KEY: 0,
-    UNIT_NUMBER: 0,
-    ADDRESS_TYPE: "Manual"
-};
 
 export class VcenterService {
     private readonly logger: Logger;
