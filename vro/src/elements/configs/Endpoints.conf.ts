@@ -10,12 +10,12 @@
 import { Configuration } from "vrotsc-annotations";
 
 @Configuration({
-    name: "Config",
+    name: "Endpoints",
     path: "SAP/One Strike",
     attributes: {
-        
-    }
+        nsxtRestHost: "REST:RESTHost"
+    },
 })
-export class Config {
-
+export class Endpoints {
+    nsxtRestHost: RESTHost
 }

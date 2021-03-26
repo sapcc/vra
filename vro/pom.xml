@@ -116,6 +116,19 @@
       <type>tgz</type>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>com.vmware.pscoe.library.ts</groupId>
+      <artifactId>nsxt.policy</artifactId>
+      <type>package</type>
+      <version>3.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.vmware.pscoe.library.ts</groupId>
+      <artifactId>nsxt.policy</artifactId>
+      <version>3.1.0</version>
+      <type>tgz</type>
+      <scope>compile</scope>
+    </dependency>
     <!-- Mocks -->
     <dependency>
       <groupId>com.vmware.pscoe.library.ts</groupId>
