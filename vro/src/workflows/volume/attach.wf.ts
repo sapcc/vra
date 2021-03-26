@@ -21,7 +21,7 @@ import { stringify, validateResponse } from "../../utils";
 })
 export class AttachVolumeWorkflow {
     public execute(volumeId: string, resourceName: string): void {
-        const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.volume/attach");
+        const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.volume/AttachVolumeWorkflow");
 
         const vraClientCreator = new VraClientCreator();
         const machinesService = new MachinesService(vraClientCreator.createOperation());

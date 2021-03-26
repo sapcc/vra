@@ -6,4 +6,5 @@ blueprint:
   - Standalone Security Group
 subscription:
   - Set membership criteria of Security Group
+  - Update VM NICs MAC addresses
 

@@ -5,13 +5,13 @@ content:
   inputs:
     name: {type: string, title: Name, description: Machine deployment name mapped
         to the OpenStack Server UUID, default: machine}
-    cpuCount: {type: number, title: CPUs, description: Number of allocated CPUs, default: 2}
+    cpuCount: {type: number, title: CPUs, description: Number of allocated CPUs, default: 4}
     coreCount: {type: number, title: CPU Cores, description: Number of allocated CPU
         cores, default: 2}
-    memory: {type: number, title: Memory, description: Amount of allocated RAM, default: 4096}
+    memory: {type: number, title: Memory, description: Amount of allocated RAM, default: 1024}
     imageRef: {type: string, title: Image Ref, description: 'Image used for creating
         the machine, could be templates, OVA or OVF links, snapshots/linked clone,
-        content libraries.', default: wwcoe / Ubuntu_18.04_x64_minimal}
+        content libraries.', default: wwcoe / smallVM}
     bootDiskCapacityInGB: {type: number, title: Boot Disk Size, description: Expand
         the boot disk size. Image volume size must be less than Boot Disk Size., default: 8,
       minimum: 0}

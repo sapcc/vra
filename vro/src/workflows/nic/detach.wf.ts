@@ -19,7 +19,7 @@ import { DetachNicFromVmContext } from "../../types/nic/DetachNicFromVmContext";
 })
 export class DetachNicWorkflow {
     public execute(machineId: string, macAddress: string): void {
-        const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.nic/detach");
+        const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.nic/DetachNicWorkflow");
 
         const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
         const PipelineBuilder = VROES.import("default").from("com.vmware.pscoe.library.pipeline.PipelineBuilder");

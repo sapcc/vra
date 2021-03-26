@@ -7,9 +7,13 @@
  * SAP One Strike Openstack vRA adapter - vRA/vRO Artifacts
  * #L%
  */
-import { HttpClient, HttpResponse } from "com.vmware.pscoe.library.ts.http/HttpClient";
+import { HttpClient } from "com.vmware.pscoe.library.ts.http/HttpClient";
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
+import {
+    PatchInfraSegmentWithForceTrueParameters
+} from "com.vmware.pscoe.library.ts.nsxt.policy/models/PatchInfraSegmentWithForceTrueParameters";
 import { Segment } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Segment";
+import { Tag } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Tag";
 import { PolicyConnectivityService } from "com.vmware.pscoe.library.ts.nsxt.policy/services/PolicyConnectivityService";
 import { validateResponse } from "../utils";
 
@@ -42,33 +46,23 @@ export class NsxService {
     }
 
     public deleteSegmentById(segmentId: string): boolean {
-        const response = this.policyConnectivityService.deleteInfraSegment({ "path_segment-id": segmentId });
+        const response = this.policyConnectivityService.deleteInfraSegment({
+            "path_segment-id": segmentId
+        });
 
         validateResponse(response);
 
         return true;
     }
 
-    public applyTagToSegment(segment: Segment) {
-        const segmentSubnet = segment.subnets[0];
-
-        const tag = [{
-            scope: "128",
-            tag: `segmentName:${segmentSubnet.gateway_address}`
-        }];
-
-        const response: HttpResponse = this.httpClient.request({
-            path: `/policy/api/v1/infra/segments/${segment.id}?force=true`,
-            method: "PATCH",
-            contentType: "application/json",
-            content: {
-                tags: tag
-            },
-            headers: {}
-        });
+    public applyTagToSegment(segment: Segment, tags: Tag[]) {
+        const response = this.policyConnectivityService.patchInfraSegmentWithForceTrue({
+            "path_segment-id": segment.id,
+            "body_Segment": {
+                tags
+            } as Segment
+        } as PatchInfraSegmentWithForceTrueParameters);
 
         validateResponse(response);
-
-        return response.content;
     }
 }
