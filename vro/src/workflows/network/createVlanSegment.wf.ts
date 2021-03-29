@@ -11,7 +11,7 @@ import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { Workflow } from "vrotsc-annotations";
 import { PATHS } from "../../constants";
 import { ConfigurationAccessor } from "../../elements/accessors/ConfigurationAccessor";
-import { VlanSegment } from "../../elements/configs/VLanSegment.conf";
+import { VlanSegment } from "../../elements/configs/VlanSegment.conf";
 import { CreateVlanSegment } from "../../tasks/network/CreateVlanSegment";
 import { GetFabricNetworksFromNetworkProfile } from "../../tasks/network/GetFabricNetworksFromNetworkProfile";
 import { TagVlanSegment } from "../../tasks/network/TagVlanSegment";
