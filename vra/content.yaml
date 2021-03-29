@@ -6,7 +6,6 @@ blueprint:
   - Standalone Security Group
 subscription:
   - Set membership criteria of Security Group
-catalog-entitlement:
-  - Set Segment Port Tags
 workflow-custom-form:
   - Set Segment Port Tags
+  - Update VM NICs MAC addresses

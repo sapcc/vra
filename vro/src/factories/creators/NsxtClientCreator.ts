@@ -17,7 +17,7 @@ export class NsxtClientCreator {
     public static build(): HttpClient {
         const { nsxtRestHost } = ConfigurationAccessor.loadConfig(PATHS.ENDPOINTS_CONFIG, {} as Endpoints);
         if (!nsxtRestHost) {
-            throw new Error(`NSX-T REST Host is not configured!`);
+            throw new Error("NSX-T REST Host is not configured!");
         }
 
         return new HttpClient(nsxtRestHost);

@@ -1,0 +1,21 @@
+{
+  "id": "sub_1616517242823",
+  "type": "RUNNABLE",
+  "eventTopicId": "compute.provision.post",
+  "name": "Update VM NICs MAC addresses",
+  "ownerId": "configurationadmin",
+  "subscriberId": "vro-gateway-L9revv3xR5DgcSrx",
+  "blocking": true,
+  "description": "",
+  "criteria": "",
+  "constraints": {
+    "projectId": null
+  },
+  "timeout": 0,
+  "broadcast": false,
+  "priority": 10,
+  "disabled": false,
+  "system": false,
+  "runnableType": "extensibility.vro",
+  "runnableId": "6b567329-a7ec-3821-a843-20d157f6144d"
+}

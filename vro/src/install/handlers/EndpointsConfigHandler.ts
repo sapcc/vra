@@ -1,4 +1,3 @@
-import { PATHS } from "../../constants";
 /*-
  * #%L
  * ccloud.vro
@@ -8,7 +7,7 @@ import { PATHS } from "../../constants";
  * SAP One Strike Openstack vRA adapter - vRA/vRO Artifacts
  * #L%
  */
-import { VRA_CONFIGURATION_PATH } from "../../constants";
+import { PATHS, VRA_CONFIGURATION_PATH } from "../../constants";
 
 exports = class {
     configure(input: any) {
@@ -44,4 +43,4 @@ exports = class {
             .config(PATHS.ENDPOINTS_CONFIG)
             .set("nsxtRestHost");
     }
-}
+};
