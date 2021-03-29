@@ -18,7 +18,7 @@ export const PATHS = {
 
 export const CONNECT_INFO_DEFAULTS = {
     ALLOW_GUEST_CONTROL: false,
-    CONNECTED: false,
+    CONNECTED: true,
     START_CONNECTED: true
 };
 

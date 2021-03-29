@@ -44,7 +44,7 @@ export class GetFabricNetworksFromNetworkProfile extends Task {
     execute() {
         const { networkProfileId } = this.context;
 
-        const networkProfile = this.networkProfileService.getNetworkProfile({
+        const networkProfile = this.networkProfilesService.getNetworkProfile({
             path_id: networkProfileId
         } as GetNetworkProfileParameters).body;
 

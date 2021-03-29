@@ -30,11 +30,11 @@ export class CreateVlanSegmentWorkflow {
         const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
         const PipelineBuilder = VROES.import("default").from("com.vmware.pscoe.library.pipeline.PipelineBuilder");
         const ExecutionStrategy = VROES.import("default").from("com.vmware.pscoe.library.pipeline.ExecutionStrategy");
-        const { segmentNameSuffix, transportZoneId, segmentTagScope, segmentTagKey, networkProfileId } =
+        const { transportZoneId, segmentTagScope, segmentTagKey, networkProfileId } =
             ConfigurationAccessor.loadConfig(PATHS.VLAN_SEGMENT, {} as VlanSegment);
 
         const initialContext: CreateVlanSegmentContext = {
-            segmentName: `${name}${segmentNameSuffix}`,
+            segmentName: `${name}_${vlanId}`,
             transportZoneId,
             segmentTags: [{
                 scope: segmentTagScope,

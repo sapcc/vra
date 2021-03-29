@@ -13,7 +13,6 @@ import { Configuration } from "vrotsc-annotations";
     name: "Config",
     path: "SAP/One Strike",
     attributes: {
-        segmentNameSuffix: "string",
         transportZoneId: "string",
         segmentTagScope: "string",
         segmentTagKey: "string",
@@ -21,7 +20,6 @@ import { Configuration } from "vrotsc-annotations";
     }
 })
 export class VlanSegment {
-    segmentNameSuffix: string;
     transportZoneId: string;
     segmentTagScope: string;
     segmentTagKey: string;
