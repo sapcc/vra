@@ -57,7 +57,7 @@ export class VcenterService {
             this.logger.info("About to prepare VcVirtualDeviceConfigSpec ...");
 
             const deviceConfigSpec = new VcVirtualDeviceConfigSpec();
-            
+
             deviceConfigSpec.device = nic;
             deviceConfigSpec.operation = VcVirtualDeviceConfigSpecOperation.edit;
 
@@ -74,9 +74,19 @@ export class VcenterService {
         connectInfo.startConnected = CONNECT_INFO_DEFAULTS.START_CONNECTED;
 
         this.logger.info("Creating Network BackingInfo ...");
-        const netBackingInfo = new VcVirtualEthernetCardNetworkBackingInfo();
+        const networks = VcPlugin.getAllNetworks([], "");
+        const targetNetwork = Array.from(networks).find(n => n.name === name);
 
-        netBackingInfo.deviceName = name;
+        if (targetNetwork.type !== "OpaqueNetwork") {
+            throw new Error(`Unsupported network type. Current type is '${targetNetwork.type}'. Support only OpaqueNetwork type.`);
+        }
+        
+        const netBackingInfo = new VcVirtualEthernetCardOpaqueNetworkBackingInfo();
+
+        netBackingInfo.opaqueNetworkId = (targetNetwork.summary as VcOpaqueNetworkSummary).opaqueNetworkId;
+        netBackingInfo.opaqueNetworkType = (targetNetwork.summary as VcOpaqueNetworkSummary).opaqueNetworkType;
+
+        netBackingInfo;
 
         this.logger.info("Creating Virtual Network ...");
 

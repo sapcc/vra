@@ -15,7 +15,8 @@
       "VcVirtualDevice": "writable",
       "VcVirtualDeviceConnectInfo": "writable",
       "VcVirtualEthernetCardNetworkBackingInfo": "writable",
-      "VcVirtualVmxnet3": "writable"
+      "VcVirtualVmxnet3": "writable",
+      "VcVirtualEthernetCardOpaqueNetworkBackingInfo": "writable"
     },
     "extends": ["eslint:recommended"],
     // Path to the TS ESLint Parser (Windows)
