@@ -51,7 +51,7 @@ export class GetFabricNetworksFromNetworkProfile extends Task {
         this.logger.info(`Network Profile:\n${stringify(networkProfile)}`);
 
         if (networkProfile._links["fabric-networks"]) {
-            this.context.currentFabricNetworksIds = networkProfile._links["fabric-networks"]
+            this.context.currentFabricNetworkIds = networkProfile._links["fabric-networks"]
                 .hrefs
                 // Example HREF to fabric network - "/iaas/api/fabric-networks/f199daf4-001e-40bd-935b-86560f729a61"
                 .map(href => href.split(SEPARATOR)[FABRIC_NETWORK_ID_INDEX]);
