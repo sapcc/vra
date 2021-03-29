@@ -80,7 +80,7 @@ export class VcenterService {
         const targetNetwork = Array.from(networks).find(n => n.name === name);
 
         if (targetNetwork.type !== OPAQUE_NETWORK) {
-            throw new Error(`Unsupported network type. Current type is '${targetNetwork.type}'. Support only OpaqueNetwork type.`);
+            throw new Error(`Unsupported network type. Current type is '${targetNetwork.type}'. Support only ${OPAQUE_NETWORK} type.`);
         }
 
         const netBackingInfo = new VcVirtualEthernetCardOpaqueNetworkBackingInfo();
