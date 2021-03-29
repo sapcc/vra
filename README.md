@@ -12,9 +12,10 @@ TBD
 {
   "vlanSegment": {
     "transportZoneId": "a95c914d-748d-497c-94ab-10d4647daeba",
-    "segmentTagScope": "openstack",
-    "segmentTagKey": "openstack_network_id",
-    "networkProfileId": "fa5f5cd5-247d-4641-a004-62ecb5b4e8b3"
+    "segmentTagScope": "openstack_network_id",
+    "networkProfileId": "fa5f5cd5-247d-4641-a004-62ecb5b4e8b3",
+    "timeoutInSeconds": 600,
+    "sleepTimeInSeconds": 15
   },
   "endpoints": {
     "vra": {

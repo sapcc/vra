@@ -15,13 +15,15 @@ import { Configuration } from "vrotsc-annotations";
     attributes: {
         transportZoneId: "string",
         segmentTagScope: "string",
-        segmentTagKey: "string",
-        networkProfileId: "string"
+        networkProfileId: "string",
+        timeoutInSeconds: "number",
+        sleepTimeInSeconds: "number"
     }
 })
 export class VlanSegment {
     transportZoneId: string;
     segmentTagScope: string;
-    segmentTagKey: string;
     networkProfileId: string;
+    timeoutInSeconds: number;
+    sleepTimeInSeconds: number;
 }

@@ -41,18 +41,18 @@ export class UpdateFabricNetworksInNetworkProfile extends Task {
             throw Error("'newFabricNetworkId' is not set!");
         }
 
-        if (!this.context.currentFabricNetworkId) {
-            throw Error("'currentFabricNetworkId' is not set!");
+        if (!this.context.currentFabricNetworskId) {
+            throw Error("'currentFabricNetworksId' is not set!");
         }
     }
 
     execute() {
-        const { networkProfileId, newFabricNetworkId, currentFabricNetworkId } = this.context;
+        const { networkProfileId, newFabricNetworkId, currentFabricNetworksId } = this.context;
 
         this.networkProfileService.updateNetworkProfile({
             path_id: networkProfileId,
             body_body: {
-                fabricNetworkIds: [...currentFabricNetworkId, newFabricNetworkId]
+                fabricNetworkIds: [...currentFabricNetworksId, newFabricNetworkId]
             } as NetworkProfileSpecification
         } as UpdateNetworkProfileParameters);
 
