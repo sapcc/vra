@@ -1,0 +1,59 @@
+{
+  "id": "a111f75c-a1db-4b31-a60f-b19702c29ab3",
+  "name": "vRO Workflows",
+  "description": null,
+  "typeId": "com.vmw.vro.workflow",
+  "createdAt": "2021-03-25T14:30:57.058196Z",
+  "createdBy": "configurationadmin",
+  "lastUpdatedAt": "2021-03-29T13:50:28.201603Z",
+  "lastUpdatedBy": "configurationadmin",
+  "config": {
+    "workflows": [
+      {
+        "id": "e307045a-cda9-3791-b1cd-d0e1e76b4923",
+        "name": "Attach Nic",
+        "version": "1.0.0",
+        "integration": {
+          "name": "embedded-VRO",
+          "endpointUri": "https://vra-l-01a.corp.local:443",
+          "endpointConfigurationLink": "/resources/endpoints/512634d0-27a7-4d93-9955-afc4b512cb07"
+        }
+      },
+      {
+        "id": "d1cdf29e-1aca-394c-90bc-9271f3b05839",
+        "name": "Detach Nic",
+        "version": "1.0.1",
+        "integration": {
+          "name": "embedded-VRO",
+          "endpointUri": "https://vra-l-01a.corp.local:443",
+          "endpointConfigurationLink": "/resources/endpoints/512634d0-27a7-4d93-9955-afc4b512cb07"
+        }
+      },
+      {
+        "id": "c863f36a-5ca5-3274-985e-a5b105d8bac5",
+        "name": "Create Vlan Segment",
+        "version": "1.0.0",
+        "integration": {
+          "name": "embedded-VRO",
+          "endpointUri": "https://vra-l-01a.corp.local:443",
+          "endpointConfigurationLink": "/resources/endpoints/512634d0-27a7-4d93-9955-afc4b512cb07"
+        }
+      },
+      {
+        "id": "7721de97-a5c2-4af1-ad86-f6626533d899",
+        "name": "Set Segment Port Tags",
+        "version": "1.0.0",
+        "integration": {
+          "name": "embedded-VRO",
+          "endpointUri": "https://vra-l-01a.corp.local:443",
+          "endpointConfigurationLink": "/resources/endpoints/512634d0-27a7-4d93-9955-afc4b512cb07"
+        }
+      }
+    ]
+  },
+  "itemsImported": 4,
+  "itemsFound": 4,
+  "lastImportStartedAt": "2021-03-29T13:50:26.821646Z",
+  "lastImportCompletedAt": "2021-03-29T13:50:28.201348Z",
+  "global": true
+}
