@@ -8,21 +8,21 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
+import { PolicyService } from "com.vmware.pscoe.library.ts.nsxt.policy/services/PolicyService";
+import { SecurityGroupsService } from "com.vmware.pscoe.ts.vra.iaas/services/SecurityGroupsService";
 import { In, Workflow } from "vrotsc-annotations";
+import { DOMAIN_ID, SEGMENT_PORT_TAG_VALUE } from "../../constants";
+import { NsxtClientCreator } from "../../factories/creators/NsxtClientCreator";
 import { VraClientCreator } from "../../factories/creators/VraClientCreator";
 import { BaseContext } from "../../types/BaseContext";
 import { stringify, validateResponse } from "../../utils";
-import { SecurityGroupsService } from "com.vmware.pscoe.ts.vra.iaas/services/SecurityGroupsService";
-import { PolicyService } from "com.vmware.pscoe.library.ts.nsxt.policy/services/PolicyService";
-import { NsxtClientCreator } from "../../factories/creators/NsxtClientCreator";
-import { DOMAIN_ID, SEGMENT_PORT_TAG_VALUE } from "../../constants";
 
 @Workflow({
     id: "7721de97-a5c2-4af1-ad86-f6626533d82b",
     name: "Set Security Group Membership Criteria",
     path: "SAP/One Strike/Security Group",
     input: {
-        inputProperties: { type: "Properties" },
+        inputProperties: { type: "Properties" }
     }
 })
 export class SetSecurityGroupMembershipCriteria {
@@ -42,7 +42,7 @@ export class SetSecurityGroupMembershipCriteria {
 
         const vraClientCreator = new VraClientCreator();
         const securityGroupService = new SecurityGroupsService(vraClientCreator.createOperation());
-        const securityGroup = securityGroupService.getSecurityGroups().body.content.filter(sg => sg.deploymentId == deploymentId)[0];
+        const securityGroup = securityGroupService.getSecurityGroups().body.content.filter(sg => sg.deploymentId === deploymentId)[0];
         if (!securityGroup) {
             throw new Error(`No Security group found for deployment with ID '${deploymentId}'!`);
         }
@@ -50,7 +50,7 @@ export class SetSecurityGroupMembershipCriteria {
         const segmentPortTagKey = inputProperties.customProperties.securityGroupId; // OpenStack UUID for SG
         const patchInfraPayload = {
             body_Infra: {
-                resource_type: 'Infra',
+                resource_type: "Infra",
                 children: [
                     {
                         resource_type: "ChildDomain",
@@ -90,7 +90,7 @@ export class SetSecurityGroupMembershipCriteria {
         const response = policyService.patchInfra(patchInfraPayload);
         logger.debug(`Add membership criteria to Security group with ID '${securityGroup.id}' response: ${stringify(response)}`);
         validateResponse(response);
-        logger.info(`Added membership criteria to Security group.`);
+        logger.info("Added membership criteria to Security group.");
     }
     
 }

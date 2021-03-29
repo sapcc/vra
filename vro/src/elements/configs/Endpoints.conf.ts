@@ -14,7 +14,7 @@ import { Configuration } from "vrotsc-annotations";
     path: "SAP/One Strike",
     attributes: {
         nsxtRestHost: "REST:RESTHost"
-    },
+    }
 })
 export class Endpoints {
     nsxtRestHost: RESTHost
