@@ -49,7 +49,7 @@ export class UpdateFabricNetworksInNetworkProfile extends Task {
     execute() {
         const { networkProfileId, newFabricNetworkId, currentFabricNetworkIds } = this.context;
 
-        this.networkProfileService.updateNetworkProfile({
+        this.networkProfilesService.updateNetworkProfile({
             path_id: networkProfileId,
             body_body: {
                 fabricNetworkIds: [...currentFabricNetworkIds, newFabricNetworkId]
