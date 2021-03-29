@@ -14,7 +14,6 @@
       "VcVirtualDeviceConfigSpecOperation": "writable",
       "VcVirtualDevice": "writable",
       "VcVirtualDeviceConnectInfo": "writable",
-      "VcVirtualEthernetCardNetworkBackingInfo": "writable",
       "VcVirtualVmxnet3": "writable",
       "VcVirtualEthernetCardOpaqueNetworkBackingInfo": "writable"
     },
