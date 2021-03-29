@@ -34,7 +34,7 @@ export class CreateVlanSegmentWorkflow {
             ConfigurationAccessor.loadConfig(PATHS.VLAN_SEGMENT, {} as VlanSegment);
 
         const initialContext: CreateVlanSegmentContext = {
-            segmentName: `${name}_${vlanId}`,
+            segmentName: name,
             transportZoneId,
             segmentTags: [{
                 scope: segmentTagScope,

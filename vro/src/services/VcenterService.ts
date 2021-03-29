@@ -13,6 +13,8 @@ import { NicsMacAddress } from "../types/nic/NicsMacAddress";
 
 const Class = System.getModule("com.vmware.pscoe.library.class").Class();
 
+const OPAQUE_NETWORK = "OpaqueNetwork";
+
 export class VcenterService {
     private readonly logger: Logger;
 
@@ -57,7 +59,7 @@ export class VcenterService {
             this.logger.info("About to prepare VcVirtualDeviceConfigSpec ...");
 
             const deviceConfigSpec = new VcVirtualDeviceConfigSpec();
-            
+
             deviceConfigSpec.device = nic;
             deviceConfigSpec.operation = VcVirtualDeviceConfigSpecOperation.edit;
 
@@ -74,9 +76,17 @@ export class VcenterService {
         connectInfo.startConnected = CONNECT_INFO_DEFAULTS.START_CONNECTED;
 
         this.logger.info("Creating Network BackingInfo ...");
-        const netBackingInfo = new VcVirtualEthernetCardNetworkBackingInfo();
+        const networks = VcPlugin.getAllNetworks([], "");
+        const targetNetwork = Array.from(networks).find(n => n.name === name);
 
-        netBackingInfo.deviceName = name;
+        if (targetNetwork.type !== OPAQUE_NETWORK) {
+            throw new Error(`Unsupported network type. Current type is '${targetNetwork.type}'. Support only ${OPAQUE_NETWORK} type.`);
+        }
+
+        const netBackingInfo = new VcVirtualEthernetCardOpaqueNetworkBackingInfo();
+
+        netBackingInfo.opaqueNetworkId = (targetNetwork.summary as VcOpaqueNetworkSummary).opaqueNetworkId;
+        netBackingInfo.opaqueNetworkType = (targetNetwork.summary as VcOpaqueNetworkSummary).opaqueNetworkType;
 
         this.logger.info("Creating Virtual Network ...");
 

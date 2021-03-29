@@ -10,7 +10,7 @@
 import { Configuration } from "vrotsc-annotations";
 
 @Configuration({
-    name: "Config",
+    name: "VlanSegment",
     path: "SAP/One Strike",
     attributes: {
         transportZoneId: "string",
