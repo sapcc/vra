@@ -58,22 +58,23 @@ export class SetSegmentPortTags {
         const segmentId: string = pathArrSegmentsSplit[pathArrSegmentsSplit.length-1];
         logger.debug(`Segment ID in vRA: ${segmentId}`);
 
+        const tags = [
+            {
+                // Initial tag (mapping between OpenStack UUID and vRA ID)
+                tag: openStackSegmentPortId,
+                scope: OPEN_STACK_SEGMENT_PORT_TAG
+            },
+            {
+                // Tag for mapping to Security Group
+                tag: openStackSecurityGroupId, // OpenStack UUID for SG
+                scope: SEGMENT_PORT_TAG_SCOPE
+            }
+        ];
         const patchInfraPayload = {
             "path_segment-id": segmentId,
             "path_port-id": segmentPortId,
             "body_SegmentPort": {
-                tags: [
-                    {
-                        // Initial tag (mapping between OpenStack UUID and vRA ID)
-                        tag: openStackSegmentPortId,
-                        scope: OPEN_STACK_SEGMENT_PORT_TAG
-                    },
-                    {
-                        // Tag for mapping to Security Group
-                        tag: openStackSecurityGroupId, // OpenStack UUID for SG
-                        scope: SEGMENT_PORT_TAG_SCOPE
-                    }
-                ]
+                tags: tags
             }
         };
 
@@ -82,7 +83,7 @@ export class SetSegmentPortTags {
         const response = policyConnectivityService.patchInfraSegmentPort(patchInfraPayload);
         logger.debug(`Set Segment Port tags to Segment port with ID '${openStackSegmentPortId}' response: ${stringify(response)}`);
         validateResponse(response);
-        logger.info(`Tags set to Segment Port.`);
+        logger.info(`Tags set to Segment Port: ${stringify(tags)}`);
     }
     
 }

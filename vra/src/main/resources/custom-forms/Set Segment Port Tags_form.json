@@ -29,7 +29,7 @@
             "id": "section_0",
             "fields": [
               {
-                "id": "segmentPortId",
+                "id": "openStackSegmentPortId",
                 "display": "textField",
                 "signpostPosition": "right-middle"
               }
@@ -39,17 +39,7 @@
             "id": "section_1",
             "fields": [
               {
-                "id": "segmentId",
-                "display": "textField",
-                "signpostPosition": "right-middle"
-              }
-            ]
-          },
-          {
-            "id": "section_2",
-            "fields": [
-              {
-                "id": "securityGroupId",
+                "id": "openStackSecurityGroupId",
                 "display": "textField",
                 "signpostPosition": "right-middle"
               }
@@ -86,8 +76,8 @@
         "max-value": 80.0
       }
     },
-    "segmentPortId": {
-      "label": "segmentPortId",
+    "openStackSegmentPortId": {
+      "label": "openStackSegmentPortId",
       "type": {
         "dataType": "string",
         "isMultiple": false
@@ -96,18 +86,8 @@
         "required": true
       }
     },
-    "segmentId": {
-      "label": "segmentId",
-      "type": {
-        "dataType": "string",
-        "isMultiple": false
-      },
-      "constraints": {
-        "required": true
-      }
-    },
-    "securityGroupId": {
-      "label": "securityGroupId",
+    "openStackSecurityGroupId": {
+      "label": "openStackSecurityGroupId",
       "type": {
         "dataType": "string",
         "isMultiple": false
