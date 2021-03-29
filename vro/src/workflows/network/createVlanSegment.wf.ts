@@ -8,17 +8,16 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
-import { GetNetworkProfileParameters } from "com.vmware.pscoe.ts.vra.iaas/models/GetNetworkProfileParameters";
-import { NetworkProfileSpecification } from "com.vmware.pscoe.ts.vra.iaas/models/NetworkProfileSpecification";
-import { UpdateNetworkProfileParameters } from "com.vmware.pscoe.ts.vra.iaas/models/UpdateNetworkProfileParameters";
-import { FabricNetworksService } from "com.vmware.pscoe.ts.vra.iaas/services/FabricNetworksService";
-import { NetworkProfilesService } from "com.vmware.pscoe.ts.vra.iaas/services/NetworkProfilesService";
 import { Workflow } from "vrotsc-annotations";
-import { NsxtClientCreator } from "../../factories/creators/NsxtClientCreator";
-import { VraClientCreator } from "../../factories/creators/VraClientCreator";
-import { NsxService } from "../../services/NsxService";
-import { stringify } from "../../utils";
-import { WaitForFabricNetwork } from "./WaitForFabricNetwork";
+import { PATHS } from "../../constants";
+import { ConfigurationAccessor } from "../../elements/accessors/ConfigurationAccessor";
+import { VlanSegment } from "../../elements/configs/VLanSegment.conf";
+import { CreateVlanSegment } from "../../tasks/network/CreateVlanSegment";
+import { GetFabricNetworksFromNetworkProfile } from "../../tasks/network/GetFabricNetworksFromNetworkProfile";
+import { TagVlanSegment } from "../../tasks/network/TagVlanSegment";
+import { UpdateFabricNetworksInNetworkProfile } from "../../tasks/network/UpdateFabricNetworksInNetworkProfile";
+import { WaitForFabricNetwork } from "../../tasks/network/WaitForFabricNetwork";
+import { CreateVlanSegmentContext } from "../../types/network/CreateVlanSegmentContext";
 
 @Workflow({
     name: "Create Vlan Segment",
@@ -28,60 +27,42 @@ export class CreateVlanSegmentWorkflow {
     public execute(name: string, vlanId: string): void {
         const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.network/CreateVlanSegmentWorkflow");
 
-        // TODO: CreateVlanSegment
-        const nsxService = new NsxService(NsxtClientCreator.build());
+        const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
+        const PipelineBuilder = VROES.import("default").from("com.vmware.pscoe.library.pipeline.PipelineBuilder");
+        const ExecutionStrategy = VROES.import("default").from("com.vmware.pscoe.library.pipeline.ExecutionStrategy");
+        const { segmentNameSuffix, transportZoneId, segmentTagScope, segmentTagKey, networkProfileId } =
+            ConfigurationAccessor.loadConfig(PATHS.VLAN_SEGMENT, {} as VlanSegment);
 
-        logger.info("Creating Vlan segment ...");
-        const segment = nsxService.createVlanSegments(`${name}_vlanId`, "a95c914d-748d-497c-94ab-10d4647daeba", vlanId);
-        logger.info(`Created Vlan segment:\n${stringify(segment)}`);
+        const initialContext: CreateVlanSegmentContext = {
+            segmentName: `${name}${segmentNameSuffix}`,
+            transportZoneId,
+            segmentTags: [{
+                scope: segmentTagScope,
+                tag: `${segmentTagKey}:${name}`
+            }],
+            vlanId,
+            networkProfileId,
+            currentFabricNetworksIds: []
+        };
 
-        // TODO: TagVlanSegment
-        const tags = [{
-            scope: "openstack",
-            tag: `openstack_id:${name}`
-        }];
+        const pipeline = new PipelineBuilder()
+            .name("Create Vlan segment")
+            .context(initialContext)
+            .stage("Create Vlan segment")
+            .exec(
+                CreateVlanSegment,
+                TagVlanSegment
+            )
+            .done()
+            .stage("Attach newly created Vlan segment to network profile")
+            .exec(
+                WaitForFabricNetwork,
+                GetFabricNetworksFromNetworkProfile,
+                UpdateFabricNetworksInNetworkProfile
+            )
+            .done()
+            .build();
 
-        nsxService.applyTagToSegment(segment, tags);
-        logger.info("Tagged Vlan segment.");
-
-        // TODO: WaitForFabricNetwork
-        logger.info("Waiting for Vlan segment to be collected in vRA ...");
-        const vraClientCreator = new VraClientCreator();
-        const execution = new WaitForFabricNetwork(new FabricNetworksService(vraClientCreator.createOperation()), `${name}_vlanId`);
-
-        const response = execution.get(10 * 60, 15);
-        logger.info(`Found Fabric Network:\n${stringify(response)}`);
-
-        // TODO: AddFabricNetworkToNetworkProfile
-
-        // TODO: GetFabricNetworksFromNetworkProfile
-        const networkProfileService = new NetworkProfilesService(vraClientCreator.createOperation());
-
-        const networkProfile = networkProfileService.getNetworkProfile({
-            path_id: "fa5f5cd5-247d-4641-a004-62ecb5b4e8b3"
-        } as GetNetworkProfileParameters).body;
-
-        logger.info(`Network Profile:\n${stringify(networkProfile)}`);
-
-        let fabricNetworksIds = [];
-
-        if (networkProfile._links["fabric-networks"]) {
-            fabricNetworksIds = networkProfile._links["fabric-networks"]
-                .hrefs
-                // Example HREF to fabric network - "/iaas/api/fabric-networks/f199daf4-001e-40bd-935b-86560f729a61"
-                .map(href => href.split("/")[4]);
-        }
-
-        logger.info(`fabricNetworksIds:\n${stringify(fabricNetworksIds)}`);
-
-        // TODO: UpdateFabricNetworksInNetworkProfile
-        networkProfileService.updateNetworkProfile({
-            path_id: "fa5f5cd5-247d-4641-a004-62ecb5b4e8b3",
-            body_body: {
-                fabricNetworkIds: [response.body.content[0].id, ...fabricNetworksIds]
-            } as NetworkProfileSpecification
-        } as UpdateNetworkProfileParameters);
-        
-        logger.info("Added Fabric Network to Network Profile.");
+        pipeline.process(ExecutionStrategy.TERMINATE);
     }
 }

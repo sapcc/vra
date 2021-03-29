@@ -14,7 +14,7 @@ import { GetFabricNetworksParameters } from "com.vmware.pscoe.ts.vra.iaas/models
 import { FabricNetworksService } from "com.vmware.pscoe.ts.vra.iaas/services/FabricNetworksService";
 import { validateResponse } from "../../utils";
 
-export class WaitForFabricNetwork extends Future<GetFabricNetworksHttpResponse> {
+export class WaitForFabricNetworkHelper extends Future<GetFabricNetworksHttpResponse> {
     private readonly logger: Logger;
 
     constructor(private readonly context: FabricNetworksService, private readonly name: string) {
