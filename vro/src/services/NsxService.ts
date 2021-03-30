@@ -65,4 +65,8 @@ export class NsxService {
 
         validateResponse(response);
     }
+
+    public updateSegmentPortTags(nsxSegmentPortId: any) {
+        this.logger.debug(`NSX-T segment port ID: ${nsxSegmentPortId}`);
+    }
 }

@@ -10,6 +10,7 @@
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { Workflow } from "vrotsc-annotations";
 import { CreateNic } from "../../tasks/nic/CreateNic";
+import { ReconfigureNetworksPorts } from "../../tasks/nic/ReconfigureNetworksPorts";
 import { ReconfigureVmNics } from "../../tasks/nic/ReconfigureVmNetworks";
 import { ResolveVcenterVm } from "../../tasks/nic/ResolveVcenterVm";
 import { AttachNicToVmContext } from "../../types/nic/AttachNicToVmContext";
@@ -44,7 +45,8 @@ export class AttachNicWorkflow {
             .stage("Perform attach network to VM")
             .exec(
                 ResolveVcenterVm,
-                ReconfigureVmNics
+                ReconfigureVmNics,
+                ReconfigureNetworksPorts
             )
             .done()
             .build();

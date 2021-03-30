@@ -31,3 +31,6 @@ export const NETWORK_DEFAULTS = {
 export const DOMAIN_ID = "default";
 export const SEGMENT_PORT_TAG_VALUE = "security_group";
 export const OPEN_STACK_SEGMENT_PORT_TAG = "openstack_network_port_id";
+
+// Error messages
+export const CANNOT_SET_INITIAL_TAG_SEG_PORT = "Cannot add initial tag to Segment Port! Reason:"
