@@ -41,7 +41,8 @@ export class SetSegmentPortTags {
         const tagsService = new PolicyTagService(NsxtClientCreator.build());
         const tagsResponse: ListTaggedObjects0HttpResponse = tagsService.listTaggedObjects0({
             "query_tag": openStackSegmentPortId,
-            "query_scope": OPEN_STACK_SEGMENT_PORT_TAG
+            "query_scope": OPEN_STACK_SEGMENT_PORT_TAG,
+            "query_filter_text": "SegmentPort"
         });
         validateResponse(tagsResponse);
 
@@ -58,32 +59,37 @@ export class SetSegmentPortTags {
         const segmentId: string = pathArrSegmentsSplit[pathArrSegmentsSplit.length-1];
         logger.debug(`Segment ID in vRA: ${segmentId}`);
 
-        const tags = [
-            {
-                // Initial tag (mapping between OpenStack UUID and vRA ID)
-                tag: openStackSegmentPortId,
-                scope: OPEN_STACK_SEGMENT_PORT_TAG
-            },
+        const policyConnectivityService = new PolicyConnectivityService(NsxtClientCreator.build());
+        const segmentResponse = policyConnectivityService.getInfraSegmentPort({
+            "path_segment-id": segmentId,
+            "path_port-id": segmentPortId
+        });
+        validateResponse(segmentResponse);
+
+        const segment = segmentResponse.body;
+        logger.debug(`Segment matched by tag from NSX-T: ${stringify(segment)}`);
+        const segmentTags = segment.tags || [];
+        segmentTags.push(
             {
                 // Tag for mapping to Security Group
                 tag: openStackSecurityGroupId, // OpenStack UUID for SG
                 scope: SEGMENT_PORT_TAG_SCOPE
             }
-        ];
+        );
+
         const patchInfraPayload = {
             "path_segment-id": segmentId,
             "path_port-id": segmentPortId,
             "body_SegmentPort": {
-                tags: tags
+                tags: segmentTags
             }
         };
 
         logger.debug(`Set Segment Port tags request payload: ${stringify(patchInfraPayload)}`);
-        const policyConnectivityService = new PolicyConnectivityService(NsxtClientCreator.build());
         const response = policyConnectivityService.patchInfraSegmentPort(patchInfraPayload);
         logger.debug(`Set Segment Port tags to Segment port with ID '${openStackSegmentPortId}' response: ${stringify(response)}`);
         validateResponse(response);
-        logger.info(`Tags set to Segment Port: ${stringify(tags)}`);
+        logger.info(`Segment Port tags: ${stringify(segmentTags)}`);
     }
     
 }
