@@ -25,7 +25,7 @@ import { PolicyResourceReference } from "com.vmware.pscoe.library.ts.nsxt.policy
 })
 export class SetSegmentPortTags {
 
-    public execute(@In openStackSegmentPortId: string, @In openStackSecurityGroupId: string): void {
+    public execute(@In openStackSegmentPortId: string, @In openStackSecurityGroupIds: string[]): void {
         const SingletonContextFactory = System.getModule("com.vmware.pscoe.library.context").SingletonContextFactory();
         const context: BaseContext = SingletonContextFactory.createLazy([
             "com.vmware.pscoe.library.context.workflow"
@@ -33,7 +33,7 @@ export class SetSegmentPortTags {
         const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.network/setSegmentPortTags");
         logger.info(`Context=${stringify(context)}`);
 
-        if (!openStackSegmentPortId || !openStackSecurityGroupId) {
+        if (!openStackSegmentPortId || !openStackSecurityGroupIds) {
             throw new Error("Invalid input! 'segmentPortId', 'segmentId' and 'securityGroupId' are mandatory! ");
         }
 
@@ -69,12 +69,15 @@ export class SetSegmentPortTags {
         const segment = segmentResponse.body;
         logger.debug(`Segment matched by tag from NSX-T: ${stringify(segment)}`);
         const segmentTags = segment.tags || [];
-        segmentTags.push(
-            {
-                // Tag for mapping to Security Group
-                tag: openStackSecurityGroupId, // OpenStack UUID for SG
-                scope: SEGMENT_PORT_TAG_SCOPE
-            }
+
+        openStackSecurityGroupIds.forEach(openStackSecurityGroupId => 
+            segmentTags.push(
+                {
+                    // Tag for mapping to Security Group
+                    tag: openStackSecurityGroupId, // OpenStack UUID for SG
+                    scope: SEGMENT_PORT_TAG_SCOPE
+                }
+            )
         );
 
         const patchInfraPayload = {
