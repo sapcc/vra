@@ -13,10 +13,11 @@ import { BaseContext } from "../../types/BaseContext";
 import { stringify, validateResponse } from "../../utils";
 import { NsxtClientCreator } from "../../factories/creators/NsxtClientCreator";
 import { PolicyConnectivityService } from "com.vmware.pscoe.library.ts.nsxt.policy/services/PolicyConnectivityService";
-import { OPEN_STACK_SEGMENT_PORT_TAG, SEGMENT_PORT_TAG_VALUE as SEGMENT_PORT_TAG_SCOPE } from "../../constants";
+import { OPEN_STACK_SEGMENT_PORT_TAG, SEGMENT_PORT_TAG_SCOPE } from "../../constants";
 import { PolicyTagService } from "com.vmware.pscoe.library.ts.nsxt.policy/services/PolicyTagService";
 import { ListTaggedObjects0HttpResponse } from "com.vmware.pscoe.library.ts.nsxt.policy/models/ListTaggedObjects0HttpResponse";
 import { PolicyResourceReference } from "com.vmware.pscoe.library.ts.nsxt.policy/models/PolicyResourceReference";
+import { NsxService } from "../../services/NsxService";
 
 @Workflow({
     id: "7721de97-a5c2-4af1-ad86-f6626533d899",
@@ -37,7 +38,7 @@ export class SetSegmentPortTags {
             throw new Error("Invalid input! 'segmentPortId', 'segmentId' and 'securityGroupId' are mandatory! ");
         }
 
-        // get tag assosiated resources
+        // Get tag assosiated resources
         const tagsService = new PolicyTagService(NsxtClientCreator.build());
         const tagsResponse: ListTaggedObjects0HttpResponse = tagsService.listTaggedObjects0({
             "query_tag": openStackSegmentPortId,
@@ -59,40 +60,10 @@ export class SetSegmentPortTags {
         const segmentId: string = pathArrSegmentsSplit[pathArrSegmentsSplit.length-1];
         logger.debug(`Segment ID in vRA: ${segmentId}`);
 
-        const policyConnectivityService = new PolicyConnectivityService(NsxtClientCreator.build());
-        const segmentResponse = policyConnectivityService.getInfraSegmentPort({
-            "path_segment-id": segmentId,
-            "path_port-id": segmentPortId
-        });
-        validateResponse(segmentResponse);
-
-        const segment = segmentResponse.body;
-        logger.debug(`Segment matched by tag from NSX-T: ${stringify(segment)}`);
-        const segmentTags = segment.tags || [];
-
-        openStackSecurityGroupIds.forEach(openStackSecurityGroupId => 
-            segmentTags.push(
-                {
-                    // Tag for mapping to Security Group
-                    tag: openStackSecurityGroupId, // OpenStack UUID for SG
-                    scope: SEGMENT_PORT_TAG_SCOPE
-                }
-            )
-        );
-
-        const patchInfraPayload = {
-            "path_segment-id": segmentId,
-            "path_port-id": segmentPortId,
-            "body_SegmentPort": {
-                tags: segmentTags
-            }
-        };
-
-        logger.debug(`Set Segment Port tags request payload: ${stringify(patchInfraPayload)}`);
-        const response = policyConnectivityService.patchInfraSegmentPort(patchInfraPayload);
-        logger.debug(`Set Segment Port tags to Segment port with ID '${openStackSegmentPortId}' response: ${stringify(response)}`);
-        validateResponse(response);
-        logger.info(`Segment Port tags: ${stringify(segmentTags)}`);
+        // Update Segment Port tags
+        const nsxService = new NsxService(NsxtClientCreator.build());
+        const segmentPortTags = nsxService.getSegPortTagsMappingToSecGroup(segmentId, segmentPortId, openStackSecurityGroupIds);
+        nsxService.applyTagsToSegmentPort(segmentId, segmentPortId, segmentPortTags);
     }
     
 }
