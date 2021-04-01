@@ -20,7 +20,7 @@ import { AttachNicToVmContext } from "../../types/nic/AttachNicToVmContext";
     path: "SAP/One Strike/Nic"
 })
 export class AttachNicWorkflow {
-    public execute(machineId: string, name: string, macAddress: string): void {
+    public execute(machineId: string, name: string, macAddress: string, openStackSegmentPortId: string): void {
         const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.nic/AttachNicWorkflow");
 
         const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
@@ -31,7 +31,8 @@ export class AttachNicWorkflow {
             machineId,
             networkName: name,
             macAddress,
-            nics: []
+            nics: [],
+            openStackSegmentPortIds: [openStackSegmentPortId]
         };
 
         const pipeline = new PipelineBuilder()

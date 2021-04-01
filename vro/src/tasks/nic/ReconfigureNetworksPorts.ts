@@ -8,6 +8,8 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
+import { Tag } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Tag";
+import { OPEN_STACK_SEGMENT_PORT_TAG } from "../../constants";
 import { CANNOT_SET_INITIAL_TAG_SEG_PORT } from "../../constants";
 import { NsxtClientCreator } from "../../factories/creators/NsxtClientCreator";
 import { NsxService } from "../../services/NsxService";
@@ -36,7 +38,7 @@ export class ReconfigureNetworksPorts extends Task {
     }
 
     execute() {
-        const { vcVM: contextVcVM, nics: contextNics } = this.context;
+        const { vcVM: contextVcVM, nics: contextNics, networkName, openStackSegmentPortIds } = this.context;
 
         let Class = System.getModule("com.vmware.pscoe.library.class").Class();
         let Networking = Class.load("com.vmware.pscoe.library.vc", "Networking");
@@ -47,15 +49,23 @@ export class ReconfigureNetworksPorts extends Task {
         }
         this.logger.debug(`NICs from VC: ${vcNics}`);
 
-        contextNics.forEach(nic => {
-            const macAddress = nic.device.macAddress;
+        for (let i = 0; i < contextNics.length; i++) {
+            const macAddress = contextNics[i].device.macAddress;
             const newlyCreatedNic = vcNics.filter(vcNic => vcNic.macAddress == macAddress)[0];
             if (!newlyCreatedNic) {
                 this.logger.error(`${CANNOT_SET_INITIAL_TAG_SEG_PORT} no NICs found with MAC address '${macAddress}' for VM.`);
                 return;
             }
 
-            this.nsxtService.updateSegmentPortTags(newlyCreatedNic.externalId);
-        });
+            const segmentPortId = newlyCreatedNic.externalId;
+            const segmentId = networkName;
+            const tags: Tag[] = [
+                {
+                    tag: openStackSegmentPortIds[i], // OpenStack UUID for Segment Port
+                    scope: OPEN_STACK_SEGMENT_PORT_TAG
+                }
+            ]; 
+            this.nsxtService.applyTagsToSegmentPort(segmentId, segmentPortId, tags);
+        }
     }
 }
