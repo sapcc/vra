@@ -39,8 +39,12 @@
             "id": "section_1",
             "fields": [
               {
-                "id": "openStackSecurityGroupId",
-                "display": "textField",
+                "id": "openStackSecurityGroupIds",
+                "display": "array",
+                "state": {
+                  "visible": true,
+                  "read-only": false
+                },
                 "signpostPosition": "right-middle"
               }
             ]
@@ -86,11 +90,11 @@
         "required": true
       }
     },
-    "openStackSecurityGroupId": {
-      "label": "openStackSecurityGroupId",
+    "openStackSecurityGroupIds": {
+      "label": "openStackSecurityGroupIds",
       "type": {
         "dataType": "string",
-        "isMultiple": false
+        "isMultiple": true
       },
       "constraints": {
         "required": true
