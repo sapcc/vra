@@ -164,5 +164,12 @@
       <type>package</type>
       <version>1.2.5</version>
     </dependency>
+    <!-- vCenter SOAP -->
+    <dependency>
+      <groupId>com.vmware.pscoe.library</groupId>
+      <artifactId>vc-soap</artifactId>
+      <type>package</type>
+      <version>2.1.5-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 </project>
