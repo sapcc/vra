@@ -18,6 +18,7 @@ import { PolicyConnectivityService } from "com.vmware.pscoe.library.ts.nsxt.poli
 import { stringify, validateResponse } from "../utils";
 import { SEGMENT_PORT_TAG_SCOPE } from "../constants";
 import { SegmentPort } from "com.vmware.pscoe.library.ts.nsxt.policy/models/SegmentPort";
+import { WaitForGetSegPortByAttachment } from "../utils/http/WaitForGetSegPortByAttachment";
 
 export class NsxService {
     private readonly logger: Logger;
@@ -119,14 +120,12 @@ export class NsxService {
         return segment;
     }
 
-    public getSegmentPortByAttachment(segmentId: string, segmentPortAttachmentId: string): SegmentPort {
-        const segmentsListResponse = this.policyConnectivityService.listInfraSegmentPorts({
-            "path_segment-id": segmentId
-        });
-        validateResponse(segmentsListResponse);
-        const segment: SegmentPort = segmentsListResponse.body.results.filter(seg => 
-            seg.attachment && seg.attachment.id && seg.attachment.id == segmentPortAttachmentId
-        )[0];
+    public getSegmentPortByAttachment(segmentId: string, segmentPortAttachmentId: string, timeoutInSeconds: number, sleepTimeInSeconds: number): SegmentPort {
+        const msg = `polling for SegmentPort with segment ID=${segmentId} and attachment ID=${segmentPortAttachmentId}`;
+        this.logger.debug(`Started ${msg}. Polling details: max interval=${timeoutInSeconds}s; sleep time between requests=${sleepTimeInSeconds}s`);
+        const getSegmentByAttachmentRequestTracker = new WaitForGetSegPortByAttachment(this.policyConnectivityService, segmentId, segmentPortAttachmentId);
+        const segment: SegmentPort = getSegmentByAttachmentRequestTracker.get(timeoutInSeconds, sleepTimeInSeconds);
+        this.logger.debug(`Finished ${msg}.`);
         if (!segment) {
             throw new Error(`No segment port found with attachment id = ${segmentPortAttachmentId}`);
         }

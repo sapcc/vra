@@ -67,8 +67,11 @@ export class ReconfigureNetworksPorts extends Task {
                 }
             ];
 
-            System.sleep(300000); // wait 5 mins
-            const segmentPort: SegmentPort = this.nsxtService.getSegmentPortByAttachment(segmentId, segmentPortAttachmentId);
+            const timeoutInSeconds = 600; // waiting up to 10 minutes for the processing of the request to complete
+            const sleepTimeInSeconds = 20; // interval between polling requests
+            const segmentPort: SegmentPort = this.nsxtService.getSegmentPortByAttachment(
+                segmentId, segmentPortAttachmentId, timeoutInSeconds, sleepTimeInSeconds
+            );
             this.nsxtService.applyTagsToSegmentPort(segmentPort, tags);
         }
     }
