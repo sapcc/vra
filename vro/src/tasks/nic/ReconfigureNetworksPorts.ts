@@ -10,8 +10,10 @@
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { SegmentPort } from "com.vmware.pscoe.library.ts.nsxt.policy/models/SegmentPort";
 import { Tag } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Tag";
-import { OPEN_STACK_SEGMENT_PORT_TAG } from "../../constants";
+import { OPEN_STACK_SEGMENT_PORT_TAG, PATHS } from "../../constants";
 import { CANNOT_SET_INITIAL_TAG_SEG_PORT } from "../../constants";
+import { ConfigurationAccessor } from "../../elements/accessors/ConfigurationAccessor";
+import { VroConfig } from "../../elements/configs/VroConfig.conf";
 import { NsxtClientCreator } from "../../factories/creators/NsxtClientCreator";
 import { NsxService } from "../../services/NsxService";
 import { BaseNicContext } from "../../types/nic/BaseNicContext";
@@ -67,10 +69,11 @@ export class ReconfigureNetworksPorts extends Task {
                 }
             ];
 
-            const timeoutInSeconds = 600; // waiting up to 10 minutes for the processing of the request to complete
-            const sleepTimeInSeconds = 20; // interval between polling requests
+            const { getPortTimeoutInSeconds, getPortSleepTimeInSeconds } =
+                ConfigurationAccessor.loadConfig(PATHS.VRO_CONFIG, {} as VroConfig);
+
             const segmentPort: SegmentPort = this.nsxtService.getSegmentPortByAttachment(
-                segmentId, segmentPortAttachmentId, timeoutInSeconds, sleepTimeInSeconds
+                segmentId, segmentPortAttachmentId, getPortTimeoutInSeconds, getPortSleepTimeInSeconds
             );
             this.nsxtService.applyTagsToSegmentPort(segmentPort, tags);
         }

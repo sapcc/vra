@@ -38,7 +38,11 @@ TBD
       "hostVerification": false
     }
   },
-  "pscoeLogLevel": "debug"
+  "pscoeLogLevel": "debug",
+  "vroConfig": {
+    "getPortTimeoutInSeconds": 600,
+    "getPortSleepTimeInSeconds": 20
+  }
 }
 ```
 
