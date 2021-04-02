@@ -8,6 +8,7 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
+import { SegmentPort } from "com.vmware.pscoe.library.ts.nsxt.policy/models/SegmentPort";
 import { Tag } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Tag";
 import { OPEN_STACK_SEGMENT_PORT_TAG } from "../../constants";
 import { CANNOT_SET_INITIAL_TAG_SEG_PORT } from "../../constants";
@@ -57,15 +58,18 @@ export class ReconfigureNetworksPorts extends Task {
                 return;
             }
 
-            const segmentPortId = newlyCreatedNic.externalId;
+            const segmentPortAttachmentId = newlyCreatedNic.externalId;
             const segmentId = networkName;
             const tags: Tag[] = [
                 {
                     tag: openStackSegmentPortIds[i], // OpenStack UUID for Segment Port
                     scope: OPEN_STACK_SEGMENT_PORT_TAG
                 }
-            ]; 
-            this.nsxtService.applyTagsToSegmentPort(segmentId, segmentPortId, tags);
+            ];
+
+            System.sleep(300000); // wait 5 mins
+            const segmentPort: SegmentPort = this.nsxtService.getSegmentPortByAttachment(segmentId, segmentPortAttachmentId);
+            this.nsxtService.applyTagsToSegmentPort(segmentPort, tags);
         }
     }
 }

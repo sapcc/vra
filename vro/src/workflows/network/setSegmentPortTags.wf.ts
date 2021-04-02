@@ -12,12 +12,12 @@ import { In, Workflow } from "vrotsc-annotations";
 import { BaseContext } from "../../types/BaseContext";
 import { stringify, validateResponse } from "../../utils";
 import { NsxtClientCreator } from "../../factories/creators/NsxtClientCreator";
-import { PolicyConnectivityService } from "com.vmware.pscoe.library.ts.nsxt.policy/services/PolicyConnectivityService";
-import { OPEN_STACK_SEGMENT_PORT_TAG, SEGMENT_PORT_TAG_SCOPE } from "../../constants";
+import { OPEN_STACK_SEGMENT_PORT_TAG } from "../../constants";
 import { PolicyTagService } from "com.vmware.pscoe.library.ts.nsxt.policy/services/PolicyTagService";
 import { ListTaggedObjects0HttpResponse } from "com.vmware.pscoe.library.ts.nsxt.policy/models/ListTaggedObjects0HttpResponse";
 import { PolicyResourceReference } from "com.vmware.pscoe.library.ts.nsxt.policy/models/PolicyResourceReference";
 import { NsxService } from "../../services/NsxService";
+import { SegmentPort } from "com.vmware.pscoe.library.ts.nsxt.policy/models/SegmentPort";
 
 @Workflow({
     id: "7721de97-a5c2-4af1-ad86-f6626533d899",
@@ -62,8 +62,9 @@ export class SetSegmentPortTags {
 
         // Update Segment Port tags
         const nsxService = new NsxService(NsxtClientCreator.build());
-        const segmentPortTags = nsxService.getSegPortTagsMappingToSecGroup(segmentId, segmentPortId, openStackSecurityGroupIds);
-        nsxService.applyTagsToSegmentPort(segmentId, segmentPortId, segmentPortTags);
+        const segmentPort: SegmentPort = nsxService.getSegmentPort(segmentId, segmentPortId);
+        const segmentPortTags = nsxService.getSegPortTagsMappingToSecGroup(segmentPort, openStackSecurityGroupIds);
+        nsxService.applyTagsToSegmentPort(segmentPort, segmentPortTags);
     }
     
 }

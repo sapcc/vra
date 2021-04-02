@@ -15,9 +15,9 @@ import {
 import { Segment } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Segment";
 import { Tag } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Tag";
 import { PolicyConnectivityService } from "com.vmware.pscoe.library.ts.nsxt.policy/services/PolicyConnectivityService";
-import { NsxtClientCreator } from "../factories/creators/NsxtClientCreator";
 import { stringify, validateResponse } from "../utils";
 import { SEGMENT_PORT_TAG_SCOPE } from "../constants";
+import { SegmentPort } from "com.vmware.pscoe.library.ts.nsxt.policy/models/SegmentPort";
 
 export class NsxService {
     private readonly logger: Logger;
@@ -68,13 +68,15 @@ export class NsxService {
         validateResponse(response);
     }
 
-    public applyTagsToSegmentPort(segmentId: string, segmentPortId: string, segmentPortTags: Tag[]) {
+    public applyTagsToSegmentPort(segmentPort: SegmentPort, segmentPortTags: Tag[]) {
+        segmentPort.tags = segmentPortTags;
+        const parentPathArr = segmentPort.parent_path.split("/");
+        const segmentId = parentPathArr[parentPathArr.length-1];
+        const segmentPortId = segmentPort.id;
         const patchInfraPayload = {
             "path_segment-id": segmentId,
             "path_port-id": segmentPortId,
-            "body_SegmentPort": {
-                tags: segmentPortTags
-            }
+            "body_SegmentPort": segmentPort
         };
 
         this.logger.debug(`Set Segment Port tags request payload: ${stringify(patchInfraPayload)}`);
@@ -86,19 +88,10 @@ export class NsxService {
 
     /**
      * Returns an array of Tags for mapping the SegmentPort to the specified SGs. All previous tags related to OpenStack SG IDs will be overridden.
-     * @param segmentId Segment ID in NSX-T
-     * @param segmentPortId Segment Port ID in NSX-T
+     * @param segment Segment in NSX-T
      * @param openStackSecurityGroupIds Security Groups' IDs from OpenStack
      */
-    public getSegPortTagsMappingToSecGroup(segmentId: string, segmentPortId: string, openStackSecurityGroupIds: string[]): Tag[] {
-        const segmentResponse = this.policyConnectivityService.getInfraSegmentPort({
-            "path_segment-id": segmentId,
-            "path_port-id": segmentPortId
-        });
-        validateResponse(segmentResponse);
-        const segment = segmentResponse.body;
-        this.logger.debug(`Segment matched by OpenStack UUID tag from NSX-T: ${stringify(segment)}`);
-
+    public getSegPortTagsMappingToSecGroup(segment: SegmentPort, openStackSecurityGroupIds: string[]): Tag[] {
         let segmentPortTags = segment.tags || [];
         // remove current tags mapping to SGs which will be recreated/overriden later on
         segmentPortTags = segmentPortTags.filter(tag => tag.scope != SEGMENT_PORT_TAG_SCOPE);
@@ -113,6 +106,32 @@ export class NsxService {
         });
 
         return segmentPortTags;
+    }
+
+    public getSegmentPort(segmentId: string, segmentPortId: string): SegmentPort {
+        const segmentResponse = this.policyConnectivityService.getInfraSegmentPort({
+            "path_segment-id": segmentId,
+            "path_port-id": segmentPortId
+        });
+        validateResponse(segmentResponse);
+        const segment: SegmentPort = segmentResponse.body;
+        this.logger.debug(`Segment matched by OpenStack UUID tag from NSX-T: ${stringify(segment)}`);
+        return segment;
+    }
+
+    public getSegmentPortByAttachment(segmentId: string, segmentPortAttachmentId: string): SegmentPort {
+        const segmentsListResponse = this.policyConnectivityService.listInfraSegmentPorts({
+            "path_segment-id": segmentId
+        });
+        validateResponse(segmentsListResponse);
+        const segment: SegmentPort = segmentsListResponse.body.results.filter(seg => 
+            seg.attachment && seg.attachment.id && seg.attachment.id == segmentPortAttachmentId
+        )[0];
+        if (!segment) {
+            throw new Error(`No segment port found with attachment id = ${segmentPortAttachmentId}`);
+        }
+        this.logger.debug(`Segment matched by OpenStack UUID tag from NSX-T: ${stringify(segment)}`);
+        return segment;
     }
 
 }
