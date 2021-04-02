@@ -169,7 +169,7 @@
       <groupId>com.vmware.pscoe.library</groupId>
       <artifactId>vc-soap</artifactId>
       <type>package</type>
-      <version>2.1.6</version>
+      <version>2.1.5</version>
     </dependency>
   </dependencies>
 </project>
