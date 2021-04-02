@@ -42,5 +42,18 @@ exports = class {
             .required()
             .config(PATHS.ENDPOINTS_CONFIG)
             .set("nsxtRestHost");
+
+        // vCenter REST host configuration
+        [
+            "name",
+            "url",
+            "authUserName",
+            "authPassword"
+        ].forEach(key => {
+            input.readString(`endpoints.vcenter.${key}`)
+                .required()
+                .config(PATHS.ENDPOINTS_VCENTER_CONFIG)
+                .set(key);
+        });
     }
 };

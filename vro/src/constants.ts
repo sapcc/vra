@@ -12,8 +12,11 @@ export const VRA_CONFIGURATION_PATH = "PS CoE/Library/vRA/VraConfiguration";
 const PATH_ROOT = "SAP/One Strike";
 
 export const PATHS = {
+    CONFIG: `${PATH_ROOT}/Config`,
     VLAN_SEGMENT: `${PATH_ROOT}/VlanSegment`,
-    ENDPOINTS_CONFIG: `${PATH_ROOT}/Endpoints`
+    VOLUME: `${PATH_ROOT}/Volume`,
+    ENDPOINTS_CONFIG: `${PATH_ROOT}/Endpoints`,
+    ENDPOINTS_VCENTER_CONFIG: `${PATH_ROOT}/Vcenter`
 };
 
 export const CONNECT_INFO_DEFAULTS = {

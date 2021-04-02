@@ -10,6 +10,9 @@
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { GetBlockDevicesHttpResponse } from "com.vmware.pscoe.ts.vra.iaas/models/GetBlockDevicesHttpResponse";
 import { BlockDevicesService } from "com.vmware.pscoe.ts.vra.iaas/services/BlockDevicesService";
+import { PATHS } from "../../constants";
+import { ConfigurationAccessor } from "../../elements/accessors/ConfigurationAccessor";
+import { Volume } from "../../elements/configs/Volume.conf";
 import { VraClientCreator } from "../../factories/creators/VraClientCreator";
 import { CreateVolumeFromSnapshotContext } from "../../types/volume/CreateVolumeFromSnapshotContext";
 import { stringify, validateResponse } from "../../utils";
@@ -47,9 +50,10 @@ export class GetExistingVolume extends Task {
     execute() {
         const { existingVolumeName } = this.context;
 
-        // TODO: promote this as config element
+        const { tagKey } = ConfigurationAccessor.loadConfig(PATHS.VOLUME, {} as Volume);
+
         const params: any = {
-            query_$filter: `tags.item.key eq 'openstack_volume_id' and tags.item.value eq '${existingVolumeName}'`
+            query_$filter: `tags.item.key eq '${tagKey}' and tags.item.value eq '${existingVolumeName}'`
         };
 
         const response: GetBlockDevicesHttpResponse = this.blockDevicesService.getBlockDevices(params);
@@ -63,8 +67,7 @@ export class GetExistingVolume extends Task {
             this.context.diskId = volume.customProperties?.vDiskId;
             this.context.datastore = volume.customProperties?.diskPlacementRef.split(DATASTORE_SEPARATOR)[DATASTORE_INDEX];
         } else {
-            // TODO: promote this as config element
-            throw new Error(`Cannot find existing volume with tag 'openstack_volume_id' and '${existingVolumeName}'.`);
+            throw new Error(`Cannot find existing volume with tag '${tagKey}' and '${existingVolumeName}'.`);
         }
     }
 }

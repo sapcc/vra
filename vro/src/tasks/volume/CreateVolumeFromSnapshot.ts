@@ -9,7 +9,9 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { BlockDevicesService } from "com.vmware.pscoe.ts.vra.iaas/services/BlockDevicesService";
-import { SOAP_ACTION, SOAP_REQUESTS } from "../../constants";
+import { PATHS, SOAP_ACTION, SOAP_REQUESTS } from "../../constants";
+import { ConfigurationAccessor } from "../../elements/accessors/ConfigurationAccessor";
+import { Vcenter } from "../../elements/configs/Vcenter.conf";
 import { VraClientCreator } from "../../factories/creators/VraClientCreator";
 import { CreateVolumeFromSnapshotContext } from "../../types/volume/CreateVolumeFromSnapshotContext";
 import { validateResponse } from "../../utils";
@@ -58,9 +60,9 @@ export class CreateVolumeFromSnapshot extends Task {
 
         const RestHostFactory = System.getModule("com.vmware.pscoe.library.rest").RestHostFactory();
 
-        // TODO: promote this as config element 
-        const restHost = RestHostFactory.newHostWithNoAuth("https://vc-l-01a.corp.local", "https://vc-l-01a.corp.local");
-        const client = new SoapClient(restHost, "administrator@vsphere.local", "VMware1!");
+        const { name, url, authUserName, authPassword } = ConfigurationAccessor.loadConfig(PATHS.ENDPOINTS_VCENTER_CONFIG, {} as Vcenter);
+        const restHost = RestHostFactory.newHostWithNoAuth(url, name);
+        const client = new SoapClient(restHost, authUserName, authPassword);
 
         const requestBody = System.getModule("com.vmware.pscoe.library.templates.engines")
             .mark(SOAP_REQUESTS.CREATE_VOLUME_FROM_SNAPSHOT_SOAP_REQUEST, {

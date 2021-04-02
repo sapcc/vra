@@ -21,15 +21,5 @@ exports = class {
                 .config(PATHS.VLAN_SEGMENT)
                 .set(key);
         });
-
-        [
-            "timeoutInSeconds",
-            "sleepTimeInSeconds"
-        ].forEach(key => {
-            input.readNumber(`vlanSegment.${key}`)
-                .required()
-                .config(PATHS.VLAN_SEGMENT)
-                .set(key);
-        });
     }
 };
