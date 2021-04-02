@@ -8,19 +8,15 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
-import { BlockDevicesService } from "com.vmware.pscoe.ts.vra.iaas/services/BlockDevicesService";
-import { PATHS, SOAP_ACTION, SOAP_REQUESTS } from "../../constants";
-import { ConfigurationAccessor } from "../../elements/accessors/ConfigurationAccessor";
-import { Vcenter } from "../../elements/configs/Vcenter.conf";
-import { VraClientCreator } from "../../factories/creators/VraClientCreator";
+import { VcenterSoapService } from "../../services/VcenterSoapService";
 import { CreateVolumeFromSnapshotContext } from "../../types/volume/CreateVolumeFromSnapshotContext";
-import { validateResponse } from "../../utils";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
 
 export class CreateVolumeFromSnapshot extends Task {
     private readonly logger: Logger;
+    private vCenterSoapService: VcenterSoapService;
 
     constructor(context: CreateVolumeFromSnapshotContext) {
         super(context);
@@ -28,9 +24,7 @@ export class CreateVolumeFromSnapshot extends Task {
     }
 
     prepare() {
-        const vraClientCreator = new VraClientCreator();
-
-        this.blockDevicesService = new BlockDevicesService(vraClientCreator.createOperation());
+        this.vCenterSoapService = new VcenterSoapService();
     }
 
     validate() {
@@ -53,33 +47,6 @@ export class CreateVolumeFromSnapshot extends Task {
 
     execute() {
         const { diskId, datastore, snapshotId, newVolumeName } = this.context;
-
-        const Class = System.getModule("com.vmware.pscoe.library.class").Class();
-        const SoapClient = Class.load("com.vmware.pscoe.library.vc.soap.configuration", "SoapClient");
-        const Endpoint = Class.load("com.vmware.pscoe.library.vc.soap.configuration", "Endpoint");
-
-        const RestHostFactory = System.getModule("com.vmware.pscoe.library.rest").RestHostFactory();
-
-        const { name, url, authUserName, authPassword } = ConfigurationAccessor.loadConfig(PATHS.ENDPOINTS_VCENTER_CONFIG, {} as Vcenter);
-        const restHost = RestHostFactory.newHostWithNoAuth(url, name);
-        const client = new SoapClient(restHost, authUserName, authPassword);
-
-        const requestBody = System.getModule("com.vmware.pscoe.library.templates.engines")
-            .mark(SOAP_REQUESTS.CREATE_VOLUME_FROM_SNAPSHOT_SOAP_REQUEST, {
-                diskId,
-                datastore,
-                snapshotId,
-                newVolumeName
-            });
-
-        const response = client.send(
-            Endpoint.SDK,
-            [],
-            requestBody,
-            SOAP_ACTION);
-
-        validateResponse(response);
-
-        this.logger.info(`Create volume from snapshot task:\n${response.contentAsString}`);
+        this.vCenterSoapService.createVolumeFromSnapshot({ diskId, datastore, snapshotId, newVolumeName });
     }
 }
