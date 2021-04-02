@@ -13,7 +13,6 @@ exports = class {
     configure(input: any) {
         [
             "transportZoneId",
-            "segmentTagScope",
             "networkProfileId"
         ].forEach(key => {
             input.readString(`vlanSegment.${key}`)

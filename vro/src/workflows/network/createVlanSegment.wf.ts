@@ -9,7 +9,7 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { Workflow } from "vrotsc-annotations";
-import { PATHS } from "../../constants";
+import { PATHS, SEGMENT_TAG } from "../../constants";
 import { ConfigurationAccessor } from "../../elements/accessors/ConfigurationAccessor";
 import { Config } from "../../elements/configs/Config.conf";
 import { VlanSegment } from "../../elements/configs/VlanSegment.conf";
@@ -33,14 +33,14 @@ export class CreateVlanSegmentWorkflow {
         const ExecutionStrategy = VROES.import("default").from("com.vmware.pscoe.library.pipeline.ExecutionStrategy");
         const { timeoutInSeconds, sleepTimeInSeconds } =
             ConfigurationAccessor.loadConfig(PATHS.CONFIG, {} as Config);
-        const { transportZoneId, segmentTagScope, networkProfileId } =
+        const { transportZoneId, networkProfileId } =
             ConfigurationAccessor.loadConfig(PATHS.VLAN_SEGMENT, {} as VlanSegment);
 
         const initialContext: CreateVlanSegmentContext = {
             segmentName: name,
             transportZoneId,
             segmentTags: [{
-                scope: segmentTagScope,
+                scope: SEGMENT_TAG,
                 tag: name
             }],
             vlanId,
