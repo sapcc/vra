@@ -12,8 +12,10 @@ export const VRA_CONFIGURATION_PATH = "PS CoE/Library/vRA/VraConfiguration";
 const PATH_ROOT = "SAP/One Strike";
 
 export const PATHS = {
+    CONFIG: `${PATH_ROOT}/Config`,
     VLAN_SEGMENT: `${PATH_ROOT}/VlanSegment`,
-    ENDPOINTS_CONFIG: `${PATH_ROOT}/Endpoints`
+    ENDPOINTS_CONFIG: `${PATH_ROOT}/Endpoints`,
+    ENDPOINTS_VCENTER_CONFIG: `${PATH_ROOT}/Vcenter`
 };
 
 export const CONNECT_INFO_DEFAULTS = {
@@ -30,3 +32,6 @@ export const NETWORK_DEFAULTS = {
 
 export const DOMAIN_ID = "default";
 export const SEGMENT_PORT_TAG_VALUE = "security_group";
+export const SEGMENT_TAG = "openstack_network_id";
+export const VOLUME_TAG = "openstack_volume_id";
+

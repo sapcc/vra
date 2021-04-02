@@ -9,24 +9,24 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { Future } from "com.vmware.pscoe.library.ts.util/Future";
+import { GetBlockDevicesHttpResponse } from "com.vmware.pscoe.ts.vra.iaas/models/GetBlockDevicesHttpResponse";
 import { GetFabricNetworksHttpResponse } from "com.vmware.pscoe.ts.vra.iaas/models/GetFabricNetworksHttpResponse";
-import { GetFabricNetworksParameters } from "com.vmware.pscoe.ts.vra.iaas/models/GetFabricNetworksParameters";
-import { FabricNetworksService } from "com.vmware.pscoe.ts.vra.iaas/services/FabricNetworksService";
+import { BlockDevicesService } from "com.vmware.pscoe.ts.vra.iaas/services/BlockDevicesService";
 import { validateResponse } from "../../utils";
 
-export class WaitForFabricNetworkHelper extends Future<GetFabricNetworksHttpResponse> {
+export class WaitForVolumeHelper extends Future<GetFabricNetworksHttpResponse> {
     private readonly logger: Logger;
 
-    constructor(private readonly context: FabricNetworksService, private readonly name: string) {
+    constructor(private readonly context: BlockDevicesService, private readonly name: string) {
         super();
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.network/WaitForFabricNetwork");
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.volume/WaitForVolumeHelper");
     }
 
     protected checkCompleted(): boolean {
-        const params: GetFabricNetworksParameters = {
+        const params: any = {
             query_$filter: `name eq '${this.name}'` 
         };
-        const response: GetFabricNetworksHttpResponse = this.context.getFabricNetworks(params);
+        const response: GetBlockDevicesHttpResponse = this.context.getBlockDevices(params);
 
         validateResponse(response);
         this.value = response;

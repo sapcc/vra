@@ -8,7 +8,7 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
-import { VcenterService } from "../../services/VcenterService";
+import { VcenterPluginService } from "../../services/VcenterPluginService";
 import { BaseNicContext } from "../../types/nic/BaseNicContext";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
@@ -16,7 +16,7 @@ const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Tas
 
 export class ResolveVcenterVm extends Task {
     private readonly logger: Logger;
-    private vCenterService: VcenterService;
+    private vCenterPluginService: VcenterPluginService;
 
     constructor(context: BaseNicContext) {
         super(context);
@@ -25,7 +25,7 @@ export class ResolveVcenterVm extends Task {
     }
 
     prepare() {
-        this.vCenterService = new VcenterService();
+        this.vCenterPluginService = new VcenterPluginService();
     }
 
     validate() {
@@ -36,7 +36,7 @@ export class ResolveVcenterVm extends Task {
 
     execute() {
         const { machineId } = this.context;
-        const vcVM = this.vCenterService.getVmById(machineId);
+        const vcVM = this.vCenterPluginService.getVmById(machineId);
 
         if (!vcVM) {
             throw Error(`Cannot get vCenter VM! Reason: No VM found with instanceUUID '${machineId}'.`);

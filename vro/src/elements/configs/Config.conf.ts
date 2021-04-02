@@ -10,12 +10,14 @@
 import { Configuration } from "vrotsc-annotations";
 
 @Configuration({
-    name: "Endpoints",
+    name: "Config",
     path: "SAP/One Strike",
     attributes: {
-        nsxtRestHost: "REST:RESTHost"
+        timeoutInSeconds: "number",
+        sleepTimeInSeconds: "number"
     }
 })
-export class Endpoints {
-    nsxtRestHost: RESTHost;
+export class Config {
+    timeoutInSeconds: number;
+    sleepTimeInSeconds: number;
 }

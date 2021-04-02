@@ -15,11 +15,11 @@ const Class = System.getModule("com.vmware.pscoe.library.class").Class();
 
 const OPAQUE_NETWORK = "OpaqueNetwork";
 
-export class VcenterService {
+export class VcenterPluginService {
     private readonly logger: Logger;
 
     constructor() {
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.services/VcenterService");
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.services/VcenterPluginService");
     }
 
     public getVmById = (instanceId: string): VcVirtualMachine => {

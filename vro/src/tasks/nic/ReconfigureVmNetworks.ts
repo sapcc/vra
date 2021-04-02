@@ -8,7 +8,7 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
-import { VcenterService } from "../../services/VcenterService";
+import { VcenterPluginService } from "../../services/VcenterPluginService";
 import { BaseNicContext } from "../../types/nic/BaseNicContext";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
@@ -16,7 +16,7 @@ const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Tas
 
 export class ReconfigureVmNics extends Task {
     private readonly logger: Logger;
-    private vCenterService: VcenterService;
+    private vCenterPluginService: VcenterPluginService;
 
     constructor(context: BaseNicContext) {
         super(context);
@@ -24,7 +24,7 @@ export class ReconfigureVmNics extends Task {
     }
 
     prepare() {
-        this.vCenterService = new VcenterService();
+        this.vCenterPluginService = new VcenterPluginService();
     }
 
     validate() {
@@ -40,6 +40,6 @@ export class ReconfigureVmNics extends Task {
     execute() {
         const { vcVM, nics } = this.context;
 
-        nics.forEach((nic: VcVirtualDeviceConfigSpec) => this.vCenterService.reconfigureVM(vcVM, nic));
+        nics.forEach((nic: VcVirtualDeviceConfigSpec) => this.vCenterPluginService.reconfigureVM(vcVM, nic));
     }
 }
