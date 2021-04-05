@@ -9,21 +9,21 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { VcenterPluginService } from "../../services/VcenterPluginService";
-import { AttachNicToVmContext } from "../../types/nic/AttachNicToVmContext";
+import { DetachNicFromVmContext } from "../../types/nic/DetachNicFromVmContext";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
 
-export class CreateNic extends Task {
+export class DestroyNics extends Task {
     private readonly logger: Logger;
-    private readonly context: AttachNicToVmContext;
+    private readonly context: DetachNicFromVmContext;
     private vCenterPluginService: VcenterPluginService;
 
-    constructor(context: AttachNicToVmContext) {
+    constructor(context: DetachNicFromVmContext) {
         super(context);
 
         this.context = context;
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.nic/createNic");
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.tasks.nic/DestroyNic");
     }
 
     prepare() {
@@ -31,18 +31,19 @@ export class CreateNic extends Task {
     }
 
     validate() {
-        if (!this.context.networkName) {
-            throw Error("'networkName' is not set!");
+        if (!this.context.vcVM) {
+            throw Error("vCenter VM is not set!");
         }
 
-        if (!this.context.macAddress) {
-            throw Error("'macAddress' is not set!");
+        if (!this.context.macAddresses) {
+            throw Error("'macAddresses' are not set!");
         }
     }
 
     execute() {
-        const { networkName, macAddress } = this.context;
+        const { vcVM, macAddresses } = this.context;
 
-        this.context.nics.push(this.vCenterPluginService.createNic(networkName, macAddress));
+        macAddresses.forEach((macAddress: string) =>
+            this.vCenterPluginService.destroyNic(vcVM, macAddress));
     }
 }

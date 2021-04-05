@@ -1,5 +1,5 @@
+import { AttachNicToVmContext } from "../nic/AttachNicToVmContext";
 import { DetachNicFromVmContext } from "../nic/DetachNicFromVmContext";
-import { NicMacAddress } from "../nic/NicMacAddress";
 
 /*-
  * #%L
@@ -10,7 +10,6 @@ import { NicMacAddress } from "../nic/NicMacAddress";
  * SAP One Strike Openstack vRA adapter - vRA/vRO Artifacts
  * #L%
  */
-export interface UpdateVmContext extends DetachNicFromVmContext {
+export interface UpdateVmContext extends DetachNicFromVmContext, AttachNicToVmContext {
     resourceId: string;
-    networkDetails?: NicMacAddress[];
 }

@@ -53,8 +53,16 @@ export class RetrieveVmNetworkDetailsFromResource extends Task {
         }
 
         if (vm.customProperties.networkDetails) {
-            this.context.networkDetails = JSON.parse(vm.customProperties?.networkDetails);
-            this.logger.debug(`Found following network details to update:\n${stringify(this.context.networkDetails)}`);
+            const networkDetails = JSON.parse(vm.customProperties?.networkDetails);
+
+            this.logger.debug(`Found following network details to update:\n${stringify(networkDetails)}`);
+
+            networkDetails.forEach(({ networkName, macAddress }) => {
+                this.context.networkDetails.push({
+                    networkName,
+                    macAddress
+                });
+            });
         } else {
             this.logger.warn("Not found network details to update.");
         }

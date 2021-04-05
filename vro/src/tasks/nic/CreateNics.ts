@@ -9,21 +9,21 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { VcenterPluginService } from "../../services/VcenterPluginService";
-import { UpdateVmContext } from "../../types/vm/UpdateVmContext";
+import { AttachNicToVmContext } from "../../types/nic/AttachNicToVmContext";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
 
-export class UpdateVmNetworkDetails extends Task {
+export class CreateNics extends Task {
     private readonly logger: Logger;
-    private readonly context: UpdateVmContext
+    private readonly context: AttachNicToVmContext;
     private vCenterPluginService: VcenterPluginService;
 
-    constructor(context: UpdateVmContext) {
+    constructor(context: AttachNicToVmContext) {
         super(context);
 
         this.context = context;
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.tasks.nic/UpdateVmNetworkDetails");
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.nic/createNic");
     }
 
     prepare() {
@@ -31,20 +31,16 @@ export class UpdateVmNetworkDetails extends Task {
     }
 
     validate() {
-        if (!this.context.vcVM) {
-            throw Error("'vcVM' is not set!");
-        }
-
         if (!this.context.networkDetails) {
-            throw Error("'networkDetails' are not set!");
+            throw Error("'networkDetails' is not set!");
         }
     }
 
     execute() {
-        this.logger.info("About to change the MAC address of the existing VM (no duplicates allowed).");
-        
-        const { vcVM, networkDetails } = this.context;
-        
-        this.context.nics = this.vCenterPluginService.updateVmNicsMacAddress(vcVM, networkDetails);
+        const { networkDetails } = this.context;
+
+        networkDetails.forEach(({ networkName, macAddress }) => {
+            this.context.nics.push(this.vCenterPluginService.createNic(networkName, macAddress));
+        });
     }
 }

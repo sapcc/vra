@@ -8,10 +8,10 @@
  * #L%
  */
 import { In, Workflow } from "vrotsc-annotations";
-import { DestroyNic } from "../../tasks/nic/DestroyNic";
+import { CreateNics } from "../../tasks/nic/CreateNics";
+import { DestroyNics } from "../../tasks/nic/DestroyNics";
 import { GetCurrentVmNicsMacAddress } from "../../tasks/nic/GetCurrentVmNicsMacAddress";
 import { ReconfigureVmNics } from "../../tasks/nic/ReconfigureVmNetworks";
-import { UpdateVmNetworkDetails } from "../../tasks/nic/UpdateVmNetworkDetails";
 import { PowerOffVm } from "../../tasks/vm/PowerOffVm";
 import { ResolveVcenterVm } from "../../tasks/vm/ResolveVcenterVm";
 import { RetrieveVmNetworkDetailsFromResource } from "../../tasks/vm/RetrieveVmNetworkDetailsFromResource";
@@ -33,7 +33,8 @@ export class UpdateVmWorkflow {
         const initialContext: UpdateVmContext = {
             resourceId: resourceIds[0],
             machineId: externalIds[0],
-            macAddresses: []
+            macAddresses: [],
+            networkDetails: []
         };
 
         const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
@@ -52,9 +53,9 @@ export class UpdateVmWorkflow {
             .stage("Update VM network details")
             .exec(
                 GetCurrentVmNicsMacAddress,
-                DestroyNic,
+                DestroyNics,
                 RetrieveVmNetworkDetailsFromResource,
-                UpdateVmNetworkDetails,
+                CreateNics,
                 ReconfigureVmNics
             )
             .done()

@@ -10,6 +10,8 @@ import { BaseNicContext } from "./BaseNicContext";
  * #L%
  */
 export interface AttachNicToVmContext extends BaseNicContext {
-    networkName: string;
-    macAddress: string;
+    networkDetails: {
+        networkName: string;
+        macAddress: string;
+    }[]
 }

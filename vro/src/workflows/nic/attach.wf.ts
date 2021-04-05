@@ -9,7 +9,7 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { Workflow } from "vrotsc-annotations";
-import { CreateNic } from "../../tasks/nic/CreateNic";
+import { CreateNics } from "../../tasks/nic/CreateNics";
 import { ReconfigureVmNics } from "../../tasks/nic/ReconfigureVmNetworks";
 import { ResolveVcenterVm } from "../../tasks/vm/ResolveVcenterVm";
 import { AttachNicToVmContext } from "../../types/nic/AttachNicToVmContext";
@@ -28,8 +28,10 @@ export class AttachNicWorkflow {
 
         const initialContext: AttachNicToVmContext = {
             machineId,
-            networkName: name,
-            macAddress,
+            networkDetails: [{
+                networkName: name,
+                macAddress
+            }],
             nics: []
         };
 
@@ -38,7 +40,7 @@ export class AttachNicWorkflow {
             .context(initialContext)
             .stage("Create new network")
             .exec(
-                CreateNic
+                CreateNics
             )
             .done()
             .stage("Perform attach network to VM")
