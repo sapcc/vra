@@ -11,7 +11,7 @@ import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { PolicyService } from "com.vmware.pscoe.library.ts.nsxt.policy/services/PolicyService";
 import { SecurityGroupsService } from "com.vmware.pscoe.ts.vra.iaas/services/SecurityGroupsService";
 import { In, Workflow } from "vrotsc-annotations";
-import { DOMAIN_ID, SEGMENT_PORT_TAG_VALUE } from "../../constants";
+import { DOMAIN_ID, SEGMENT_PORT_TAG_SCOPE } from "../../constants";
 import { NsxtClientCreator } from "../../factories/creators/NsxtClientCreator";
 import { VraClientCreator } from "../../factories/creators/VraClientCreator";
 import { BaseContext } from "../../types/BaseContext";
@@ -69,7 +69,7 @@ export class SetSecurityGroupMembershipCriteria {
                                         display_name: securityGroup.name,
                                         expression: [
                                             {
-                                                value: `${SEGMENT_PORT_TAG_VALUE}|${segmentPortTagKey}`,
+                                                value: `${SEGMENT_PORT_TAG_SCOPE}|${segmentPortTagKey}`,
                                                 member_type: "SegmentPort",
                                                 key: "Tag",
                                                 operator: "EQUALS",

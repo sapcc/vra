@@ -31,7 +31,8 @@ export const NETWORK_DEFAULTS = {
 };
 
 export const DOMAIN_ID = "default";
-export const SEGMENT_PORT_TAG_VALUE = "security_group";
+export const SEGMENT_PORT_TAG_SCOPE = "openstack_security_group_id";
+export const OPEN_STACK_SEGMENT_PORT_TAG = "openstack_network_port_id";
+
 export const SEGMENT_TAG = "openstack_network_id";
 export const VOLUME_TAG = "openstack_volume_id";
-
