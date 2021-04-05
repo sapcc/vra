@@ -18,7 +18,7 @@ export interface CreateVlanSegmentContext {
     segmentTags: Tag[];
     networkProfileId: string;
     newFabricNetworkId?: string;
-    currentFabricNetworksIds: string[];
+    currentFabricNetworkIds: string[];
     timeoutInSeconds: number;
     sleepTimeInSeconds: number;
 }

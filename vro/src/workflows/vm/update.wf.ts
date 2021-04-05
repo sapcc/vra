@@ -8,14 +8,15 @@
  * #L%
  */
 import { In, Workflow } from "vrotsc-annotations";
-import { GetVmNicsMacAddresses } from "../../tasks/nic/GetVmNicsMacAddresses";
-import { PerformUpdateNicsMacAddresses } from "../../tasks/nic/PerformUpdateNicsMacAddresses";
+import { UpdateVmNetworkDetails } from "../../tasks/nic/UpdateVmNetworkDetails";
 import { ReconfigureVmNics } from "../../tasks/nic/ReconfigureVmNetworks";
 import { ResolveVcenterVm } from "../../tasks/nic/ResolveVcenterVm";
-import { UpdateNicsMacAddressesContext } from "../../types/nic/UpdateNicsMacAddressesContext";
+import { RetrieveNetworkDetailsFromResource } from "../../tasks/nic/RetrieveNetworkDetailsFromResource";
+import { PowerOffVm } from "../../tasks/vm/PowerOffVm";
+import { UpdateVmContext } from "../../types/vm/UpdateVmContext";
 
 @Workflow({
-    name: "Update VM NICs MAC addresses",
+    name: "Update VM",
     path: "SAP/One Strike/VM",
     input: {
         inputProperties: {
@@ -23,11 +24,11 @@ import { UpdateNicsMacAddressesContext } from "../../types/nic/UpdateNicsMacAddr
         }
     }
 })
-export class UpdateNicsMacAddressesWorkflow {
+export class UpdateVmWorkflow {
     public execute(@In inputProperties: Properties): void {
         const { externalIds, resourceIds } = inputProperties;
 
-        const initialContext: UpdateNicsMacAddressesContext = {
+        const initialContext: UpdateVmContext = {
             resourceId: resourceIds[0],
             machineId: externalIds[0],
             nics: []
@@ -36,22 +37,29 @@ export class UpdateNicsMacAddressesWorkflow {
         const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
         const PipelineBuilder = VROES.import("default").from("com.vmware.pscoe.library.pipeline.PipelineBuilder");
         const ExecutionStrategy = VROES.import("default").from("com.vmware.pscoe.library.pipeline.ExecutionStrategy");
-        
+
         const pipeline = new PipelineBuilder()
-            .name("Update Nics MAC addresses")
+            .name("Update VM")
             .context(initialContext)
-            .stage("Get VM NICs MAC addresses")
+            .stage("Power off VM")
             .exec(
-                GetVmNicsMacAddresses
+                PowerOffVm
             )
             .done()
-            .stage("Perform Update Nics MAC addresses", (context: UpdateNicsMacAddressesContext) => context.nicsMacAddresses?.length > 0)
+            .stage("Update network details",
+                (context: UpdateVmContext) => context.networkDetails?.length > 0)
             .exec(
+                RetrieveNetworkDetailsFromResource,
                 ResolveVcenterVm,
-                PerformUpdateNicsMacAddresses,
+                UpdateVmNetworkDetails,
                 ReconfigureVmNics
             )
             .done()
+            // .stage("Update volumes")
+            // .exec(
+            //     //
+            // )
+            // .done()
             .build();
 
         pipeline.process(ExecutionStrategy.TERMINATE);

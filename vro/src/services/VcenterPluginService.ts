@@ -9,7 +9,7 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { CONNECT_INFO_DEFAULTS, NETWORK_DEFAULTS } from "../constants";
-import { NicsMacAddress } from "../types/nic/NicsMacAddress";
+import { NicMacAddress } from "../types/nic/NicMacAddress";
 
 const Class = System.getModule("com.vmware.pscoe.library.class").Class();
 
@@ -43,7 +43,7 @@ export class VcenterPluginService {
         return networkAdapters[0];
     };
 
-    public updateVmNicsMac = (vcVM: VcVirtualMachine, macAddresses: NicsMacAddress[]): VcVirtualDeviceConfigSpec[] => {
+    public updateVmNicsMacAddress = (vcVM: VcVirtualMachine, macAddresses: NicMacAddress[]): VcVirtualDeviceConfigSpec[] => {
         const Networking = Class.load("com.vmware.pscoe.library.vc", "Networking");
         const vmNetworking = new Networking(vcVM);
 

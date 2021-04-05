@@ -2,7 +2,7 @@
   "id": "sub_1616517242823",
   "type": "RUNNABLE",
   "eventTopicId": "compute.provision.post",
-  "name": "Update VM NICs MAC addresses",
+  "name": "Update VM",
   "ownerId": "configurationadmin",
   "subscriberId": "vro-gateway-L9revv3xR5DgcSrx",
   "blocking": true,

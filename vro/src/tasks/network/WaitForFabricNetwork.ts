@@ -19,10 +19,13 @@ const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Tas
 
 export class WaitForFabricNetwork extends Task {
     private readonly logger: Logger;
+    private readonly context: CreateVlanSegmentContext;
     private fabricNetworkService: FabricNetworksService;
 
     constructor(context: CreateVlanSegmentContext) {
         super(context);
+
+        this.context = context;
         this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.network/WaitForFabricNetwork");
     }
 

@@ -10,7 +10,7 @@
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { BlockDevicesService } from "com.vmware.pscoe.ts.vra.iaas/services/BlockDevicesService";
 import { VraClientCreator } from "../../factories/creators/VraClientCreator";
-import { CreateVlanSegmentContext } from "../../types/network/CreateVlanSegmentContext";
+import { CreateVolumeFromSnapshotContext } from "../../types/volume/CreateVolumeFromSnapshotContext";
 import { stringify, validateResponse } from "../../utils";
 import { WaitForVolumeHelper } from "./WaitForVolumeHelper";
 
@@ -19,10 +19,13 @@ const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Tas
 
 export class WaitForVolume extends Task {
     private readonly logger: Logger;
+    private readonly context: CreateVolumeFromSnapshotContext;
     private blockDevicesService: BlockDevicesService;
 
-    constructor(context: CreateVlanSegmentContext) {
+    constructor(context: CreateVolumeFromSnapshotContext) {
         super(context);
+
+        this.context = context;
         this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.network/WaitForVolume");
     }
 

@@ -27,7 +27,7 @@ export class DetachNicWorkflow {
 
         const initialContext: DetachNicFromVmContext = {
             machineId,
-            macAddress
+            macAddresses: [macAddress]
         };
 
         const pipeline = new PipelineBuilder()

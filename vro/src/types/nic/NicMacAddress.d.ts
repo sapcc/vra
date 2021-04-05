@@ -7,7 +7,7 @@
  * SAP One Strike Openstack vRA adapter - vRA/vRO Artifacts
  * #L%
  */
-export type NicsMacAddress = {
+export type NicMacAddress = {
     deviceIndex: number;
     macAddress: string;
 }

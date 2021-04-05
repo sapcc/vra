@@ -16,10 +16,13 @@ const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Tas
 
 export class CreateVolumeFromSnapshot extends Task {
     private readonly logger: Logger;
+    private readonly context: CreateVolumeFromSnapshotContext;
     private vCenterSoapService: VcenterSoapService;
 
     constructor(context: CreateVolumeFromSnapshotContext) {
         super(context);
+
+        this.context = context;
         this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.volume/CreateVolumeFromSnapshot");
     }
 
@@ -48,5 +51,6 @@ export class CreateVolumeFromSnapshot extends Task {
     execute() {
         const { diskId, datastore, snapshotId, newVolumeName } = this.context;
         this.vCenterSoapService.createVolumeFromSnapshot({ diskId, datastore, snapshotId, newVolumeName });
+        // this.vCenterSoapService.retrieveVStorageObjectMetadata({ diskId, datastore });
     }
 }

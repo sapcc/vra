@@ -16,10 +16,13 @@ const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Tas
 
 export class ReconfigureVmNics extends Task {
     private readonly logger: Logger;
+    private readonly context: BaseNicContext;
     private vCenterPluginService: VcenterPluginService;
 
     constructor(context: BaseNicContext) {
         super(context);
+
+        this.context = context;
         this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.nic/ReconfigureVmNics");
     }
 

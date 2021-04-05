@@ -10,20 +10,23 @@
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { MachinesService } from "com.vmware.pscoe.ts.vra.iaas/services/MachinesService";
 import { VraClientCreator } from "../../factories/creators/VraClientCreator";
-import { BaseNicContext } from "../../types/nic/BaseNicContext";
+import { UpdateVmNetworkDetailsContext } from "../../types/nic/UpdateVmNetworkDetailsContext";
 import { stringify, validateResponse } from "../../utils";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
 
-export class GetVmNicsMacAddresses extends Task {
+export class RetrieveNetworkDetailsFromResource extends Task {
     private readonly logger: Logger;
+    private readonly context: UpdateVmNetworkDetailsContext;
     private vraClientCreator: VraClientCreator;
     private machinesService: MachinesService;
 
-    constructor(context: BaseNicContext) {
+    constructor(context: UpdateVmNetworkDetailsContext) {
         super(context);
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.nic/GetVmNicsMacAddresses");
+
+        this.context = context;
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.nic/RetrieveNetworkDetailsFromResource");
     }
 
     prepare() {
@@ -49,11 +52,11 @@ export class GetVmNicsMacAddresses extends Task {
             throw Error(`No VM found for resource id '${resourceId}'!`);
         }
 
-        if (vm.customProperties.nicsMacAddresses) {
-            this.context.nicsMacAddresses = JSON.parse(vm.customProperties?.nicsMacAddresses);
-            this.logger.debug(`Found following NICs MAC addresses to change:\n${stringify(this.context.nicsMacAddresses)}`);
+        if (vm.customProperties.networkDetails) {
+            this.context.networkDetails = JSON.parse(vm.customProperties?.networkDetails);
+            this.logger.debug(`Found following network details to update:\n${stringify(this.context.networkDetails)}`);
         } else {
-            this.logger.warn("Not found NICs MAC addresses to update.");
+            this.logger.warn("Not found network details to update.");
         }
     }
 }

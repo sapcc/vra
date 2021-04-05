@@ -19,10 +19,13 @@ const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Tas
 
 export class UpdateFabricNetworksInNetworkProfile extends Task {
     private readonly logger: Logger;
+    private readonly context: CreateVlanSegmentContext;
     private networkProfilesService: NetworkProfilesService;
 
     constructor(context: CreateVlanSegmentContext) {
         super(context);
+
+        this.context = context;
         this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.network/UpdateFabricNetworksInNetworkProfile");
     }
 

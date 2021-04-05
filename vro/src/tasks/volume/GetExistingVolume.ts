@@ -26,10 +26,13 @@ const VOLUME_COUNT = 1;
 
 export class GetExistingVolume extends Task {
     private readonly logger: Logger;
+    private readonly context: CreateVolumeFromSnapshotContext;
     private blockDevicesService: BlockDevicesService;
 
     constructor(context: CreateVolumeFromSnapshotContext) {
         super(context);
+
+        this.context = context;
         this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.volume/GetVolume");
     }
 
