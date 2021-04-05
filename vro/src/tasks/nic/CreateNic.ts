@@ -8,7 +8,7 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
-import { VcenterService } from "../../services/VcenterService";
+import { VcenterPluginService } from "../../services/VcenterPluginService";
 import { BaseNicContext } from "../../types/nic/BaseNicContext";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
@@ -16,7 +16,7 @@ const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Tas
 
 export class CreateNic extends Task {
     private readonly logger: Logger;
-    private vCenterService: VcenterService;
+    private vCenterPluginService: VcenterPluginService;
 
     constructor(context: BaseNicContext) {
         super(context);
@@ -24,7 +24,7 @@ export class CreateNic extends Task {
     }
 
     prepare() {
-        this.vCenterService = new VcenterService();
+        this.vCenterPluginService = new VcenterPluginService();
     }
 
     validate() {
@@ -40,6 +40,6 @@ export class CreateNic extends Task {
     execute() {
         const { networkName, macAddress } = this.context;
 
-        this.context.nics.push(this.vCenterService.createNic(networkName, macAddress));
+        this.context.nics.push(this.vCenterPluginService.createNic(networkName, macAddress));
     }
 }

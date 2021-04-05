@@ -10,12 +10,18 @@
 import { Configuration } from "vrotsc-annotations";
 
 @Configuration({
-    name: "Endpoints",
+    name: "Vcenter",
     path: "SAP/One Strike",
     attributes: {
-        nsxtRestHost: "REST:RESTHost"
+        name: "string",
+        url: "string",
+        authUserName: "string",
+        authPassword: "SecureString"
     }
 })
-export class Endpoints {
-    nsxtRestHost: RESTHost;
+export class Vcenter {
+    name: string;
+    url: string;
+    authUserName: string;
+    authPassword: SecureString;
 }
