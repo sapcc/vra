@@ -10,7 +10,7 @@
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { MachinesService } from "com.vmware.pscoe.ts.vra.iaas/services/MachinesService";
 import { NetworksService } from "com.vmware.pscoe.ts.vra.iaas/services/NetworksService";
-import { SEGMENT_TAG } from "../../constants";
+import { OPEN_STACK_SEGMENT_PORT_TAG, SEGMENT_TAG } from "../../constants";
 import { VraClientCreator } from "../../factories/creators/VraClientCreator";
 import { UpdateVmContext } from "../../types/vm/UpdateVmContext";
 import { stringify, validateResponse } from "../../utils";
@@ -63,6 +63,7 @@ export class RetrieveVmNetworkDetailsFromResource extends Task {
 
             networkDetails.forEach(networkDetail => {
                 const networkId = networkDetail[SEGMENT_TAG];
+                const networkPortId = networkDetail[OPEN_STACK_SEGMENT_PORT_TAG];
                 
                 const networkName = this.networksService.getNetwork({
                     path_id: networkId
@@ -70,7 +71,8 @@ export class RetrieveVmNetworkDetailsFromResource extends Task {
                 
                 this.context.networkDetails.push({
                     networkName,
-                    macAddress: networkDetail.macAddress
+                    macAddress: networkDetail.macAddress,
+                    openStackSegmentPortId: networkPortId
                 });
             });
         } else {

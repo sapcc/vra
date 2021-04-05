@@ -1,0 +1,10 @@
+{
+  "id": "689f239d-a9d4-4eaa-97e1-9b5e465ffa36",
+  "name": "Set Segment Port Tags",
+  "form": "Set Segment Port Tags_form.json",
+  "styles": null,
+  "sourceType": "com.vmw.vro.workflow",
+  "type": "requestForm",
+  "status": "ON",
+  "formFormat": null
+}

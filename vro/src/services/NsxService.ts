@@ -13,9 +13,12 @@ import {
     PatchInfraSegmentWithForceTrueParameters
 } from "com.vmware.pscoe.library.ts.nsxt.policy/models/PatchInfraSegmentWithForceTrueParameters";
 import { Segment } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Segment";
+import { SegmentPort } from "com.vmware.pscoe.library.ts.nsxt.policy/models/SegmentPort";
 import { Tag } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Tag";
 import { PolicyConnectivityService } from "com.vmware.pscoe.library.ts.nsxt.policy/services/PolicyConnectivityService";
-import { validateResponse } from "../utils";
+import { SEGMENT_PORT_TAG_SCOPE } from "../constants";
+import { stringify, validateResponse } from "../utils";
+import { WaitForGetSegPortByAttachment } from "../utils/http/WaitForGetSegPortByAttachment";
 
 export class NsxService {
     private readonly logger: Logger;
@@ -65,4 +68,87 @@ export class NsxService {
 
         validateResponse(response);
     }
+
+    public applyTagsToSegmentPort(segmentPort: SegmentPort, segmentPortTags: Tag[]) {
+        segmentPort.tags = segmentPortTags;
+        
+        const parentPathArr = segmentPort.parent_path.split("/");
+        const segmentId = parentPathArr[parentPathArr.length - 1];
+        const segmentPortId = segmentPort.id;
+        const patchInfraPayload = {
+            "path_segment-id": segmentId,
+            "path_port-id": segmentPortId,
+            "body_SegmentPort": segmentPort
+        };
+
+        this.logger.debug(`Set Segment Port tags request payload: ${stringify(patchInfraPayload)}`);
+        
+        const response = this.policyConnectivityService.patchInfraSegmentPort(patchInfraPayload);
+        
+        this.logger.debug(`Set tags to Segment port with ID '${segmentPortId}' response: ${stringify(response)}`);
+        
+        validateResponse(response);
+
+        this.logger.info(`Segment Port tags: ${stringify(segmentPortTags)}`);
+    }
+
+    /**
+     * Returns an array of Tags for mapping the SegmentPort to the specified SGs. All previous tags related to OpenStack SG IDs will be overridden.
+     * @param segment Segment in NSX-T
+     * @param openStackSecurityGroupIds Security Groups' IDs from OpenStack
+     */
+    public getSegPortTagsMappingToSecGroup(segment: SegmentPort, openStackSecurityGroupIds: string[]): Tag[] {
+        let segmentPortTags = segment.tags || [];
+        // remove current tags mapping to SGs which will be recreated/overriden later on
+        segmentPortTags = segmentPortTags.filter(tag => tag.scope !== SEGMENT_PORT_TAG_SCOPE);
+
+        openStackSecurityGroupIds.forEach(openStackSecurityGroupId => {
+            segmentPortTags.push(
+                {
+                    tag: openStackSecurityGroupId, // OpenStack UUID for SG
+                    scope: SEGMENT_PORT_TAG_SCOPE
+                }
+            );
+        });
+
+        return segmentPortTags;
+    }
+
+    public getSegmentPort(segmentId: string, segmentPortId: string): SegmentPort {
+        const segmentResponse = this.policyConnectivityService.getInfraSegmentPort({
+            "path_segment-id": segmentId,
+            "path_port-id": segmentPortId
+        });
+
+        validateResponse(segmentResponse);
+
+        const segment: SegmentPort = segmentResponse.body;
+
+        this.logger.debug(`Segment matched by OpenStack UUID tag from NSX-T: ${stringify(segment)}`);
+        
+        return segment;
+    }
+
+    public getSegmentPortByAttachment(segmentId: string, segmentPortAttachmentId: string,
+        timeoutInSeconds: number, sleepTimeInSeconds: number): SegmentPort {
+        const msg = `polling for SegmentPort with segment ID=${segmentId} and attachment ID=${segmentPortAttachmentId}`;
+
+        // eslint-disable-next-line max-len
+        this.logger.debug(`Started ${msg}. Polling details: max interval=${timeoutInSeconds}s; sleep time between requests=${sleepTimeInSeconds}s`);
+
+        const getSegmentByAttachmentRequestTracker =
+            new WaitForGetSegPortByAttachment(this.policyConnectivityService, segmentId, segmentPortAttachmentId);
+        const segment: SegmentPort = getSegmentByAttachmentRequestTracker.get(timeoutInSeconds, sleepTimeInSeconds);
+
+        this.logger.debug(`Finished ${msg}.`);
+
+        if (!segment) {
+            throw new Error(`No segment port found with attachment id = ${segmentPortAttachmentId}`);
+        }
+
+        this.logger.debug(`Segment matched by OpenStack UUID tag from NSX-T: ${stringify(segment)}`);
+
+        return segment;
+    }
+
 }

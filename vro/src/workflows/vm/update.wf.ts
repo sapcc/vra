@@ -11,6 +11,7 @@ import { In, Workflow } from "vrotsc-annotations";
 import { CreateNics } from "../../tasks/nic/CreateNics";
 import { DestroyNics } from "../../tasks/nic/DestroyNics";
 import { GetCurrentVmNicsMacAddress } from "../../tasks/nic/GetCurrentVmNicsMacAddress";
+import { ReconfigureNetworksPorts } from "../../tasks/nic/ReconfigureNetworksPorts";
 import { ReconfigureVmNics } from "../../tasks/nic/ReconfigureVmNetworks";
 import { PowerOffVm } from "../../tasks/vm/PowerOffVm";
 import { ResolveVcenterVm } from "../../tasks/vm/ResolveVcenterVm";
@@ -57,7 +58,8 @@ export class UpdateVmWorkflow {
                 DestroyNics,
                 RetrieveVmNetworkDetailsFromResource,
                 CreateNics,
-                ReconfigureVmNics
+                ReconfigureVmNics,
+                ReconfigureNetworksPorts
             )
             .done()
             // .stage("Update volumes")

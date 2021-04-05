@@ -7,4 +7,5 @@ blueprint:
 subscription:
   - Set membership criteria of Security Group
   - Update VM
-
+workflow-custom-form:
+  - Set Segment Port Tags

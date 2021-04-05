@@ -13,6 +13,7 @@ import { BaseNicContext } from "./BaseNicContext";
 type NetworkDetail = {
     networkName: string;
     macAddress: string;
+    openStackSegmentPortId: string;
 }
 
 export interface AttachNicToVmContext extends BaseNicContext {
