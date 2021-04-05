@@ -15,6 +15,7 @@ export const PATHS = {
     CONFIG: `${PATH_ROOT}/Config`,
     VLAN_SEGMENT: `${PATH_ROOT}/VlanSegment`,
     ENDPOINTS_CONFIG: `${PATH_ROOT}/Endpoints`,
+    NSXT_CONFIG: `${PATH_ROOT}/NSX-T Config`,
     ENDPOINTS_VCENTER_CONFIG: `${PATH_ROOT}/Vcenter`
 };
 
@@ -36,3 +37,7 @@ export const OPEN_STACK_SEGMENT_PORT_TAG = "openstack_network_port_id";
 
 export const SEGMENT_TAG = "openstack_network_id";
 export const VOLUME_TAG = "openstack_volume_id";
+
+// Error messages
+export const CANNOT_SET_INITIAL_TAG_SEG_PORT = "Cannot add initial tag to Segment Port! Reason:"
+export const CANNOT_GET_SEG_PORT_BY_ATTACHMENT = "Error occurred while retrieving Segment Port by attachment! NSX-T response:"

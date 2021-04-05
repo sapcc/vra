@@ -10,6 +10,7 @@
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { Workflow } from "vrotsc-annotations";
 import { CreateNic } from "../../tasks/nic/CreateNic";
+import { ReconfigureNetworksPorts } from "../../tasks/nic/ReconfigureNetworksPorts";
 import { ReconfigureVmNics } from "../../tasks/nic/ReconfigureVmNetworks";
 import { ResolveVcenterVm } from "../../tasks/nic/ResolveVcenterVm";
 import { AttachNicToVmContext } from "../../types/nic/AttachNicToVmContext";
@@ -19,7 +20,7 @@ import { AttachNicToVmContext } from "../../types/nic/AttachNicToVmContext";
     path: "SAP/One Strike/Nic"
 })
 export class AttachNicWorkflow {
-    public execute(machineId: string, name: string, macAddress: string): void {
+    public execute(machineId: string, name: string, macAddress: string, openStackSegmentPortId: string): void {
         const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.nic/AttachNicWorkflow");
 
         const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
@@ -30,7 +31,8 @@ export class AttachNicWorkflow {
             machineId,
             networkName: name,
             macAddress,
-            nics: []
+            nics: [],
+            openStackSegmentPortIds: [openStackSegmentPortId]
         };
 
         const pipeline = new PipelineBuilder()
@@ -44,7 +46,8 @@ export class AttachNicWorkflow {
             .stage("Perform attach network to VM")
             .exec(
                 ResolveVcenterVm,
-                ReconfigureVmNics
+                ReconfigureVmNics,
+                ReconfigureNetworksPorts
             )
             .done()
             .build();
