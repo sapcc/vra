@@ -8,11 +8,13 @@
  * #L%
  */
 import { In, Workflow } from "vrotsc-annotations";
-import { UpdateVmNetworkDetails } from "../../tasks/nic/UpdateVmNetworkDetails";
+import { DestroyNic } from "../../tasks/nic/DestroyNic";
+import { GetCurrentVmNicsMacAddress } from "../../tasks/nic/GetCurrentVmNicsMacAddress";
 import { ReconfigureVmNics } from "../../tasks/nic/ReconfigureVmNetworks";
-import { ResolveVcenterVm } from "../../tasks/nic/ResolveVcenterVm";
-import { RetrieveNetworkDetailsFromResource } from "../../tasks/nic/RetrieveNetworkDetailsFromResource";
+import { UpdateVmNetworkDetails } from "../../tasks/nic/UpdateVmNetworkDetails";
 import { PowerOffVm } from "../../tasks/vm/PowerOffVm";
+import { ResolveVcenterVm } from "../../tasks/vm/ResolveVcenterVm";
+import { RetrieveVmNetworkDetailsFromResource } from "../../tasks/vm/RetrieveVmNetworkDetailsFromResource";
 import { UpdateVmContext } from "../../types/vm/UpdateVmContext";
 
 @Workflow({
@@ -31,7 +33,7 @@ export class UpdateVmWorkflow {
         const initialContext: UpdateVmContext = {
             resourceId: resourceIds[0],
             machineId: externalIds[0],
-            nics: []
+            macAddresses: []
         };
 
         const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
@@ -43,14 +45,15 @@ export class UpdateVmWorkflow {
             .context(initialContext)
             .stage("Power off VM")
             .exec(
+                ResolveVcenterVm,
                 PowerOffVm
             )
             .done()
-            .stage("Update network details",
-                (context: UpdateVmContext) => context.networkDetails?.length > 0)
+            .stage("Update VM network details")
             .exec(
-                RetrieveNetworkDetailsFromResource,
-                ResolveVcenterVm,
+                GetCurrentVmNicsMacAddress,
+                DestroyNic,
+                RetrieveVmNetworkDetailsFromResource,
                 UpdateVmNetworkDetails,
                 ReconfigureVmNics
             )

@@ -9,17 +9,17 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { VcenterPluginService } from "../../services/VcenterPluginService";
-import { UpdateVmNetworkDetailsContext } from "../../types/nic/UpdateVmNetworkDetailsContext";
+import { UpdateVmContext } from "../../types/vm/UpdateVmContext";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
 
 export class UpdateVmNetworkDetails extends Task {
     private readonly logger: Logger;
-    private readonly context: UpdateVmNetworkDetailsContext
+    private readonly context: UpdateVmContext
     private vCenterPluginService: VcenterPluginService;
 
-    constructor(context: UpdateVmNetworkDetailsContext) {
+    constructor(context: UpdateVmContext) {
         super(context);
 
         this.context = context;
