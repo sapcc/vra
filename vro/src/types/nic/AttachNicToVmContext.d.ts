@@ -9,9 +9,12 @@ import { BaseNicContext } from "./BaseNicContext";
  * SAP One Strike Openstack vRA adapter - vRA/vRO Artifacts
  * #L%
  */
+
+type NetworkDetail = {
+    networkName: string;
+    macAddress: string;
+}
+
 export interface AttachNicToVmContext extends BaseNicContext {
-    networkDetails: {
-        networkName: string;
-        macAddress: string;
-    }[]
+    networkDetails: NetworkDetail[]
 }

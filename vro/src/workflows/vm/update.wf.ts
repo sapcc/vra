@@ -34,7 +34,8 @@ export class UpdateVmWorkflow {
             resourceId: resourceIds[0],
             machineId: externalIds[0],
             macAddresses: [],
-            networkDetails: []
+            networkDetails: [],
+            nics: []
         };
 
         const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();

@@ -9,6 +9,8 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { MachinesService } from "com.vmware.pscoe.ts.vra.iaas/services/MachinesService";
+import { NetworksService } from "com.vmware.pscoe.ts.vra.iaas/services/NetworksService";
+import { SEGMENT_TAG } from "../../constants";
 import { VraClientCreator } from "../../factories/creators/VraClientCreator";
 import { UpdateVmContext } from "../../types/vm/UpdateVmContext";
 import { stringify, validateResponse } from "../../utils";
@@ -21,6 +23,7 @@ export class RetrieveVmNetworkDetailsFromResource extends Task {
     private readonly context: UpdateVmContext;
     private vraClientCreator: VraClientCreator;
     private machinesService: MachinesService;
+    private networksService: NetworksService;
 
     constructor(context: UpdateVmContext) {
         super(context);
@@ -32,6 +35,7 @@ export class RetrieveVmNetworkDetailsFromResource extends Task {
     prepare() {
         this.vraClientCreator = new VraClientCreator();
         this.machinesService = new MachinesService(this.vraClientCreator.createOperation());
+        this.networksService = new NetworksService(this.vraClientCreator.createOperation());
     }
 
     validate() {
@@ -57,10 +61,16 @@ export class RetrieveVmNetworkDetailsFromResource extends Task {
 
             this.logger.debug(`Found following network details to update:\n${stringify(networkDetails)}`);
 
-            networkDetails.forEach(({ networkName, macAddress }) => {
+            networkDetails.forEach(networkDetail => {
+                const networkId = networkDetail[SEGMENT_TAG];
+                
+                const networkName = this.networksService.getNetwork({
+                    path_id: networkId
+                }).body.name;
+                
                 this.context.networkDetails.push({
                     networkName,
-                    macAddress
+                    macAddress: networkDetail.macAddress
                 });
             });
         } else {
