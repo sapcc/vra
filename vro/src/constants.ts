@@ -15,7 +15,7 @@ export const PATHS = {
     CONFIG: `${PATH_ROOT}/Config`,
     VLAN_SEGMENT: `${PATH_ROOT}/VlanSegment`,
     ENDPOINTS_CONFIG: `${PATH_ROOT}/Endpoints`,
-    VRO_CONFIG: `${PATH_ROOT}/vRO Config`,
+    NSXT_CONFIG: `${PATH_ROOT}/NSX-T Config`,
     ENDPOINTS_VCENTER_CONFIG: `${PATH_ROOT}/Vcenter`
 };
 

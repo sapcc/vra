@@ -11,14 +11,14 @@ import { PATHS } from "../../constants";
 
 exports = class {
     configure(input: any) {
-        input.readNumber("vroConfig.getPortTimeoutInSeconds")
+        input.readNumber("nsxtConfig.getPortTimeoutInSeconds")
             .required()
-            .config(PATHS.VRO_CONFIG)
+            .config(PATHS.NSXT_CONFIG)
             .set("getPortTimeoutInSeconds");
 
-        input.readNumber("vroConfig.getPortSleepTimeInSeconds")
+        input.readNumber("nsxtConfig.getPortSleepTimeInSeconds")
             .required()
-            .config(PATHS.VRO_CONFIG)
+            .config(PATHS.NSXT_CONFIG)
             .set("getPortSleepTimeInSeconds");
     }
 };

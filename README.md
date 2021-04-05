@@ -44,7 +44,7 @@ TBD
     }
   },
   "pscoeLogLevel": "debug",
-  "vroConfig": {
+  "nsxtConfig": {
     "getPortTimeoutInSeconds": 600,
     "getPortSleepTimeInSeconds": 20
   }

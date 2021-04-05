@@ -13,7 +13,7 @@ import { Tag } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Tag";
 import { OPEN_STACK_SEGMENT_PORT_TAG, PATHS } from "../../constants";
 import { CANNOT_SET_INITIAL_TAG_SEG_PORT } from "../../constants";
 import { ConfigurationAccessor } from "../../elements/accessors/ConfigurationAccessor";
-import { VroConfig } from "../../elements/configs/VroConfig.conf";
+import { NsxtConfig } from "../../elements/configs/NsxtConfig.conf";
 import { NsxtClientCreator } from "../../factories/creators/NsxtClientCreator";
 import { NsxService } from "../../services/NsxService";
 import { BaseNicContext } from "../../types/nic/BaseNicContext";
@@ -70,7 +70,7 @@ export class ReconfigureNetworksPorts extends Task {
             ];
 
             const { getPortTimeoutInSeconds, getPortSleepTimeInSeconds } =
-                ConfigurationAccessor.loadConfig(PATHS.VRO_CONFIG, {} as VroConfig);
+                ConfigurationAccessor.loadConfig(PATHS.NSXT_CONFIG, {} as NsxtConfig);
 
             const segmentPort: SegmentPort = this.nsxtService.getSegmentPortByAttachment(
                 segmentId, segmentPortAttachmentId, getPortTimeoutInSeconds, getPortSleepTimeInSeconds

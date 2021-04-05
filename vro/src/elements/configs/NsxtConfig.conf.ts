@@ -10,7 +10,7 @@
 import { Configuration } from "vrotsc-annotations";
 
 @Configuration({
-    name: "vRO Config",
+    name: "NSX-T Config",
     path: "SAP/One Strike",
     attributes: {
         getPortTimeoutInSeconds: {
@@ -25,7 +25,7 @@ import { Configuration } from "vrotsc-annotations";
         }
     }
 })
-export class VroConfig {
+export class NsxtConfig {
     getPortTimeoutInSeconds: number
     getPortSleepTimeInSeconds: number
 }
