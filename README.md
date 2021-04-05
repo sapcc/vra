@@ -10,12 +10,11 @@ TBD
 
 ```json
 {
+  "timeoutInSeconds": 600,
+  "sleepTimeInSeconds": 15,
   "vlanSegment": {
     "transportZoneId": "a95c914d-748d-497c-94ab-10d4647daeba",
-    "segmentTagScope": "openstack_network_id",
-    "networkProfileId": "fa5f5cd5-247d-4641-a004-62ecb5b4e8b3",
-    "timeoutInSeconds": 600,
-    "sleepTimeInSeconds": 15
+    "networkProfileId": "fa5f5cd5-247d-4641-a004-62ecb5b4e8b3"
   },
   "endpoints": {
     "vra": {
@@ -36,6 +35,12 @@ TBD
       "authPassword": "VMware1!VMware1!",
       "ignoreWarnings": true,
       "hostVerification": false
+    },
+    "vcenter": {
+      "name": "vCenter Rest Host",
+      "url": "https://vc-l-01a.corp.local",
+      "authUserName": "administrator@vsphere.local",
+      "authPassword": "VMware1!"
     }
   },
   "pscoeLogLevel": "debug",
