@@ -23,7 +23,7 @@ export class ResolveVcenterVm extends Task {
         super(context);
         
         this.context = context;
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.tasks.nic/ResolveVcenterVm");
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.tasks.vm/ResolveVcenterVm");
     }
 
     prepare() {

@@ -10,23 +10,23 @@
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { MachinesService } from "com.vmware.pscoe.ts.vra.iaas/services/MachinesService";
 import { VraClientCreator } from "../../factories/creators/VraClientCreator";
-import { UpdateVmNetworkDetailsContext } from "../../types/nic/UpdateVmNetworkDetailsContext";
+import { UpdateVmContext } from "../../types/vm/UpdateVmContext";
 import { stringify, validateResponse } from "../../utils";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
 
-export class RetrieveNetworkDetailsFromResource extends Task {
+export class RetrieveVmNetworkDetailsFromResource extends Task {
     private readonly logger: Logger;
-    private readonly context: UpdateVmNetworkDetailsContext;
+    private readonly context: UpdateVmContext;
     private vraClientCreator: VraClientCreator;
     private machinesService: MachinesService;
 
-    constructor(context: UpdateVmNetworkDetailsContext) {
+    constructor(context: UpdateVmContext) {
         super(context);
 
         this.context = context;
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.nic/RetrieveNetworkDetailsFromResource");
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.vm/RetrieveNetworkDetailsFromResource");
     }
 
     prepare() {

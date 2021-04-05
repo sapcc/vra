@@ -45,7 +45,7 @@ export class CreateVlanSegmentWorkflow {
             }],
             vlanId,
             networkProfileId,
-            currentFabricNetworksIds: [],
+            currentFabricNetworkIds: [],
             timeoutInSeconds,
             sleepTimeInSeconds
         };

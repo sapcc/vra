@@ -10,7 +10,7 @@
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { Workflow } from "vrotsc-annotations";
 import { DestroyNic } from "../../tasks/nic/DestroyNic";
-import { ResolveVcenterVm } from "../../tasks/nic/ResolveVcenterVm";
+import { ResolveVcenterVm } from "../../tasks/vm/ResolveVcenterVm";
 import { DetachNicFromVmContext } from "../../types/nic/DetachNicFromVmContext";
 
 @Workflow({

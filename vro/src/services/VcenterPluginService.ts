@@ -67,6 +67,13 @@ export class VcenterPluginService {
         });
     };
 
+    public getNics = (vcVM: VcVirtualMachine): VcVirtualDeviceConfigSpec[] => {
+        const Networking = Class.load("com.vmware.pscoe.library.vc", "Networking");
+        const vmNetworking = new Networking(vcVM);
+
+        return vmNetworking.getNics();
+    };
+
     public createNic = (name: string, macAddress: string): VcVirtualDeviceConfigSpec => {
         this.logger.info("Creating connectable info for network ...");
         const connectInfo = new VcVirtualDeviceConnectInfo();

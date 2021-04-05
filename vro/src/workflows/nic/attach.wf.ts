@@ -11,7 +11,7 @@ import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { Workflow } from "vrotsc-annotations";
 import { CreateNic } from "../../tasks/nic/CreateNic";
 import { ReconfigureVmNics } from "../../tasks/nic/ReconfigureVmNetworks";
-import { ResolveVcenterVm } from "../../tasks/nic/ResolveVcenterVm";
+import { ResolveVcenterVm } from "../../tasks/vm/ResolveVcenterVm";
 import { AttachNicToVmContext } from "../../types/nic/AttachNicToVmContext";
 
 @Workflow({

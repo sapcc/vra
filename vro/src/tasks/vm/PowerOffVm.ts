@@ -8,10 +8,8 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
-import { MachinesService } from "com.vmware.pscoe.ts.vra.iaas/services/MachinesService";
-import { VraClientCreator } from "../../factories/creators/VraClientCreator";
 import { BaseVmContext } from "../../types/vm/BaseVmContext";
-import { validateResponse } from "../../utils";
+import { stringify, waitTask } from "../../utils";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
@@ -19,34 +17,36 @@ const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Tas
 export class PowerOffVm extends Task {
     private readonly logger: Logger;
     private readonly context: BaseVmContext;
-    private machinesService: MachinesService;
-
+    
     constructor(context: BaseVmContext) {
         super(context);
-
+        
         this.context = context;
         this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.vm/PowerOffVm");
     }
 
-    prepare() {
-        const vraClientCreator = new VraClientCreator();
-
-        this.machinesService = new MachinesService(vraClientCreator.createOperation());
-    }
-
     validate() {
-        if (!this.context.resourceId) {
-            throw Error("'resourceId' is not set!");
+        if (!this.context.vcVM) {
+            throw Error("vCenter VM is not set!");
         }
     }
 
+    prepare() {
+        // no-op
+    }
+
     execute() {
-        const { resourceId } = this.context;
+        const { vcVM } = this.context;
 
-        const response = this.machinesService.powerOffMachine({
-            path_id: resourceId
-        });
+        try {
+            this.logger.info("Start power off the VM.");
 
-        validateResponse(response);
+            const taskPowerOff = (vcVM as any).powerOffVM_Task();
+            waitTask(taskPowerOff);
+        } catch (error) {
+            this.logger.error(`Error when try to power off the VM:\n${stringify(error)}`);
+        } finally {
+            this.logger.info("Power off completed.");
+        }
     }
 }
