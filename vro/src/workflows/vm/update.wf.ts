@@ -14,6 +14,7 @@ import { GetCurrentVmNicsMacAddress } from "../../tasks/nic/GetCurrentVmNicsMacA
 import { ReconfigureNetworksPorts } from "../../tasks/nic/ReconfigureNetworksPorts";
 import { ReconfigureVmNics } from "../../tasks/nic/ReconfigureVmNetworks";
 import { PowerOffVm } from "../../tasks/vm/PowerOffVm";
+import { PowerOnVm } from "../../tasks/vm/PowerOnVm";
 import { ResolveVcenterVm } from "../../tasks/vm/ResolveVcenterVm";
 import { RetrieveVmNetworkDetailsFromResource } from "../../tasks/vm/RetrieveVmNetworkDetailsFromResource";
 import { UpdateVmContext } from "../../types/vm/UpdateVmContext";
@@ -67,6 +68,12 @@ export class UpdateVmWorkflow {
             //     //
             // )
             // .done()
+            .stage("Power on VM")
+            .exec(
+                ResolveVcenterVm,
+                PowerOnVm
+            )
+            .done()
             .build();
 
         pipeline.process(ExecutionStrategy.TERMINATE);

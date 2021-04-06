@@ -14,7 +14,7 @@ import { stringify, waitTask } from "../../utils";
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
 
-export class PowerOffVm extends Task {
+export class PowerOnVm extends Task {
     private readonly logger: Logger;
     private readonly context: BaseVmContext;
     
@@ -22,7 +22,7 @@ export class PowerOffVm extends Task {
         super(context);
         
         this.context = context;
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.vm/PowerOffVm");
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.vm/PowerOnVm");
     }
 
     validate() {
@@ -39,14 +39,14 @@ export class PowerOffVm extends Task {
         const { vcVM } = this.context;
 
         try {
-            this.logger.info("Start power off the VM.");
+            this.logger.info("Start power on the VM.");
 
-            const taskPowerOff = (vcVM as any).powerOffVM_Task();
-            waitTask(taskPowerOff);
+            const taskPowerOn = (vcVM as any).powerOnVM_Task();
+            waitTask(taskPowerOn);
         } catch (error) {
-            this.logger.error(`Error when try to power off the VM:\n${stringify(error)}`);
+            this.logger.error(`Error when try to power on the VM:\n${stringify(error)}`);
         } finally {
-            this.logger.info("Power off completed.");
+            this.logger.info("Power on completed.");
         }
     }
 }
