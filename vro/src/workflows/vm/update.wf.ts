@@ -78,6 +78,7 @@ export class UpdateVmWorkflow {
             // .done()
             .stage("Power on VM")
             .exec(
+                // TODO: set state from openstack
                 ResolveVcenterVm,
                 PowerOnVm
             )

@@ -62,6 +62,7 @@ export class RetrieveVmNetworkDetailsFromResource extends Task {
             this.logger.debug(`Found following network details to update:\n${stringify(networkDetails)}`);
 
             networkDetails.forEach(networkDetail => {
+                // TODO: vRA id will be provided from openstack
                 const networkId = networkDetail[SEGMENT_TAG];
                 const networkPortId = networkDetail[OPEN_STACK_SEGMENT_PORT_TAG];
                 

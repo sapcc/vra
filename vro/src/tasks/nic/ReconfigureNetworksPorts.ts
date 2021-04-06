@@ -68,8 +68,8 @@ export class ReconfigureNetworksPorts extends Task {
 
         networkDetails.forEach(networkDetail => {
             for (let i = 0; i < contextNics.length; i++) {
-                const macAddress = contextNics[i].device.macAddress;
-                const newlyCreatedNic = vcNics.filter(vcNic => vcNic.macAddress === macAddress)[0];
+                const macAddress = (contextNics[i].device as any).macAddress;
+                const newlyCreatedNic = vcNics.filter((vcNic: any) => vcNic.macAddress === macAddress)[0];
 
                 if (!newlyCreatedNic) {
                     this.logger.error(`${CANNOT_SET_INITIAL_TAG_SEG_PORT} no NICs found with MAC address '${macAddress}' for VM.`);
@@ -77,7 +77,7 @@ export class ReconfigureNetworksPorts extends Task {
                     return;
                 }
 
-                const segmentPortAttachmentId = newlyCreatedNic.externalId;
+                const segmentPortAttachmentId = (newlyCreatedNic as any).externalId;
                 const segmentId = networkDetail.networkName;
                 const tags: Tag[] = [{
                     scope: OPEN_STACK_SEGMENT_PORT_TAG,
