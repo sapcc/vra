@@ -38,18 +38,7 @@ const SOAP_REQUESTS = {
             </CreateDiskFromSnapshot_Task>\
         </soapenv:Body>\
     </soapenv:Envelope>\
-",
-    TEST_SOAP_REQUEST:
-        // eslint-disable-next-line max-len
-        "<soapenv:Envelope xmlns:soapenc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\
-        <soapenv:Body>\
-            <RetrieveVStorageObjectAssociations xmlns=\"urn:vim25\">\
-                <_this type=\"VcenterVStorageObjectManager\">VStorageObjectManager</_this>\
-            </RetrieveVStorageObjectAssociations>\
-        </soapenv:Body>\
-    </soapenv:Envelope>\
-"
-};
+"};
 
 export class VcenterSoapService {
     private readonly logger: Logger;
@@ -77,20 +66,5 @@ export class VcenterSoapService {
         validateResponse(response);
 
         this.logger.info(`Create volume from snapshot task:\n${response.contentAsString}`);
-    }
-
-    public retrieveVStorageObjectMetadata(requestContext: any) {
-        const requestBody = System.getModule("com.vmware.pscoe.library.templates.engines")
-            .mark(SOAP_REQUESTS.TEST_SOAP_REQUEST, requestContext);
-
-        const response = this.soapClient.send(
-            Endpoint.SDK,
-            [],
-            requestBody,
-            Endpoint.URN.Vim25_70);
-
-        validateResponse(response);
-
-        this.logger.info(`retrieveVStorageObjectMetadata response:\n${response.contentAsString}`);
     }
 }

@@ -72,7 +72,7 @@ export class RetrieveVmNetworkDetailsFromResource extends Task {
                 this.context.networkDetails.push({
                     networkName,
                     macAddress: networkDetail.macAddress,
-                    openStackSegmentPortId: networkPortId
+                    networkPortId
                 });
             });
         } else {

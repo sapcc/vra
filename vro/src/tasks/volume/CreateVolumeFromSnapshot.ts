@@ -51,6 +51,5 @@ export class CreateVolumeFromSnapshot extends Task {
     execute() {
         const { diskId, datastore, snapshotId, newVolumeName } = this.context;
         this.vCenterSoapService.createVolumeFromSnapshot({ diskId, datastore, snapshotId, newVolumeName });
-        // this.vCenterSoapService.retrieveVStorageObjectMetadata({ diskId, datastore });
     }
 }

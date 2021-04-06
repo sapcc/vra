@@ -10,6 +10,8 @@
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { Workflow } from "vrotsc-annotations";
 import { DestroyNics } from "../../tasks/nic/DestroyNics";
+import { PowerOffVm } from "../../tasks/vm/PowerOffVm";
+import { PowerOnVm } from "../../tasks/vm/PowerOnVm";
 import { ResolveVcenterVm } from "../../tasks/vm/ResolveVcenterVm";
 import { DetachNicFromVmContext } from "../../types/nic/DetachNicFromVmContext";
 
@@ -36,7 +38,9 @@ export class DetachNicWorkflow {
             .stage("Perform detach Nic from VM")
             .exec(
                 ResolveVcenterVm,
-                DestroyNics
+                PowerOffVm,
+                DestroyNics,
+                PowerOnVm
             )
             .done()
             .build();

@@ -8,6 +8,9 @@
  * #L%
  */
 import { In, Workflow } from "vrotsc-annotations";
+import { PATHS } from "../../constants";
+import { ConfigurationAccessor } from "../../elements/accessors/ConfigurationAccessor";
+import { Config } from "../../elements/configs/Config.conf";
 import { CreateNics } from "../../tasks/nic/CreateNics";
 import { DestroyNics } from "../../tasks/nic/DestroyNics";
 import { GetCurrentVmNicsMacAddress } from "../../tasks/nic/GetCurrentVmNicsMacAddress";
@@ -32,12 +35,17 @@ export class UpdateVmWorkflow {
     public execute(@In inputProperties: Properties): void {
         const { externalIds, resourceIds } = inputProperties;
 
+        const { timeoutInSeconds, sleepTimeInSeconds } =
+                ConfigurationAccessor.loadConfig(PATHS.CONFIG, {} as Config);
+                
         const initialContext: UpdateVmContext = {
             resourceId: resourceIds[0],
             machineId: externalIds[0],
             macAddresses: [],
             networkDetails: [],
-            nics: []
+            nics: [],
+            timeoutInSeconds,
+            sleepTimeInSeconds
         };
 
         const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();

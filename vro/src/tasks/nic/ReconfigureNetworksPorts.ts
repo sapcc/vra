@@ -10,9 +10,7 @@
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { SegmentPort } from "com.vmware.pscoe.library.ts.nsxt.policy/models/SegmentPort";
 import { Tag } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Tag";
-import { CANNOT_SET_INITIAL_TAG_SEG_PORT, OPEN_STACK_SEGMENT_PORT_TAG, PATHS } from "../../constants";
-import { ConfigurationAccessor } from "../../elements/accessors/ConfigurationAccessor";
-import { Config } from "../../elements/configs/Config.conf";
+import { CANNOT_SET_INITIAL_TAG_SEG_PORT, OPEN_STACK_SEGMENT_PORT_TAG } from "../../constants";
 import { NsxtClientCreator } from "../../factories/creators/NsxtClientCreator";
 import { NsxService } from "../../services/NsxService";
 import { VcenterPluginService } from "../../services/VcenterPluginService";
@@ -47,10 +45,18 @@ export class ReconfigureNetworksPorts extends Task {
         if (!this.context.nics) {
             throw Error("'nics' is not set!");
         }
+
+        if (!this.context.timeoutInSeconds) {
+            throw Error("'timeoutInSeconds' is not set!");
+        }
+
+        if (!this.context.sleepTimeInSeconds) {
+            throw Error("'sleepTimeInSeconds' is not set!");
+        }
     }
 
     execute() {
-        const { vcVM, nics: contextNics, networkName, openStackSegmentPortIds } = this.context;
+        const { vcVM, nics: contextNics, networkDetails, timeoutInSeconds, sleepTimeInSeconds } = this.context;
 
         const vcNics = this.vCenterPluginService.getNics(vcVM);
 
@@ -60,30 +66,30 @@ export class ReconfigureNetworksPorts extends Task {
 
         this.logger.debug(`NICs from VC: ${vcNics}`);
 
-        for (let i = 0; i < contextNics.length; i++) {
-            const macAddress = contextNics[i].device.macAddress;
-            const newlyCreatedNic = vcNics.filter(vcNic => vcNic.macAddress === macAddress)[0];
+        networkDetails.forEach(networkDetail => {
+            for (let i = 0; i < contextNics.length; i++) {
+                const macAddress = contextNics[i].device.macAddress;
+                const newlyCreatedNic = vcNics.filter(vcNic => vcNic.macAddress === macAddress)[0];
 
-            if (!newlyCreatedNic) {
-                this.logger.error(`${CANNOT_SET_INITIAL_TAG_SEG_PORT} no NICs found with MAC address '${macAddress}' for VM.`);
-                return;
+                if (!newlyCreatedNic) {
+                    this.logger.error(`${CANNOT_SET_INITIAL_TAG_SEG_PORT} no NICs found with MAC address '${macAddress}' for VM.`);
+                    
+                    return;
+                }
+
+                const segmentPortAttachmentId = newlyCreatedNic.externalId;
+                const segmentId = networkDetail.networkName;
+                const tags: Tag[] = [{
+                    scope: OPEN_STACK_SEGMENT_PORT_TAG,
+                    tag: networkDetail.networkPortId // OpenStack UUID for Segment Port
+                }];
+
+                const segmentPort: SegmentPort = this.nsxtService.getSegmentPortByAttachment(
+                    segmentId, segmentPortAttachmentId, timeoutInSeconds, sleepTimeInSeconds
+                );
+
+                this.nsxtService.applyTagsToSegmentPort(segmentPort, tags);
             }
-
-            const segmentPortAttachmentId = newlyCreatedNic.externalId;
-            const segmentId = networkName;
-            const tags: Tag[] = [{
-                scope: OPEN_STACK_SEGMENT_PORT_TAG,
-                tag: openStackSegmentPortIds[i] // OpenStack UUID for Segment Port
-            }];
-
-            const { timeoutInSeconds, sleepTimeInSeconds } =
-                ConfigurationAccessor.loadConfig(PATHS.CONFIG, {} as Config);
-
-            const segmentPort: SegmentPort = this.nsxtService.getSegmentPortByAttachment(
-                segmentId, segmentPortAttachmentId, timeoutInSeconds, sleepTimeInSeconds
-            );
-            
-            this.nsxtService.applyTagsToSegmentPort(segmentPort, tags);
-        }
+        });
     }
 }

@@ -73,5 +73,4 @@ export class SetSegmentPortTags {
         
         nsxService.applyTagsToSegmentPort(segmentPort, segmentPortTags);
     }
-
 }
