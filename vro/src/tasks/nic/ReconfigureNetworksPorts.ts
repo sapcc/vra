@@ -56,7 +56,7 @@ export class ReconfigureNetworksPorts extends Task {
     }
 
     execute() {
-        const { vcVM, nics: contextNics, networkDetails, timeoutInSeconds, sleepTimeInSeconds } = this.context;
+        const { vcVM, nics, networkDetails, timeoutInSeconds, sleepTimeInSeconds } = this.context;
 
         const vcNics = this.vCenterPluginService.getNics(vcVM);
 
@@ -67,8 +67,8 @@ export class ReconfigureNetworksPorts extends Task {
         this.logger.debug(`NICs from VC: ${vcNics}`);
 
         networkDetails.forEach(networkDetail => {
-            for (let i = 0; i < contextNics.length; i++) {
-                const macAddress = (contextNics[i].device as any).macAddress;
+            nics.forEach((nic: any) => {
+                const macAddress = nic.device.macAddress;
                 const newlyCreatedNic = vcNics.filter((vcNic: any) => vcNic.macAddress === macAddress)[0];
 
                 if (!newlyCreatedNic) {
@@ -83,13 +83,12 @@ export class ReconfigureNetworksPorts extends Task {
                     scope: OPEN_STACK_SEGMENT_PORT_TAG,
                     tag: networkDetail.networkPortId // OpenStack UUID for Segment Port
                 }];
-
                 const segmentPort: SegmentPort = this.nsxtService.getSegmentPortByAttachment(
                     segmentId, segmentPortAttachmentId, timeoutInSeconds, sleepTimeInSeconds
                 );
 
                 this.nsxtService.applyTagsToSegmentPort(segmentPort, tags);
-            }
+            });
         });
     }
 }
