@@ -12,7 +12,7 @@ import { Workflow } from "vrotsc-annotations";
 import { DestroyNics } from "../../tasks/nic/DestroyNics";
 import { PowerOffVm } from "../../tasks/vm/PowerOffVm";
 import { PowerOnVm } from "../../tasks/vm/PowerOnVm";
-import { ResolveVcenterVm } from "../../tasks/vm/ResolveVcenterVm";
+import { RetrieveVcenterVm } from "../../tasks/vm/RetrieveVcenterVm";
 import { DetachNicFromVmContext } from "../../types/nic/DetachNicFromVmContext";
 
 @Workflow({
@@ -37,7 +37,7 @@ export class DetachNicWorkflow {
             .context(initialContext)
             .stage("Perform detach Nic from VM")
             .exec(
-                ResolveVcenterVm,
+                RetrieveVcenterVm,
                 PowerOffVm,
                 DestroyNics,
                 // TODO: set state from openstack

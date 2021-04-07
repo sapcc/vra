@@ -9,21 +9,21 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { VcenterPluginService } from "../../services/VcenterPluginService";
-import { BaseVmContext } from "../../types/vm/BaseVmContext";
+import { DetachNicFromVmContext } from "../../types/nic/DetachNicFromVmContext";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
 
-export class ResolveVcenterVm extends Task {
+export class RetrieveCurrentVmNicsMacAddress extends Task {
     private readonly logger: Logger;
-    private readonly context: BaseVmContext;
+    private readonly context: DetachNicFromVmContext;
     private vCenterPluginService: VcenterPluginService;
 
-    constructor(context: BaseVmContext) {
+    constructor(context: DetachNicFromVmContext) {
         super(context);
-        
+
         this.context = context;
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.tasks.vm/ResolveVcenterVm");
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.nic/RetrieveCurrentVmNicsMacAddress");
     }
 
     prepare() {
@@ -31,21 +31,14 @@ export class ResolveVcenterVm extends Task {
     }
 
     validate() {
-        if (!this.context.machineId) {
-            throw Error("'machineId' is not set!");
+        if (!this.context.vcVM) {
+            throw Error("'vcVM' is not set!");
         }
     }
 
     execute() {
-        const { machineId } = this.context;
-        const vcVM = this.vCenterPluginService.getVmById(machineId);
-
-        if (!vcVM) {
-            throw Error(`Cannot get vCenter VM! Reason: No VM found with instanceUUID '${machineId}'.`);
-        }
-
-        this.logger.info(`Found VM from vCenter with name '${vcVM.name}'.`);
+        const { vcVM } = this.context;
         
-        this.context.vcVM = vcVM;
+        this.context.macAddresses = this.vCenterPluginService.getNics(vcVM).map((nic: any) => nic.macAddress);
     }
 }

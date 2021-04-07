@@ -13,12 +13,12 @@ import { ConfigurationAccessor } from "../../elements/accessors/ConfigurationAcc
 import { Config } from "../../elements/configs/Config.conf";
 import { CreateNics } from "../../tasks/nic/CreateNics";
 import { DestroyNics } from "../../tasks/nic/DestroyNics";
-import { GetCurrentVmNicsMacAddress } from "../../tasks/nic/GetCurrentVmNicsMacAddress";
+import { RetrieveCurrentVmNicsMacAddress } from "../../tasks/nic/RetrieveCurrentVmNicsMacAddress";
 import { ReconfigureNetworksPorts } from "../../tasks/nic/ReconfigureNetworksPorts";
 import { ReconfigureVmNics } from "../../tasks/nic/ReconfigureVmNetworks";
 import { PowerOffVm } from "../../tasks/vm/PowerOffVm";
 import { PowerOnVm } from "../../tasks/vm/PowerOnVm";
-import { ResolveVcenterVm } from "../../tasks/vm/ResolveVcenterVm";
+import { RetrieveVcenterVm } from "../../tasks/vm/RetrieveVcenterVm";
 import { RetrieveVmDetailsFromResource } from "../../tasks/vm/RetrieveVmDetailsFromResource";
 import { AttachVolumeToVm } from "../../tasks/volume/AttachVolumeToVm";
 import { UpdateVmContext } from "../../types/vm/UpdateVmContext";
@@ -57,16 +57,16 @@ export class UpdateVmWorkflow {
         const pipeline = new PipelineBuilder()
             .name("Update VM")
             .context(initialContext)
-            .stage("Prepare VM")
+            .stage("Retrieve VM details")
             .exec(
-                ResolveVcenterVm,
+                RetrieveVcenterVm,
                 PowerOffVm,
-                RetrieveVmDetailsFromResource
+                RetrieveVmDetailsFromResource,
+                RetrieveCurrentVmNicsMacAddress
             )
             .done()
-            .stage("Detach nics from VM", (context: UpdateVmContext) => context.networkDetails.length)
+            .stage("Detach nics from VM", (context: UpdateVmContext) => context.macAddresses.length)
             .exec(
-                GetCurrentVmNicsMacAddress,
                 DestroyNics
             )
             .done()
