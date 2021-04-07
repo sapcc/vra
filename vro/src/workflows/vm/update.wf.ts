@@ -64,20 +64,20 @@ export class UpdateVmWorkflow {
                 RetrieveVmDetailsFromResource
             )
             .done()
-            .stage("Detach nics from VM")
+            .stage("Detach nics from VM", (context: UpdateVmContext) => context.networkDetails.length)
             .exec(
                 GetCurrentVmNicsMacAddress,
                 DestroyNics
             )
             .done()
-            .stage("Attach nics to VM")
+            .stage("Attach nics to VM", (context: UpdateVmContext) => context.networkDetails.length)
             .exec(
                 CreateNics,
                 ReconfigureVmNics,
                 ReconfigureNetworksPorts
             )
             .done()
-            .stage("Attach additional volumes to VM")
+            .stage("Attach additional volumes to VM", (context: UpdateVmContext) => context.storageDetails.length)
             .exec(
                 AttachVolumeToVm
             )
