@@ -9,5 +9,6 @@
  */
 export interface BaseVmContext {
     machineId: string;
+    operation?: string;
     vcVM?: VcVirtualMachine;
 }
