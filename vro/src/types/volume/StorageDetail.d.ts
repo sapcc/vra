@@ -8,7 +8,5 @@
  * #L%
  */
 export type StorageDetail = {
-    volumeId: string;
-    resourceName: string;
-    vmId?: string;
+    blockDeviceId: string;
 };

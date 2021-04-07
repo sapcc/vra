@@ -12,7 +12,7 @@ import { AttachMachineDiskParameters } from "com.vmware.pscoe.ts.vra.iaas/models
 import { DiskAttachmentSpecification } from "com.vmware.pscoe.ts.vra.iaas/models/DiskAttachmentSpecification";
 import { MachinesService } from "com.vmware.pscoe.ts.vra.iaas/services/MachinesService";
 import { VraClientCreator } from "../../factories/creators/VraClientCreator";
-import { AttachVolumeContext } from "../../types/volume/AttachVolumeContext";
+import { AttachVolumeToVmContext } from "../../types/volume/AttachVolumeToVmContext";
 import { validateResponse } from "../../utils";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
@@ -20,10 +20,10 @@ const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Tas
 
 export class AttachVolumeToVm extends Task {
     private readonly logger: Logger;
-    private readonly context: AttachVolumeContext;
+    private readonly context: AttachVolumeToVmContext;
     private machinesService: MachinesService;
 
-    constructor(context: AttachVolumeContext) {
+    constructor(context: AttachVolumeToVmContext) {
         super(context);
 
         this.context = context;
@@ -35,28 +35,32 @@ export class AttachVolumeToVm extends Task {
     }
 
     validate() {
+        if (!this.context.resourceId) {
+            throw Error("'resourceId' is not set!");
+        }
+        
         if (!this.context.storageDetails) {
             throw Error("'storageDetails' is not set!");
         }
     }
 
     execute() {
-        const { storageDetails } = this.context;
+        const { storageDetails, resourceId } = this.context;
 
-        storageDetails.forEach(({ volumeId, vmId }) => {
-            this.logger.info(`Attaching volume with id '${volumeId}' to vm with id '${vmId}'.`);
+        storageDetails.forEach(({ blockDeviceId }) => {
+            this.logger.info(`Attaching volume with id '${blockDeviceId}' to vm with id '${resourceId}'.`);
 
             const params: AttachMachineDiskParameters = {
-                path_id: vmId,
+                path_id: resourceId,
                 body_body: {
-                    blockDeviceId: volumeId
+                    blockDeviceId
                 } as DiskAttachmentSpecification
             };
             const response = this.machinesService.attachMachineDisk(params);
 
             validateResponse(response);
 
-            this.logger.info(`Attached volume with id '${volumeId}' to vm with id '${vmId}'.`);
+            this.logger.info(`Attached volume with id '${blockDeviceId}' to vm with id '${resourceId}'.`);
         });
     }
 }

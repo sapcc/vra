@@ -19,7 +19,8 @@ import { ReconfigureVmNics } from "../../tasks/nic/ReconfigureVmNetworks";
 import { PowerOffVm } from "../../tasks/vm/PowerOffVm";
 import { PowerOnVm } from "../../tasks/vm/PowerOnVm";
 import { ResolveVcenterVm } from "../../tasks/vm/ResolveVcenterVm";
-import { RetrieveVmNetworkDetailsFromResource } from "../../tasks/vm/RetrieveVmNetworkDetailsFromResource";
+import { RetrieveVmDetailsFromResource } from "../../tasks/vm/RetrieveVmDetailsFromResource";
+import { AttachVolumeToVm } from "../../tasks/volume/AttachVolumeToVm";
 import { UpdateVmContext } from "../../types/vm/UpdateVmContext";
 
 @Workflow({
@@ -45,7 +46,8 @@ export class UpdateVmWorkflow {
             networkDetails: [],
             nics: [],
             timeoutInSeconds,
-            sleepTimeInSeconds
+            sleepTimeInSeconds,
+            storageDetails: []
         };
 
         const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
@@ -55,28 +57,29 @@ export class UpdateVmWorkflow {
         const pipeline = new PipelineBuilder()
             .name("Update VM")
             .context(initialContext)
-            .stage("Power off VM")
+            .stage("Prepare VM")
             .exec(
                 ResolveVcenterVm,
-                PowerOffVm
+                PowerOffVm,
+                RetrieveVmDetailsFromResource
             )
             .done()
-            .stage("Detach nics")
+            .stage("Detach nics from VM")
             .exec(
                 GetCurrentVmNicsMacAddress,
                 DestroyNics
             )
-            .stage("Attach nics")
+            .done()
+            .stage("Attach nics to VM")
             .exec(
-                RetrieveVmNetworkDetailsFromResource,
                 CreateNics,
                 ReconfigureVmNics,
                 ReconfigureNetworksPorts
             )
             .done()
-            .stage("Attach additional volumes")
+            .stage("Attach additional volumes to VM")
             .exec(
-                //
+                AttachVolumeToVm
             )
             .done()
             .stage("Power on VM")

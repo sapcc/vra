@@ -18,7 +18,7 @@ import { stringify, validateResponse } from "../../utils";
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
 
-export class RetrieveVmNetworkDetailsFromResource extends Task {
+export class RetrieveVmDetailsFromResource extends Task {
     private readonly logger: Logger;
     private readonly context: UpdateVmContext;
     private machinesService: MachinesService;
@@ -28,7 +28,7 @@ export class RetrieveVmNetworkDetailsFromResource extends Task {
         super(context);
 
         this.context = context;
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.vm/RetrieveNetworkDetailsFromResource");
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.vm/RetrieveVmDetailsFromResource");
     }
 
     prepare() {
@@ -63,11 +63,11 @@ export class RetrieveVmNetworkDetailsFromResource extends Task {
                 // TODO: vRA id will be provided from openstack
                 const networkId = networkDetail[SEGMENT_TAG];
                 const networkPortId = networkDetail[OPEN_STACK_SEGMENT_PORT_TAG];
-                
+
                 const networkName = this.networksService.getNetwork({
                     path_id: networkId
                 }).body.name;
-                
+
                 this.context.networkDetails.push({
                     networkName,
                     macAddress: networkDetail.macAddress,
@@ -76,6 +76,20 @@ export class RetrieveVmNetworkDetailsFromResource extends Task {
             });
         } else {
             this.logger.warn("Not found network details to update.");
+        }
+
+        if (vm.customProperties.storageDetails) {
+            const storageDetails = JSON.parse(vm.customProperties?.storageDetails);
+
+            this.logger.debug(`Found following volume details to update:\n${stringify(storageDetails)}`);
+
+            storageDetails.forEach(({ blockDeviceId }) => {
+                this.context.storageDetails.push({
+                    blockDeviceId
+                });
+            });
+        } else {
+            this.logger.warn("Not found volume details to update.");
         }
     }
 }

@@ -9,6 +9,7 @@
  */
 import { StorageDetail } from "./StorageDetail";
 
-export interface AttachVolumeContext {
-    storageDetails: StorageDetail[]
+export interface AttachVolumeToVmContext {
+    resourceId: string;
+    storageDetails: StorageDetail[];
 }
