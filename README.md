@@ -43,11 +43,7 @@ TBD
       "authPassword": "VMware1!"
     }
   },
-  "pscoeLogLevel": "debug",
-  "nsxtConfig": {
-    "getPortTimeoutInSeconds": 600,
-    "getPortSleepTimeInSeconds": 20
-  }
+  "pscoeLogLevel": "debug"
 }
 ```
 

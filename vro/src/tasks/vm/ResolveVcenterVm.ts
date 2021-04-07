@@ -9,19 +9,21 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { VcenterPluginService } from "../../services/VcenterPluginService";
-import { BaseNicContext } from "../../types/nic/BaseNicContext";
+import { BaseVmContext } from "../../types/vm/BaseVmContext";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
 
 export class ResolveVcenterVm extends Task {
     private readonly logger: Logger;
+    private readonly context: BaseVmContext;
     private vCenterPluginService: VcenterPluginService;
 
-    constructor(context: BaseNicContext) {
+    constructor(context: BaseVmContext) {
         super(context);
         
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.tasks.nic/ResolveVcenterVM");
+        this.context = context;
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.tasks.vm/ResolveVcenterVm");
     }
 
     prepare() {

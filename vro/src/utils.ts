@@ -23,3 +23,8 @@ export const validateResponse = (response: any): void => {
         throw new Error(errorMessage);
     }
 };
+
+export const waitTask = (task: any) => {
+    System.getModule("com.vmware.library.vc.basic")
+        .vim3WaitTaskEnd(task, true, 2);
+};

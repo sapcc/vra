@@ -9,7 +9,6 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { CONNECT_INFO_DEFAULTS, NETWORK_DEFAULTS } from "../constants";
-import { NicsMacAddress } from "../types/nic/NicsMacAddress";
 
 const Class = System.getModule("com.vmware.pscoe.library.class").Class();
 
@@ -32,39 +31,11 @@ export class VcenterPluginService {
         return vm[0];
     };
 
-    private getNicByNumber = (vmNetworking: any, nicNumber: number) => {
-        const networkAdapters = vmNetworking.getNics()
-            .filter(nic => nic.deviceInfo.label === "Network adapter " + (nicNumber + 1));
-
-        if (!networkAdapters || networkAdapters.length !== 1) {
-            throw new Error(`Unable to find nic ${nicNumber + 1}.`);
-        }
-
-        return networkAdapters[0];
-    };
-
-    public updateVmNicsMac = (vcVM: VcVirtualMachine, macAddresses: NicsMacAddress[]): VcVirtualDeviceConfigSpec[] => {
+    public getNics = (vcVM: VcVirtualMachine): VcVirtualDeviceConfigSpec[] => {
         const Networking = Class.load("com.vmware.pscoe.library.vc", "Networking");
         const vmNetworking = new Networking(vcVM);
 
-        return macAddresses.map(({ deviceIndex, macAddress }) => {
-            const nic = this.getNicByNumber(vmNetworking, deviceIndex);
-
-            this.logger.info(`Found NIC '${nic.toString()}'.`);
-            this.logger.info(`Current MAC address: '${nic.macAddress}'.`);
-            this.logger.info(`Target MAC address: '${macAddress}'.`);
-
-            nic.macAddress = macAddress;
-
-            this.logger.info("About to prepare VcVirtualDeviceConfigSpec ...");
-
-            const deviceConfigSpec = new VcVirtualDeviceConfigSpec();
-
-            deviceConfigSpec.device = nic;
-            deviceConfigSpec.operation = VcVirtualDeviceConfigSpecOperation.edit;
-
-            return deviceConfigSpec;
-        });
+        return vmNetworking.getNics();
     };
 
     public createNic = (name: string, macAddress: string): VcVirtualDeviceConfigSpec => {

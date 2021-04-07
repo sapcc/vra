@@ -9,10 +9,15 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { Workflow } from "vrotsc-annotations";
-import { CreateNic } from "../../tasks/nic/CreateNic";
+import { PATHS } from "../../constants";
+import { ConfigurationAccessor } from "../../elements/accessors/ConfigurationAccessor";
+import { Config } from "../../elements/configs/Config.conf";
+import { CreateNics } from "../../tasks/nic/CreateNics";
 import { ReconfigureNetworksPorts } from "../../tasks/nic/ReconfigureNetworksPorts";
 import { ReconfigureVmNics } from "../../tasks/nic/ReconfigureVmNetworks";
-import { ResolveVcenterVm } from "../../tasks/nic/ResolveVcenterVm";
+import { PowerOffVm } from "../../tasks/vm/PowerOffVm";
+import { PowerOnVm } from "../../tasks/vm/PowerOnVm";
+import { ResolveVcenterVm } from "../../tasks/vm/ResolveVcenterVm";
 import { AttachNicToVmContext } from "../../types/nic/AttachNicToVmContext";
 
 @Workflow({
@@ -27,12 +32,19 @@ export class AttachNicWorkflow {
         const PipelineBuilder = VROES.import("default").from("com.vmware.pscoe.library.pipeline.PipelineBuilder");
         const ExecutionStrategy = VROES.import("default").from("com.vmware.pscoe.library.pipeline.ExecutionStrategy");
 
+        const { timeoutInSeconds, sleepTimeInSeconds } =
+                ConfigurationAccessor.loadConfig(PATHS.CONFIG, {} as Config);
+                
         const initialContext: AttachNicToVmContext = {
             machineId,
-            networkName: name,
-            macAddress,
+            networkDetails: [{
+                networkName: name,
+                macAddress,
+                networkPortId: openStackSegmentPortId
+            }],
             nics: [],
-            openStackSegmentPortIds: [openStackSegmentPortId]
+            timeoutInSeconds,
+            sleepTimeInSeconds
         };
 
         const pipeline = new PipelineBuilder()
@@ -40,14 +52,17 @@ export class AttachNicWorkflow {
             .context(initialContext)
             .stage("Create new network")
             .exec(
-                CreateNic
+                CreateNics
             )
             .done()
             .stage("Perform attach network to VM")
             .exec(
                 ResolveVcenterVm,
+                PowerOffVm,
                 ReconfigureVmNics,
-                ReconfigureNetworksPorts
+                ReconfigureNetworksPorts,
+                // TODO: set state from openstack
+                PowerOnVm
             )
             .done()
             .build();

@@ -9,8 +9,10 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { Workflow } from "vrotsc-annotations";
-import { DestroyNic } from "../../tasks/nic/DestroyNic";
-import { ResolveVcenterVm } from "../../tasks/nic/ResolveVcenterVm";
+import { DestroyNics } from "../../tasks/nic/DestroyNics";
+import { PowerOffVm } from "../../tasks/vm/PowerOffVm";
+import { PowerOnVm } from "../../tasks/vm/PowerOnVm";
+import { ResolveVcenterVm } from "../../tasks/vm/ResolveVcenterVm";
 import { DetachNicFromVmContext } from "../../types/nic/DetachNicFromVmContext";
 
 @Workflow({
@@ -27,7 +29,7 @@ export class DetachNicWorkflow {
 
         const initialContext: DetachNicFromVmContext = {
             machineId,
-            macAddress
+            macAddresses: [macAddress]
         };
 
         const pipeline = new PipelineBuilder()
@@ -36,7 +38,10 @@ export class DetachNicWorkflow {
             .stage("Perform detach Nic from VM")
             .exec(
                 ResolveVcenterVm,
-                DestroyNic
+                PowerOffVm,
+                DestroyNics,
+                // TODO: set state from openstack
+                PowerOnVm
             )
             .done()
             .build();

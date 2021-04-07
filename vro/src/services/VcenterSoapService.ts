@@ -38,8 +38,7 @@ const SOAP_REQUESTS = {
             </CreateDiskFromSnapshot_Task>\
         </soapenv:Body>\
     </soapenv:Envelope>\
-"
-};
+"};
 
 export class VcenterSoapService {
     private readonly logger: Logger;

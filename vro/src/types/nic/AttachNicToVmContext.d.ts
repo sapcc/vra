@@ -1,5 +1,3 @@
-import { BaseNicContext } from "./BaseNicContext";
-
 /*-
  * #%L
  * ccloud.vro
@@ -9,8 +7,11 @@ import { BaseNicContext } from "./BaseNicContext";
  * SAP One Strike Openstack vRA adapter - vRA/vRO Artifacts
  * #L%
  */
+import { BaseNicContext } from "./BaseNicContext";
+import { NetworkDetail } from "./NetworkDetail";
+
 export interface AttachNicToVmContext extends BaseNicContext {
-    networkName: string;
-    macAddress: string;
-    openStackSegmentPortIds: string[];
+    networkDetails: NetworkDetail[],
+    timeoutInSeconds: number;
+    sleepTimeInSeconds: number;
 }
