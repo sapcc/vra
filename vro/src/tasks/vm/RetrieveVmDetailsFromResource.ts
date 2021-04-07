@@ -10,7 +10,7 @@
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { MachinesService } from "com.vmware.pscoe.ts.vra.iaas/services/MachinesService";
 import { NetworksService } from "com.vmware.pscoe.ts.vra.iaas/services/NetworksService";
-import { OPEN_STACK_SEGMENT_PORT_TAG, SEGMENT_TAG } from "../../constants";
+import { OPEN_STACK_SEGMENT_PORT_TAG } from "../../constants";
 import { VraClientCreator } from "../../factories/creators/VraClientCreator";
 import { UpdateVmContext } from "../../types/vm/UpdateVmContext";
 import { stringify, validateResponse } from "../../utils";
@@ -60,8 +60,7 @@ export class RetrieveVmDetailsFromResource extends Task {
             this.logger.debug(`Found following network details to update:\n${stringify(networkDetails)}`);
 
             networkDetails.forEach(networkDetail => {
-                // TODO: vRA id will be provided from openstack
-                const networkId = networkDetail[SEGMENT_TAG];
+                const networkId = networkDetail["networkId"];
                 const networkPortId = networkDetail[OPEN_STACK_SEGMENT_PORT_TAG];
 
                 const networkName = this.networksService.getNetwork({

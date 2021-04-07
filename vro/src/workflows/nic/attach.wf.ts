@@ -61,7 +61,6 @@ export class AttachNicWorkflow {
                 PowerOffVm,
                 ReconfigureVmNics,
                 ReconfigureNetworksPorts,
-                // TODO: set state from openstack
                 PowerOnVm
             )
             .done()

@@ -40,7 +40,6 @@ export class DetachNicWorkflow {
                 RetrieveVcenterVm,
                 PowerOffVm,
                 DestroyNics,
-                // TODO: set state from openstack
                 PowerOnVm
             )
             .done()
