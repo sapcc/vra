@@ -40,8 +40,7 @@ export class SetSecurityGroupMembershipCriteria {
         }
         logger.debug(`Deployment ID: ${deploymentId}`);
 
-        const vraClientCreator = new VraClientCreator();
-        const securityGroupService = new SecurityGroupsService(vraClientCreator.createOperation());
+        const securityGroupService = new SecurityGroupsService(VraClientCreator.build());
         const securityGroup = securityGroupService.getSecurityGroups().body.content.filter(sg => sg.deploymentId === deploymentId)[0];
         if (!securityGroup) {
             throw new Error(`No Security group found for deployment with ID '${deploymentId}'!`);

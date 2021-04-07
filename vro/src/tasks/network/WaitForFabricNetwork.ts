@@ -30,9 +30,7 @@ export class WaitForFabricNetwork extends Task {
     }
 
     prepare() {
-        const vraClientCreator = new VraClientCreator();
-
-        this.fabricNetworkService = new FabricNetworksService(vraClientCreator.createOperation());
+        this.fabricNetworkService = new FabricNetworksService(VraClientCreator.build());
     }
 
     validate() {

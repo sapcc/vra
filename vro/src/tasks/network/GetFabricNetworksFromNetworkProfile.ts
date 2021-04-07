@@ -33,9 +33,7 @@ export class GetFabricNetworksFromNetworkProfile extends Task {
     }
 
     prepare() {
-        const vraClientCreator = new VraClientCreator();
-
-        this.networkProfilesService = new NetworkProfilesService(vraClientCreator.createOperation());
+        this.networkProfilesService = new NetworkProfilesService(VraClientCreator.build());
     }
 
     validate() {

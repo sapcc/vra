@@ -61,21 +61,24 @@ export class UpdateVmWorkflow {
                 PowerOffVm
             )
             .done()
-            .stage("Update VM network details")
+            .stage("Detach nics")
             .exec(
                 GetCurrentVmNicsMacAddress,
-                DestroyNics,
+                DestroyNics
+            )
+            .stage("Attach nics")
+            .exec(
                 RetrieveVmNetworkDetailsFromResource,
                 CreateNics,
                 ReconfigureVmNics,
                 ReconfigureNetworksPorts
             )
             .done()
-            // .stage("Update volumes")
-            // .exec(
-            //     //
-            // )
-            // .done()
+            .stage("Attach additional volumes")
+            .exec(
+                //
+            )
+            .done()
             .stage("Power on VM")
             .exec(
                 // TODO: set state from openstack

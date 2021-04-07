@@ -30,9 +30,7 @@ export class WaitForVolume extends Task {
     }
 
     prepare() {
-        const vraClientCreator = new VraClientCreator();
-
-        this.blockDevicesService = new BlockDevicesService(vraClientCreator.createOperation());
+        this.blockDevicesService = new BlockDevicesService(VraClientCreator.build());
     }
 
     validate() {

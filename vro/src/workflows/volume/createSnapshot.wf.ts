@@ -8,12 +8,12 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
+import { DeploymentsService } from "com.vmware.pscoe.ts.vra.deployment/services/DeploymentsService";
+import { BlockDevicesService } from "com.vmware.pscoe.ts.vra.iaas/services/BlockDevicesService";
 import { In, Workflow } from "vrotsc-annotations";
 import { VraClientCreator } from "../../factories/creators/VraClientCreator";
 import { BaseContext } from "../../types/BaseContext";
 import { stringify, validateResponse } from "../../utils";
-import { BlockDevicesService } from "com.vmware.pscoe.ts.vra.iaas/services/BlockDevicesService";
-import { DeploymentsService } from "com.vmware.pscoe.ts.vra.deployment/services/DeploymentsService";
 
 @Workflow({
     name: "Create Volume Snapshot",
@@ -34,9 +34,7 @@ export class CreateSnapshotOfVolumeWorkflow {
         }
         logger.debug(`Deployment ID: ${deploymentId}`);
 
-        const vraClientCreator = new VraClientCreator();
-
-        const deploymentService = new DeploymentsService(vraClientCreator.createOperation());
+        const deploymentService = new DeploymentsService(VraClientCreator.build());
         const deployment = deploymentService.getDeploymentByIdV3Using({
             "path_depId": deploymentId,
             "query_expand": ["resources"]
@@ -55,7 +53,7 @@ export class CreateSnapshotOfVolumeWorkflow {
 
         const volumeId = volume.id;
 
-        const blockDevicesService = new BlockDevicesService(vraClientCreator.createOperation());
+        const blockDevicesService = new BlockDevicesService(VraClientCreator.build());
         const response = blockDevicesService.createFirstClassDiskSnapshot({
             "path_id": volumeId,
             "body_body": {

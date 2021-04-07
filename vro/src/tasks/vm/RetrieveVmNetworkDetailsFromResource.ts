@@ -21,7 +21,6 @@ const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Tas
 export class RetrieveVmNetworkDetailsFromResource extends Task {
     private readonly logger: Logger;
     private readonly context: UpdateVmContext;
-    private vraClientCreator: VraClientCreator;
     private machinesService: MachinesService;
     private networksService: NetworksService;
 
@@ -33,9 +32,8 @@ export class RetrieveVmNetworkDetailsFromResource extends Task {
     }
 
     prepare() {
-        this.vraClientCreator = new VraClientCreator();
-        this.machinesService = new MachinesService(this.vraClientCreator.createOperation());
-        this.networksService = new NetworksService(this.vraClientCreator.createOperation());
+        this.machinesService = new MachinesService(VraClientCreator.build());
+        this.networksService = new NetworksService(VraClientCreator.build());
     }
 
     validate() {

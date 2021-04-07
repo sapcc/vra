@@ -39,7 +39,7 @@ export class CreateVolumeFromSnapshotWorkflow {
         const ExecutionStrategy = VROES.import("default").from("com.vmware.pscoe.library.pipeline.ExecutionStrategy");
 
         const pipeline = new PipelineBuilder()
-            .name("Create Volume From Snapshot")
+            .name("Create Volume from Snapshot")
             .context(initialContext)
             .stage("Get existing Volume")
             .exec(

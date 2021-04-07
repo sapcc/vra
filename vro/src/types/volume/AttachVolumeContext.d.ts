@@ -7,8 +7,8 @@
  * SAP One Strike Openstack vRA adapter - vRA/vRO Artifacts
  * #L%
  */
-import { HttpClient } from "com.vmware.pscoe.library.ts.http/HttpClient";
+import { StorageDetail } from "./StorageDetail";
 
-export interface Client {
-    create(): HttpClient 
+export interface AttachVolumeContext {
+    storageDetails: StorageDetail[]
 }
