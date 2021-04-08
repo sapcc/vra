@@ -10,7 +10,7 @@
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { MachinesService } from "com.vmware.pscoe.ts.vra.iaas/services/MachinesService";
 import { NetworksService } from "com.vmware.pscoe.ts.vra.iaas/services/NetworksService";
-import { OPEN_STACK_SEGMENT_PORT_TAG, SEGMENT_TAG } from "../../constants";
+import { OPEN_STACK_SEGMENT_PORT_TAG } from "../../constants";
 import { VraClientCreator } from "../../factories/creators/VraClientCreator";
 import { UpdateVmContext } from "../../types/vm/UpdateVmContext";
 import { stringify, validateResponse } from "../../utils";
@@ -18,10 +18,9 @@ import { stringify, validateResponse } from "../../utils";
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
 
-export class RetrieveVmNetworkDetailsFromResource extends Task {
+export class RetrieveVmDetailsFromResource extends Task {
     private readonly logger: Logger;
     private readonly context: UpdateVmContext;
-    private vraClientCreator: VraClientCreator;
     private machinesService: MachinesService;
     private networksService: NetworksService;
 
@@ -29,13 +28,12 @@ export class RetrieveVmNetworkDetailsFromResource extends Task {
         super(context);
 
         this.context = context;
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.vm/RetrieveNetworkDetailsFromResource");
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.vm/RetrieveVmDetailsFromResource");
     }
 
     prepare() {
-        this.vraClientCreator = new VraClientCreator();
-        this.machinesService = new MachinesService(this.vraClientCreator.createOperation());
-        this.networksService = new NetworksService(this.vraClientCreator.createOperation());
+        this.machinesService = new MachinesService(VraClientCreator.build());
+        this.networksService = new NetworksService(VraClientCreator.build());
     }
 
     validate() {
@@ -62,14 +60,13 @@ export class RetrieveVmNetworkDetailsFromResource extends Task {
             this.logger.debug(`Found following network details to update:\n${stringify(networkDetails)}`);
 
             networkDetails.forEach(networkDetail => {
-                // TODO: vRA id will be provided from openstack
-                const networkId = networkDetail[SEGMENT_TAG];
+                const networkId = networkDetail["networkId"];
                 const networkPortId = networkDetail[OPEN_STACK_SEGMENT_PORT_TAG];
-                
+
                 const networkName = this.networksService.getNetwork({
                     path_id: networkId
                 }).body.name;
-                
+
                 this.context.networkDetails.push({
                     networkName,
                     macAddress: networkDetail.macAddress,
@@ -78,6 +75,20 @@ export class RetrieveVmNetworkDetailsFromResource extends Task {
             });
         } else {
             this.logger.warn("Not found network details to update.");
+        }
+
+        if (vm.customProperties.storageDetails) {
+            const storageDetails = JSON.parse(vm.customProperties?.storageDetails);
+
+            this.logger.debug(`Found following volume details to update:\n${stringify(storageDetails)}`);
+
+            storageDetails.forEach(({ blockDeviceId }) => {
+                this.context.storageDetails.push({
+                    blockDeviceId
+                });
+            });
+        } else {
+            this.logger.warn("Not found volume details to update.");
         }
     }
 }

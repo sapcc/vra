@@ -1,5 +1,6 @@
 import { AttachNicToVmContext } from "../nic/AttachNicToVmContext";
 import { DetachNicFromVmContext } from "../nic/DetachNicFromVmContext";
+import { AttachVolumeToVmContext } from "../volume/AttachVolumeToVmContext";
 
 /*-
  * #%L
@@ -10,6 +11,5 @@ import { DetachNicFromVmContext } from "../nic/DetachNicFromVmContext";
  * SAP One Strike Openstack vRA adapter - vRA/vRO Artifacts
  * #L%
  */
-export interface UpdateVmContext extends DetachNicFromVmContext, AttachNicToVmContext {
-    resourceId: string;
+export interface UpdateVmContext extends DetachNicFromVmContext, AttachNicToVmContext, AttachVolumeToVmContext {
 }

@@ -33,13 +33,11 @@ export class GetExistingVolume extends Task {
         super(context);
 
         this.context = context;
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.volume/GetVolume");
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.volume/GetExistingVolume");
     }
 
     prepare() {
-        const vraClientCreator = new VraClientCreator();
-
-        this.blockDevicesService = new BlockDevicesService(vraClientCreator.createOperation());
+        this.blockDevicesService = new BlockDevicesService(VraClientCreator.build());
     }
 
     validate() {

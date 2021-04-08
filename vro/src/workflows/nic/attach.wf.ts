@@ -17,7 +17,7 @@ import { ReconfigureNetworksPorts } from "../../tasks/nic/ReconfigureNetworksPor
 import { ReconfigureVmNics } from "../../tasks/nic/ReconfigureVmNetworks";
 import { PowerOffVm } from "../../tasks/vm/PowerOffVm";
 import { PowerOnVm } from "../../tasks/vm/PowerOnVm";
-import { ResolveVcenterVm } from "../../tasks/vm/ResolveVcenterVm";
+import { RetrieveVcenterVm } from "../../tasks/vm/RetrieveVcenterVm";
 import { AttachNicToVmContext } from "../../types/nic/AttachNicToVmContext";
 
 @Workflow({
@@ -57,11 +57,10 @@ export class AttachNicWorkflow {
             .done()
             .stage("Perform attach network to VM")
             .exec(
-                ResolveVcenterVm,
+                RetrieveVcenterVm,
                 PowerOffVm,
                 ReconfigureVmNics,
                 ReconfigureNetworksPorts,
-                // TODO: set state from openstack
                 PowerOnVm
             )
             .done()

@@ -13,13 +13,14 @@ import { ConfigurationAccessor } from "../../elements/accessors/ConfigurationAcc
 import { Config } from "../../elements/configs/Config.conf";
 import { CreateNics } from "../../tasks/nic/CreateNics";
 import { DestroyNics } from "../../tasks/nic/DestroyNics";
-import { GetCurrentVmNicsMacAddress } from "../../tasks/nic/GetCurrentVmNicsMacAddress";
+import { RetrieveCurrentVmNicsMacAddress } from "../../tasks/nic/RetrieveCurrentVmNicsMacAddress";
 import { ReconfigureNetworksPorts } from "../../tasks/nic/ReconfigureNetworksPorts";
 import { ReconfigureVmNics } from "../../tasks/nic/ReconfigureVmNetworks";
 import { PowerOffVm } from "../../tasks/vm/PowerOffVm";
 import { PowerOnVm } from "../../tasks/vm/PowerOnVm";
-import { ResolveVcenterVm } from "../../tasks/vm/ResolveVcenterVm";
-import { RetrieveVmNetworkDetailsFromResource } from "../../tasks/vm/RetrieveVmNetworkDetailsFromResource";
+import { RetrieveVcenterVm } from "../../tasks/vm/RetrieveVcenterVm";
+import { RetrieveVmDetailsFromResource } from "../../tasks/vm/RetrieveVmDetailsFromResource";
+import { AttachVolumeToVm } from "../../tasks/volume/AttachVolumeToVm";
 import { UpdateVmContext } from "../../types/vm/UpdateVmContext";
 
 @Workflow({
@@ -45,7 +46,8 @@ export class UpdateVmWorkflow {
             networkDetails: [],
             nics: [],
             timeoutInSeconds,
-            sleepTimeInSeconds
+            sleepTimeInSeconds,
+            storageDetails: []
         };
 
         const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
@@ -55,30 +57,33 @@ export class UpdateVmWorkflow {
         const pipeline = new PipelineBuilder()
             .name("Update VM")
             .context(initialContext)
-            .stage("Power off VM")
+            .stage("Retrieve VM details")
             .exec(
-                ResolveVcenterVm,
-                PowerOffVm
+                RetrieveVcenterVm,
+                PowerOffVm,
+                RetrieveVmDetailsFromResource,
+                RetrieveCurrentVmNicsMacAddress
             )
             .done()
-            .stage("Update VM network details")
+            .stage("Detach nics from VM", (context: UpdateVmContext) => context.macAddresses.length)
             .exec(
-                GetCurrentVmNicsMacAddress,
-                DestroyNics,
-                RetrieveVmNetworkDetailsFromResource,
+                DestroyNics
+            )
+            .done()
+            .stage("Attach nics to VM", (context: UpdateVmContext) => context.networkDetails.length)
+            .exec(
                 CreateNics,
                 ReconfigureVmNics,
                 ReconfigureNetworksPorts
             )
             .done()
-            // .stage("Update volumes")
-            // .exec(
-            //     //
-            // )
-            // .done()
+            .stage("Attach additional volumes to VM", (context: UpdateVmContext) => context.storageDetails.length)
+            .exec(
+                AttachVolumeToVm
+            )
+            .done()
             .stage("Power on VM")
             .exec(
-                // TODO: set state from openstack
                 PowerOnVm
             )
             .done()

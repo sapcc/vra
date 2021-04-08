@@ -7,12 +7,11 @@
  * SAP One Strike Openstack vRA adapter - vRA/vRO Artifacts
  * #L%
  */
-import { VraClient } from "../clients/VraClient";
-import { Client } from "../IClient";
-import { BaseClientCreator } from "./BaseClientCreator";
+import AuthClientService from "com.vmware.pscoe.library.ts.vra.authentication/actions/AuthClientService";
 
-export class VraClientCreator extends BaseClientCreator {
-    public factoryMethod(): Client {
-        return new VraClient();
+export class VraClientCreator {
+    public static build(): AuthClientService {
+
+        return AuthClientService.withDefaultAuthentication();
     }
 }
