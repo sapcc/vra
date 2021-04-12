@@ -9,7 +9,6 @@ import { BaseVolumeContext } from "./BaseVolumeContext";
  * SAP One Strike Openstack vRA adapter - vRA/vRO Artifacts
  * #L%
  */
-export interface CreateVolumeFromSnapshotContext extends BaseVolumeContext {
-    snapshotId?: string;
-    snapshotName: string;
+export interface CloneVolumeContext extends BaseVolumeContext {
+
 }

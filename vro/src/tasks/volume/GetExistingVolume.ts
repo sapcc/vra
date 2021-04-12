@@ -12,7 +12,7 @@ import { GetBlockDevicesHttpResponse } from "com.vmware.pscoe.ts.vra.iaas/models
 import { BlockDevicesService } from "com.vmware.pscoe.ts.vra.iaas/services/BlockDevicesService";
 import { VOLUME_TAG } from "../../constants";
 import { VraClientCreator } from "../../factories/creators/VraClientCreator";
-import { CreateVolumeFromSnapshotContext } from "../../types/volume/CreateVolumeFromSnapshotContext";
+import { BaseVolumeContext } from "../../types/volume/BaseVolumeContext";
 import { stringify, validateResponse } from "../../utils";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
@@ -26,10 +26,10 @@ const VOLUME_COUNT = 1;
 
 export class GetExistingVolume extends Task {
     private readonly logger: Logger;
-    private readonly context: CreateVolumeFromSnapshotContext;
+    private readonly context: BaseVolumeContext;
     private blockDevicesService: BlockDevicesService;
 
-    constructor(context: CreateVolumeFromSnapshotContext) {
+    constructor(context: BaseVolumeContext) {
         super(context);
 
         this.context = context;
@@ -48,7 +48,7 @@ export class GetExistingVolume extends Task {
 
     execute() {
         const { existingVolumeName } = this.context;
-        
+
         const params: any = {
             query_$filter: `tags.item.key eq '${VOLUME_TAG}' and tags.item.value eq '${existingVolumeName}'`
         };
