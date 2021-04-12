@@ -10,6 +10,7 @@
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { VcenterSoapService } from "../../services/VcenterSoapService";
 import { CreateVolumeFromSnapshotContext } from "../../types/volume/CreateVolumeFromSnapshotContext";
+import { stringify } from "../../utils";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
@@ -49,7 +50,7 @@ export class RetrieveVolumeSnapshotByName extends Task {
             throw new Error(`Unable to retrieve snapshot with description '${snapshotName}'.`);
         }
 
-        this.logger.info(`Found snapshot:\n${snapshot}`);
+        this.logger.info(`Found snapshot:\n${stringify(snapshot)}`);
         
         this.context.snapshotId = snapshot.id.id;
     }
