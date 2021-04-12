@@ -13,6 +13,7 @@ import { ConfigurationAccessor } from "../elements/accessors/ConfigurationAccess
 import { Vcenter } from "../elements/configs/Vcenter.conf";
 import { CloneVolumeRequestContext } from "../types/volume/requestContexts/CloneVolumeRequestContext";
 import { CreateVolumeFromSnapshotRequestContext } from "../types/volume/requestContexts/CreateVolumeFromSnapshotRequestContext";
+import { RetrieveVolumeSnapshotsRequestContext } from "../types/volume/requestContexts/RetrieveVolumeSnapshotsContext";
 import { validateResponse } from "../utils";
 
 const Class = System.getModule("com.vmware.pscoe.library.class").Class();
@@ -22,7 +23,7 @@ const Endpoint = Class.load("com.vmware.pscoe.library.vc.soap.configuration", "E
 const RestHostFactory = System.getModule("com.vmware.pscoe.library.rest").RestHostFactory();
 
 const SOAP_REQUESTS = {
-    CREATE_VOLUME_FROM_SNAPSHOT_SOAP_REQUEST:
+    CREATE_VOLUME_FROM_SNAPSHOT:
         // eslint-disable-next-line max-len
         "<soapenv:Envelope xmlns:soapenc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\
         <soapenv:Body>\
@@ -40,7 +41,7 @@ const SOAP_REQUESTS = {
         </soapenv:Body>\
     </soapenv:Envelope>\
     ",
-    CLONE_VOLUME_SOAP_REQUEST:
+    CLONE_VOLUME:
         // eslint-disable-next-line max-len
         "<soapenv:Envelope xmlns:soapenc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\
         <soapenv:Body>\
@@ -60,7 +61,21 @@ const SOAP_REQUESTS = {
             </CloneVStorageObject_Task>\
         </soapenv:Body>\
     </soapenv:Envelope>\
-    "
+    ",
+    RETRIEVE_VOLUME_SNAPSHOTS:
+        // eslint-disable-next-line max-len
+        "<soapenv:Envelope xmlns:soapenc=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:soapenv=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\">\
+            <soapenv:Body>\
+                <RetrieveSnapshotInfo xmlns=\"urn:vim25\">\
+                    <_this type=\"VcenterVStorageObjectManager\">VStorageObjectManager</_this>\
+                    <id>\
+                        <id>{{diskId}}</id>\
+                    </id>\
+                    <datastore type=\"Datastore\">{{datastore}}</datastore>\
+                </RetrieveSnapshotInfo>\
+            </soapenv:Body>\
+        </soapenv:Envelope>\
+        "
 };
 
 export class VcenterSoapService {
@@ -78,7 +93,7 @@ export class VcenterSoapService {
 
     public createVolumeFromSnapshot(requestContext: CreateVolumeFromSnapshotRequestContext) {
         const requestBody = System.getModule("com.vmware.pscoe.library.templates.engines")
-            .mark(SOAP_REQUESTS.CREATE_VOLUME_FROM_SNAPSHOT_SOAP_REQUEST, requestContext);
+            .mark(SOAP_REQUESTS.CREATE_VOLUME_FROM_SNAPSHOT, requestContext);
 
         const response = this.soapClient.send(
             Endpoint.SDK,
@@ -93,7 +108,7 @@ export class VcenterSoapService {
 
     public cloneVolume(requestContext: CloneVolumeRequestContext) {
         const requestBody = System.getModule("com.vmware.pscoe.library.templates.engines")
-            .mark(SOAP_REQUESTS.CLONE_VOLUME_SOAP_REQUEST, requestContext);
+            .mark(SOAP_REQUESTS.CLONE_VOLUME, requestContext);
 
         const response = this.soapClient.send(
             Endpoint.SDK,
@@ -104,5 +119,30 @@ export class VcenterSoapService {
         validateResponse(response);
 
         this.logger.info(`Clone volume task:\n${response.contentAsString}`);
+    }
+
+    public retrieveVolumeSnapshots(requestContext: RetrieveVolumeSnapshotsRequestContext) {
+        const requestBody = System.getModule("com.vmware.pscoe.library.templates.engines")
+            .mark(SOAP_REQUESTS.RETRIEVE_VOLUME_SNAPSHOTS, requestContext);
+
+        const response = this.soapClient.send(
+            Endpoint.SDK,
+            [],
+            requestBody,
+            Endpoint.URN.Vim25_70);
+
+        validateResponse(response);
+
+        this.logger.info(`Retrieve volume snapshots task:\n${response.contentAsString}`);
+
+        const jsonResponse = JSON.parse(RESTUtils.xml2json(response.contentAsString));
+
+        const snapshots = jsonResponse["Envelope"]["Body"]["RetrieveSnapshotInfoResponse"]["returnval"]["snapshots"];
+
+        if (!Array.isArray(snapshots)) {
+            return [snapshots];
+        } else {
+            return snapshots;
+        }
     }
 }

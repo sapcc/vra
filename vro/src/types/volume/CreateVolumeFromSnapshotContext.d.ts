@@ -10,5 +10,6 @@ import { BaseVolumeContext } from "./BaseVolumeContext";
  * #L%
  */
 export interface CreateVolumeFromSnapshotContext extends BaseVolumeContext {
-    snapshotId: string;
+    snapshotId?: string;
+    snapshotName: string;
 }

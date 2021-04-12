@@ -49,7 +49,6 @@ export class CloneVolumeWorkflow {
             .exec(
                 CloneVolume,
                 WaitForVolume
-                //TagVolume
             )
             .done()
             .build();

@@ -14,6 +14,7 @@ import { ConfigurationAccessor } from "../../elements/accessors/ConfigurationAcc
 import { Config } from "../../elements/configs/Config.conf";
 import { CreateVolumeFromSnapshot } from "../../tasks/volume/CreateVolumeFromSnapshot";
 import { GetExistingVolume } from "../../tasks/volume/GetExistingVolume";
+import { RetrieveVolumeSnapshotByName } from "../../tasks/volume/RetrieveVolumeSnapshotByName";
 import { WaitForVolume } from "../../tasks/volume/WaitForVolume";
 import { CreateVolumeFromSnapshotContext } from "../../types/volume/CreateVolumeFromSnapshotContext";
 
@@ -29,7 +30,7 @@ export class CreateVolumeFromSnapshotWorkflow {
         const initialContext: CreateVolumeFromSnapshotContext = {
             newVolumeName: name,
             existingVolumeName: existingName,
-            snapshotId: existingSnapshot,
+            snapshotName: existingSnapshot,
             sleepTimeInSeconds,
             timeoutInSeconds
         };
@@ -43,14 +44,14 @@ export class CreateVolumeFromSnapshotWorkflow {
             .context(initialContext)
             .stage("Get existing volume")
             .exec(
-                GetExistingVolume
+                GetExistingVolume,
+                RetrieveVolumeSnapshotByName
             )
             .done()
             .stage("Perform create volume from snapshot")
             .exec(
                 CreateVolumeFromSnapshot,
                 WaitForVolume
-                //TagVolume
             )
             .done()
             .build();
