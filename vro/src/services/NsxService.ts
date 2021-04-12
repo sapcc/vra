@@ -48,6 +48,12 @@ export class NsxService {
         return response.body;
     }
 
+    public listVlanSegmentsByVlanIds(vlanId: string): Segment[] {
+        const response = this.httpClient.get(`policy/api/v1/search?query=vlan_ids:${vlanId} AND resource_type:segment`);
+
+        return (response as any).results;
+    }
+
     public deleteSegmentById(segmentId: string): boolean {
         const response = this.policyConnectivityService.deleteInfraSegment({
             "path_segment-id": segmentId
@@ -71,7 +77,7 @@ export class NsxService {
 
     public applyTagsToSegmentPort(segmentPort: SegmentPort, segmentPortTags: Tag[]) {
         segmentPort.tags = segmentPortTags;
-        
+
         const parentPathArr = segmentPort.parent_path.split("/");
         const segmentId = parentPathArr[parentPathArr.length - 1];
         const segmentPortId = segmentPort.id;
@@ -82,11 +88,11 @@ export class NsxService {
         };
 
         this.logger.debug(`Set Segment Port tags request payload: ${stringify(patchInfraPayload)}`);
-        
+
         const response = this.policyConnectivityService.patchInfraSegmentPort(patchInfraPayload);
-        
+
         this.logger.debug(`Set tags to Segment port with ID '${segmentPortId}' response: ${stringify(response)}`);
-        
+
         validateResponse(response);
 
         this.logger.info(`Segment Port tags: ${stringify(segmentPortTags)}`);
@@ -125,7 +131,7 @@ export class NsxService {
         const segment: SegmentPort = segmentResponse.body;
 
         this.logger.debug(`Segment matched by OpenStack UUID tag from NSX-T: ${stringify(segment)}`);
-        
+
         return segment;
     }
 

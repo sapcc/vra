@@ -13,20 +13,16 @@ import { PATHS, SEGMENT_TAG } from "../../constants";
 import { ConfigurationAccessor } from "../../elements/accessors/ConfigurationAccessor";
 import { Config } from "../../elements/configs/Config.conf";
 import { VlanSegment } from "../../elements/configs/VlanSegment.conf";
-import { CreateVlanSegment } from "../../tasks/network/CreateVlanSegment";
-import { GetFabricNetworksFromNetworkProfile } from "../../tasks/network/GetFabricNetworksFromNetworkProfile";
 import { TagVlanSegment } from "../../tasks/network/TagVlanSegment";
-import { UpdateFabricNetworksInNetworkProfile } from "../../tasks/network/UpdateFabricNetworksInNetworkProfile";
-import { WaitForFabricNetwork } from "../../tasks/network/WaitForFabricNetwork";
-import { CreateVlanSegmentContext } from "../../types/network/CreateVlanSegmentContext";
+import { GetSegmentFromPoolContext } from "../../types/network/GetSegmentFromPoolContext";
 
 @Workflow({
-    name: "Create Vlan Segment",
+    name: "Get Segment from Pool",
     path: "SAP/One Strike/Network"
 })
-export class CreateVlanSegmentWorkflow {
-    public execute(name: string, vlanId: string): void {
-        const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.network/CreateVlanSegmentWorkflow");
+export class GetSegmentFromPoolWorkflow {
+    public execute(poolSize: number, name: string, vlanId: string): void {
+        const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.network/GetSegmentFromPoolWorkflow");
 
         const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
         const PipelineBuilder = VROES.import("default").from("com.vmware.pscoe.library.pipeline.PipelineBuilder");
@@ -36,34 +32,24 @@ export class CreateVlanSegmentWorkflow {
         const { transportZoneId, networkProfileId } =
             ConfigurationAccessor.loadConfig(PATHS.VLAN_SEGMENT, {} as VlanSegment);
 
-        const initialContext: CreateVlanSegmentContext = {
+        const initialContext: GetSegmentFromPoolContext = {
             segmentName: name,
-            transportZoneId,
+            // TODO: get oldest segment from pool, if not present fire create and maintain
+            segment: null,
+            vlanId,
             segmentTags: [{
                 scope: SEGMENT_TAG,
                 tag: name
-            }],
-            vlanId,
-            networkProfileId,
-            currentFabricNetworkIds: [],
-            timeoutInSeconds,
-            sleepTimeInSeconds
+            }]
         };
 
         const pipeline = new PipelineBuilder()
-            .name("Create Vlan segment")
+            .name("Get Segment from Pool")
             .context(initialContext)
-            .stage("Create Vlan segment")
+            .stage("Tag vlan segment")
             .exec(
-                CreateVlanSegment,
+                // RenameVlanSegment
                 TagVlanSegment
-            )
-            .done()
-            .stage("Attach newly created Vlan segment to network profile")
-            .exec(
-                WaitForFabricNetwork,
-                GetFabricNetworksFromNetworkProfile,
-                UpdateFabricNetworksInNetworkProfile
             )
             .done()
             .build();

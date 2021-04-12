@@ -10,17 +10,17 @@
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { NsxtClientCreator } from "../../factories/creators/NsxtClientCreator";
 import { NsxService } from "../../services/NsxService";
-import { CreateVlanSegmentContext } from "../../types/network/CreateVlanSegmentContext";
+import { GetSegmentFromPoolContext } from "../../types/network/GetSegmentFromPoolContext";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
 
 export class TagVlanSegment extends Task {
     private readonly logger: Logger;
-    private readonly context: CreateVlanSegmentContext;
+    private readonly context: GetSegmentFromPoolContext;
     private nsxService: NsxService;
 
-    constructor(context: CreateVlanSegmentContext) {
+    constructor(context: GetSegmentFromPoolContext) {
         super(context);
 
         this.context = context;

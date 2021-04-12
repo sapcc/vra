@@ -1,5 +1,3 @@
-import { Segment } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Segment";
-import { Tag } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Tag";
 
 /*-
  * #%L
@@ -10,12 +8,10 @@ import { Tag } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Tag";
  * SAP One Strike Openstack vRA adapter - vRA/vRO Artifacts
  * #L%
  */
-export interface CreateVlanSegmentContext {
+export interface CreateAndMaintainVlanSegmentsContext {
     segmentName: string;
     transportZoneId: string;
     vlanId: string;
-    segment?: Segment;
-    segmentTags: Tag[];
     networkProfileId: string;
     newFabricNetworkId?: string;
     currentFabricNetworkIds: string[];

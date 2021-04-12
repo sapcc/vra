@@ -10,7 +10,7 @@
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { FabricNetworksService } from "com.vmware.pscoe.ts.vra.iaas/services/FabricNetworksService";
 import { VraClientCreator } from "../../factories/creators/VraClientCreator";
-import { CreateVlanSegmentContext } from "../../types/network/CreateVlanSegmentContext";
+import { CreateAndMaintainVlanSegmentsContext } from "../../types/network/CreateAndMaintainVlanSegmentsContext";
 import { stringify, validateResponse } from "../../utils";
 import { WaitForFabricNetworkHelper } from "./WaitForFabricNetworkHelper";
 
@@ -19,10 +19,10 @@ const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Tas
 
 export class WaitForFabricNetwork extends Task {
     private readonly logger: Logger;
-    private readonly context: CreateVlanSegmentContext;
+    private readonly context: CreateAndMaintainVlanSegmentsContext;
     private fabricNetworkService: FabricNetworksService;
 
-    constructor(context: CreateVlanSegmentContext) {
+    constructor(context: CreateAndMaintainVlanSegmentsContext) {
         super(context);
 
         this.context = context;
