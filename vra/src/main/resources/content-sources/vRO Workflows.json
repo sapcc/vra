@@ -5,8 +5,8 @@
   "typeId": "com.vmw.vro.workflow",
   "createdAt": "2021-04-07T10:04:59.602026Z",
   "createdBy": "configurationadmin",
-  "lastUpdatedAt": "2021-04-07T10:05:00.698986Z",
-  "lastUpdatedBy": "configurationadmin",
+  "lastUpdatedAt": "2021-04-13T04:48:36.252055Z",
+  "lastUpdatedBy": "system-user",
   "config": {
     "workflows": [
       {
@@ -48,12 +48,32 @@
           "endpointUri": "https://vra-l-01a.corp.local:443",
           "endpointConfigurationLink": "/resources/endpoints/512634d0-27a7-4d93-9955-afc4b512cb07"
         }
+      },
+      {
+        "id": "8cde527c-566b-36a6-b607-c0763f707a2e",
+        "name": "Create Volume from Snapshot",
+        "version": "1.0.0",
+        "integration": {
+          "name": "embedded-VRO",
+          "endpointUri": "https://vra-l-01a.corp.local:443",
+          "endpointConfigurationLink": "/resources/endpoints/512634d0-27a7-4d93-9955-afc4b512cb07"
+        }
+      },
+      {
+        "id": "809e71c7-0962-3335-85cf-a039e154eaf1",
+        "name": "Clone Volume",
+        "version": "1.0.0",
+        "integration": {
+          "name": "embedded-VRO",
+          "endpointUri": "https://vra-l-01a.corp.local:443",
+          "endpointConfigurationLink": "/resources/endpoints/512634d0-27a7-4d93-9955-afc4b512cb07"
+        }
       }
     ]
   },
-  "itemsImported": 4,
-  "itemsFound": 4,
-  "lastImportStartedAt": "2021-04-07T10:04:59.613917Z",
-  "lastImportCompletedAt": "2021-04-07T10:05:00.698562Z",
+  "itemsImported": 6,
+  "itemsFound": 6,
+  "lastImportStartedAt": "2021-04-13T04:48:35.009221Z",
+  "lastImportCompletedAt": "2021-04-13T04:48:36.251848Z",
   "global": true
 }
