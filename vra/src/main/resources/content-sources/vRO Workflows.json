@@ -3,10 +3,10 @@
   "name": "vRO Workflows",
   "description": null,
   "typeId": "com.vmw.vro.workflow",
-  "createdAt": "2021-04-07T10:04:59.602026Z",
+  "createdAt": "2021-04-13T11:55:46.897016Z",
   "createdBy": "configurationadmin",
-  "lastUpdatedAt": "2021-04-13T04:48:36.252055Z",
-  "lastUpdatedBy": "system-user",
+  "lastUpdatedAt": "2021-04-13T12:04:30.653942Z",
+  "lastUpdatedBy": "configurationadmin",
   "config": {
     "workflows": [
       {
@@ -73,7 +73,7 @@
   },
   "itemsImported": 6,
   "itemsFound": 6,
-  "lastImportStartedAt": "2021-04-13T04:48:35.009221Z",
-  "lastImportCompletedAt": "2021-04-13T04:48:36.251848Z",
+  "lastImportStartedAt": "2021-04-13T12:04:29.323137Z",
+  "lastImportCompletedAt": "2021-04-13T12:04:30.653778Z",
   "global": true
 }
