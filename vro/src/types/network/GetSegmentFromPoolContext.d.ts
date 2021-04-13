@@ -13,6 +13,7 @@ import { Tag } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Tag";
 export interface GetSegmentFromPoolContext {
     segmentName: string;
     vlanId: string;
-    segment: Segment;
+    segment?: Segment;
     segmentTags: Tag[];
+    poolSize: number;
 }

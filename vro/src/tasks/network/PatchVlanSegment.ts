@@ -15,7 +15,7 @@ import { GetSegmentFromPoolContext } from "../../types/network/GetSegmentFromPoo
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
 
-export class TagVlanSegment extends Task {
+export class PatchVlanSegment extends Task {
     private readonly logger: Logger;
     private readonly context: GetSegmentFromPoolContext;
     private nsxService: NsxService;
@@ -36,16 +36,28 @@ export class TagVlanSegment extends Task {
             throw Error("'segment' is not set!");
         }
 
+        if (!this.context.segmentName) {
+            throw Error("'segmentName' is not set!");
+        }
+
+        if (!this.context.vlanId) {
+            throw Error("'vlanId' is not set!");
+        }
+
         if (!this.context.segmentTags) {
             throw Error("'segmentTags' is not set!");
         }
     }
 
     execute() {
-        const { segment, segmentTags } = this.context;
-        
-        this.nsxService.applyTagToSegment(segment, segmentTags);
-        
-        this.logger.info("Tagged Vlan segment.");
+        const { segment, segmentName, vlanId, segmentTags } = this.context;
+
+        this.nsxService.patchSegment(segment, {
+            display_name: segmentName,
+            vlan_ids: vlanId.replace(/[ ]/g, "").split(","),
+            tags: segmentTags
+        });
+
+        this.logger.info("Vlan segment is patched.");
     }
 }

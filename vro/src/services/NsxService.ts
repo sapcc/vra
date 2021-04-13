@@ -64,12 +64,10 @@ export class NsxService {
         return true;
     }
 
-    public applyTagToSegment(segment: Segment, tags: Tag[]) {
+    public patchSegment(segment: Segment, newSegment: Segment) {
         const response = this.policyConnectivityService.patchInfraSegmentWithForceTrue({
             "path_segment-id": segment.id,
-            "body_Segment": {
-                tags
-            } as Segment
+            "body_Segment": newSegment
         } as PatchInfraSegmentWithForceTrueParameters);
 
         validateResponse(response);
@@ -105,7 +103,7 @@ export class NsxService {
      */
     public getSegPortTagsMappingToSecGroup(segment: SegmentPort, openStackSecurityGroupIds: string[]): Tag[] {
         let segmentPortTags = segment.tags || [];
-        // remove current tags mapping to SGs which will be recreated/overriden later on
+        // remove current tags mapping to SGs which will be recreated/overridden later on
         segmentPortTags = segmentPortTags.filter(tag => tag.scope !== SEGMENT_PORT_TAG_SCOPE);
 
         openStackSecurityGroupIds.forEach(openStackSecurityGroupId => {
@@ -156,5 +154,4 @@ export class NsxService {
 
         return segment;
     }
-
 }

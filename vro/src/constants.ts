@@ -40,3 +40,6 @@ export const VOLUME_TAG = "openstack_volume_id";
 // Error messages
 export const CANNOT_SET_INITIAL_TAG_SEG_PORT = "Cannot add initial tag to Segment Port! Reason:";
 export const CANNOT_GET_SEG_PORT_BY_ATTACHMENT = "Error occurred while retrieving Segment Port by attachment! NSX-T response:";
+
+export const DEFAULT_SEGMENT_TAG = "pool";
+export const DEFAULT_VLAN_ID = "0";

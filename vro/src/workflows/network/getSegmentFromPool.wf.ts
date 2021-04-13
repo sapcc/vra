@@ -10,7 +10,8 @@
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { Workflow } from "vrotsc-annotations";
 import { SEGMENT_TAG } from "../../constants";
-import { TagVlanSegment } from "../../tasks/network/TagVlanSegment";
+import { GetOldestSegmentFromPool } from "../../tasks/network/GetOldestSegmentFromPool";
+import { PatchVlanSegment } from "../../tasks/network/PatchVlanSegment";
 import { GetSegmentFromPoolContext } from "../../types/network/GetSegmentFromPoolContext";
 
 @Workflow({
@@ -27,22 +28,25 @@ export class GetSegmentFromPoolWorkflow {
 
         const initialContext: GetSegmentFromPoolContext = {
             segmentName: name,
-            // TODO: get oldest segment from pool, if not present fire create and maintain
-            segment: null,
             vlanId,
             segmentTags: [{
                 scope: SEGMENT_TAG,
                 tag: name
-            }]
+            }],
+            poolSize
         };
 
         const pipeline = new PipelineBuilder()
-            .name("Get Segment from Pool")
+            .name("Get Segment from Pool and Update")
             .context(initialContext)
-            .stage("Tag vlan segment")
+            .stage("Get Segment from Pool")
             .exec(
-                // RenameVlanSegment
-                TagVlanSegment
+                GetOldestSegmentFromPool
+            )
+            .done()
+            .stage("Apply update on segment")
+            .exec(
+                PatchVlanSegment
             )
             .done()
             .build();
