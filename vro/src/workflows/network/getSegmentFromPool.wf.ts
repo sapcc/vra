@@ -9,10 +9,7 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { Workflow } from "vrotsc-annotations";
-import { PATHS, SEGMENT_TAG } from "../../constants";
-import { ConfigurationAccessor } from "../../elements/accessors/ConfigurationAccessor";
-import { Config } from "../../elements/configs/Config.conf";
-import { VlanSegment } from "../../elements/configs/VlanSegment.conf";
+import { SEGMENT_TAG } from "../../constants";
 import { TagVlanSegment } from "../../tasks/network/TagVlanSegment";
 import { GetSegmentFromPoolContext } from "../../types/network/GetSegmentFromPoolContext";
 
@@ -27,10 +24,6 @@ export class GetSegmentFromPoolWorkflow {
         const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
         const PipelineBuilder = VROES.import("default").from("com.vmware.pscoe.library.pipeline.PipelineBuilder");
         const ExecutionStrategy = VROES.import("default").from("com.vmware.pscoe.library.pipeline.ExecutionStrategy");
-        const { timeoutInSeconds, sleepTimeInSeconds } =
-            ConfigurationAccessor.loadConfig(PATHS.CONFIG, {} as Config);
-        const { transportZoneId, networkProfileId } =
-            ConfigurationAccessor.loadConfig(PATHS.VLAN_SEGMENT, {} as VlanSegment);
 
         const initialContext: GetSegmentFromPoolContext = {
             segmentName: name,
