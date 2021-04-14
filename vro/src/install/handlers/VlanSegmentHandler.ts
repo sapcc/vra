@@ -12,13 +12,18 @@ import { PATHS } from "../../constants";
 exports = class {
     configure(input: any) {
         [
-            "transportZoneId",
-            "networkProfileId"
+            "transportZoneId"
         ].forEach(key => {
             input.readString(`vlanSegment.${key}`)
                 .required()
                 .config(PATHS.VLAN_SEGMENT)
                 .set(key);
         });
+
+        input.readRef("vlanSegment.networkProfileIds")
+            .required()
+            .list()
+            .type("string")
+            .config(PATHS.VLAN_SEGMENT).set("networkProfileIds");
     }
 };

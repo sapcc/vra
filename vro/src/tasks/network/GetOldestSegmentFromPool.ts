@@ -36,7 +36,7 @@ export class GetOldestSegmentFromPool extends Task {
         this.segments = this.nsxService.listVlanSegmentsByVlanIds(DEFAULT_VLAN_ID);
 
         if (!this.segments.length) {
-            throw new Error("Unable to get segment from the pool! Firing Create and Maintain Vlan Segments ...");
+            throw new Error("Unable to get segment from the pool! Firing Create and Maintain Vlan Segments workflow ...");
         }
 
         this.logger.info(`Current free segments count: ${this.segments.length}`);
