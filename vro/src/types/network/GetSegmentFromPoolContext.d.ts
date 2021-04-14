@@ -16,4 +16,8 @@ export interface GetSegmentFromPoolContext {
     segment?: Segment;
     segmentTags: Tag[];
     poolSize: number;
+    networkProfileId: string;
+    newFabricNetworkId?: string;
+    currentFabricNetworkIds: string[];
+    vRaNetworkId?: string;
 }

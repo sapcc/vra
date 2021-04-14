@@ -9,12 +9,7 @@
  * #L%
  */
 export interface CreateAndMaintainVlanSegmentsContext {
-    segmentName: string;
+    topUp: number;
     transportZoneId: string;
     vlanId: string;
-    networkProfileId: string;
-    newFabricNetworkId?: string;
-    currentFabricNetworkIds: string[];
-    timeoutInSeconds: number;
-    sleepTimeInSeconds: number;
 }

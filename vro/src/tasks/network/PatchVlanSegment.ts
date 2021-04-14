@@ -58,6 +58,8 @@ export class PatchVlanSegment extends Task {
             tags: segmentTags
         });
 
+        // TODO: Remove that and get real id
+        this.context.vRaNetworkId = "5";
         this.logger.info("Vlan segment is patched.");
     }
 }

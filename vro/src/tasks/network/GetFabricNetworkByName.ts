@@ -8,25 +8,26 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
+import { GetFabricNetworksHttpResponse } from "com.vmware.pscoe.ts.vra.iaas/models/GetFabricNetworksHttpResponse";
+import { GetFabricNetworksParameters } from "com.vmware.pscoe.ts.vra.iaas/models/GetFabricNetworksParameters";
 import { FabricNetworksService } from "com.vmware.pscoe.ts.vra.iaas/services/FabricNetworksService";
 import { VraClientCreator } from "../../factories/creators/VraClientCreator";
-import { CreateAndMaintainVlanSegmentsContext } from "../../types/network/CreateAndMaintainVlanSegmentsContext";
+import { GetSegmentFromPoolContext } from "../../types/network/GetSegmentFromPoolContext";
 import { stringify, validateResponse } from "../../utils";
-import { WaitForFabricNetworkHelper } from "./WaitForFabricNetworkHelper";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
 
-export class WaitForFabricNetwork extends Task {
+export class GetFabricNetworkByName extends Task {
     private readonly logger: Logger;
-    private readonly context: CreateAndMaintainVlanSegmentsContext;
+    private readonly context: GetSegmentFromPoolContext;
     private fabricNetworkService: FabricNetworksService;
 
-    constructor(context: CreateAndMaintainVlanSegmentsContext) {
+    constructor(context: GetSegmentFromPoolContext) {
         super(context);
 
         this.context = context;
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.network/WaitForFabricNetwork");
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.network/GetFabricNetworkByName");
     }
 
     prepare() {
@@ -37,22 +38,15 @@ export class WaitForFabricNetwork extends Task {
         if (!this.context.segmentName) {
             throw Error("'segmentName' is not set!");
         }
-
-        if (!this.context.timeoutInSeconds) {
-            throw Error("'timeoutInSeconds' is not set!");
-        }
-
-        if (!this.context.sleepTimeInSeconds) {
-            throw Error("'sleepTimeInSeconds' is not set!");
-        }
     }
 
     execute() {
-        this.logger.info("Waiting for Vlan segment to be collected in vRA ...");
+        const { segmentName } = this.context;
 
-        const { segmentName, timeoutInSeconds, sleepTimeInSeconds } = this.context;
-        const execution = new WaitForFabricNetworkHelper(this.fabricNetworkService, segmentName);
-        const response = execution.get(timeoutInSeconds, sleepTimeInSeconds);
+        const params: GetFabricNetworksParameters = {
+            query_$filter: `name eq '${segmentName}'`
+        };
+        const response: GetFabricNetworksHttpResponse = this.fabricNetworkService.getFabricNetworks(params);
 
         validateResponse(response);
 
