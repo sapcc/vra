@@ -9,7 +9,8 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { Segment } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Segment";
-import { DEFAULT_VLAN_ID } from "../../constants";
+import { AsyncWorkflowExecutor } from "com.vmware.pscoe.library.ts.util/AsyncWorkflowExecutor";
+import { DEFAULT_VLAN_ID, PATHS } from "../../constants";
 import { NsxtClientCreator } from "../../factories/creators/NsxtClientCreator";
 import { NsxService } from "../../services/NsxService";
 import { GetSegmentFromPoolContext } from "../../types/network/GetSegmentFromPoolContext";
@@ -36,7 +37,12 @@ export class GetOldestSegmentFromPool extends Task {
         this.segments = this.nsxService.listVlanSegmentsByVlanIds(DEFAULT_VLAN_ID);
 
         if (!this.segments.length) {
-            // TODO: Call to workflow
+            const props = new Properties();
+            const { poolSize } = this.context;
+            
+            props.put("poolSize", poolSize);
+            AsyncWorkflowExecutor.executeByFqn(PATHS.CREATE_AND_MAINTAIN_VLAN_SEGMENTS_WORKFLOW, props);
+            
             throw new Error("Unable to get segment from the pool! Fired Create and Maintain Vlan Segments workflow ...");
         }
 
@@ -44,7 +50,9 @@ export class GetOldestSegmentFromPool extends Task {
     }
 
     validate() {
-        // no-op
+        if (this.context.poolSize > 0) {
+            throw new Error("'poolSize' should be greater that zero.");   
+        }
     }
 
     execute() {

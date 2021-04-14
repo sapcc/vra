@@ -13,9 +13,10 @@ const PATH_ROOT = "SAP/One Strike";
 
 export const PATHS = {
     CONFIG: `${PATH_ROOT}/Config`,
-    VLAN_SEGMENT: `${PATH_ROOT}/VlanSegment`,
+    VLAN_SEGMENT_CONFIG: `${PATH_ROOT}/VlanSegment`,
     ENDPOINTS_CONFIG: `${PATH_ROOT}/Endpoints`,
-    ENDPOINTS_VCENTER_CONFIG: `${PATH_ROOT}/Vcenter`
+    ENDPOINTS_VCENTER_CONFIG: `${PATH_ROOT}/Vcenter`,
+    CREATE_AND_MAINTAIN_VLAN_SEGMENTS_WORKFLOW: `${PATH_ROOT}/Network/Create and Maintain Vlan Segments`
 };
 
 export const CONNECT_INFO_DEFAULTS = {

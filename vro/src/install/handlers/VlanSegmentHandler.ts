@@ -16,7 +16,7 @@ exports = class {
         ].forEach(key => {
             input.readString(`vlanSegment.${key}`)
                 .required()
-                .config(PATHS.VLAN_SEGMENT)
+                .config(PATHS.VLAN_SEGMENT_CONFIG)
                 .set(key);
         });
 
@@ -24,6 +24,6 @@ exports = class {
             .required()
             .list()
             .type("string")
-            .config(PATHS.VLAN_SEGMENT).set("networkProfileIds");
+            .config(PATHS.VLAN_SEGMENT_CONFIG).set("networkProfileIds");
     }
 };
