@@ -47,7 +47,11 @@ export class CreateVlanSegment extends Task {
         this.logger.info("Creating Vlan segment ...");
 
         const { topUp, transportZoneId, vlanId } = this.context;
-        const generatedSegmentNames = Array.from(Array(topUp, 1), () => `${DEFAULT_SEGMENT_TAG}-${System.nextUUID()}`);
+        const generatedSegmentNames = [];
+
+        for (let i = 0; i < topUp; i++) {
+            generatedSegmentNames.push(`${DEFAULT_SEGMENT_TAG}-${System.nextUUID()}`);
+        }
 
         generatedSegmentNames
             .forEach(name => {

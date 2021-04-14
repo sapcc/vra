@@ -50,7 +50,7 @@ export class GetOldestSegmentFromPool extends Task {
     }
 
     validate() {
-        if (this.context.poolSize > 0) {
+        if (this.context.poolSize <= 0) {
             throw new Error("'poolSize' should be greater that zero.");   
         }
     }
