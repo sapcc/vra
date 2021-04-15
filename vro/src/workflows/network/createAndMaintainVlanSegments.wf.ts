@@ -31,7 +31,7 @@ export class CreateAndMaintainVlanSegmentsWorkflow {
         
         const { transportZoneId } = ConfigurationAccessor.loadConfig(PATHS.VLAN_SEGMENT_CONFIG, {} as VlanSegment);
         const nsxtService = new NsxService(NsxtClientCreator.build());
-        const segments = nsxtService.listVlanSegmentsByVlanIds(DEFAULT_VLAN_ID);
+        const segments = nsxtService.listDefaultVlansPool();
         const topUp = poolSize - segments.length;
 
         logger.info("Starting create and maintain vlan segments workflow ...");

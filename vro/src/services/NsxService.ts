@@ -16,7 +16,7 @@ import { Segment } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Segment"
 import { SegmentPort } from "com.vmware.pscoe.library.ts.nsxt.policy/models/SegmentPort";
 import { Tag } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Tag";
 import { PolicyConnectivityService } from "com.vmware.pscoe.library.ts.nsxt.policy/services/PolicyConnectivityService";
-import { SEGMENT_PORT_TAG_SCOPE } from "../constants";
+import { DEFAULT_SEGMENT_TAG, DEFAULT_VLAN_ID, SEGMENT_PORT_TAG_SCOPE } from "../constants";
 import { stringify, validateResponse } from "../utils";
 import { WaitForGetSegPortByAttachment } from "../utils/http/WaitForGetSegPortByAttachment";
 
@@ -48,10 +48,27 @@ export class NsxService {
         return response.body;
     }
 
-    public listVlanSegmentsByVlanIds(vlanId: string): Segment[] {
-        const response = this.httpClient.get(`policy/api/v1/search?query=vlan_ids:${vlanId} AND resource_type:segment`);
+    public listDefaultVlansPool(): Segment[] {
+        const criteria = [{
+            key: "resource_type",
+            value: "segment"
+        }, {
+            key: "vlan_ids",
+            value: DEFAULT_VLAN_ID
+        }, {
+            key: "display_name",
+            value: `${DEFAULT_SEGMENT_TAG}*`
+        }];
+
+        const response = this.httpClient.get(this.buildSearchQuery(criteria));
 
         return (response as any).results;
+    }
+
+    private buildSearchQuery(criteria: any[]): string {
+        const searchQuery = criteria.map(({ key, value }) => `${key}:${value}`).join(" AND ");
+
+        return `policy/api/v1/search?query=${searchQuery}`;
     }
 
     public deleteSegmentById(segmentId: string): boolean {

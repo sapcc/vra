@@ -28,12 +28,13 @@ import { GetSegmentFromPoolContext } from "../../types/network/GetSegmentFromPoo
 export class GetSegmentFromPoolWorkflow {
     public execute(poolSize: number, name: string, vlanId: string, @Out outputVraNetworkId: string): void {
         const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.network/GetSegmentFromPoolWorkflow");
-
+        
         const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
         const PipelineBuilder = VROES.import("default").from("com.vmware.pscoe.library.pipeline.PipelineBuilder");
         const ExecutionStrategy = VROES.import("default").from("com.vmware.pscoe.library.pipeline.ExecutionStrategy");
         const { networkProfileIds } = ConfigurationAccessor.loadConfig(PATHS.VLAN_SEGMENT_CONFIG, {} as VlanSegment);
 
+        // check to vlan id and transport id return segment
         const initialContext: GetSegmentFromPoolContext = {
             segmentName: name,
             vlanId,
@@ -42,10 +43,12 @@ export class GetSegmentFromPoolWorkflow {
                 tag: name
             }],
             poolSize,
+            // TODO: Use project id (as input) to determine the network profile
             networkProfileId: networkProfileIds[0],
             currentFabricNetworkIds: []
         };
 
+        // TODO: Double check lock
         const pipeline = new PipelineBuilder()
             .name("Get Segment from Pool and Update")
             .context(initialContext)
@@ -57,6 +60,7 @@ export class GetSegmentFromPoolWorkflow {
             .stage("Apply update on segment")
             .exec(
                 PatchVlanSegment
+                // TODO: search by old name, search by new name or fail
                 // GetFabricNetworkByName,
                 // GetFabricNetworksFromNetworkProfile,
                 // UpdateFabricNetworksInNetworkProfile

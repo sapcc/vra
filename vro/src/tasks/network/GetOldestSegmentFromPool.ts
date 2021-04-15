@@ -10,7 +10,7 @@
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { Segment } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Segment";
 import { AsyncWorkflowExecutor } from "com.vmware.pscoe.library.ts.util/AsyncWorkflowExecutor";
-import { DEFAULT_VLAN_ID, PATHS } from "../../constants";
+import { PATHS } from "../../constants";
 import { NsxtClientCreator } from "../../factories/creators/NsxtClientCreator";
 import { NsxService } from "../../services/NsxService";
 import { GetSegmentFromPoolContext } from "../../types/network/GetSegmentFromPoolContext";
@@ -34,7 +34,7 @@ export class GetOldestSegmentFromPool extends Task {
 
     prepare() {
         this.nsxService = new NsxService(NsxtClientCreator.build());
-        this.segments = this.nsxService.listVlanSegmentsByVlanIds(DEFAULT_VLAN_ID);
+        this.segments = this.nsxService.listDefaultVlansPool();
 
         if (!this.segments.length) {
             const props = new Properties();
