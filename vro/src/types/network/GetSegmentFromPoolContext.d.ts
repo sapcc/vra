@@ -16,6 +16,7 @@ export interface GetSegmentFromPoolContext {
     segment?: Segment;
     segmentTags: Tag[];
     poolSize: number;
+    cloudAccountId: string;
     networkProfileId: string;
     newFabricNetworkId?: string;
     currentFabricNetworkIds: string[];

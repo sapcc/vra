@@ -12,8 +12,11 @@ import { Out, Workflow } from "vrotsc-annotations";
 import { PATHS, SEGMENT_TAG } from "../../constants";
 import { ConfigurationAccessor } from "../../elements/accessors/ConfigurationAccessor";
 import { VlanSegment } from "../../elements/configs/VlanSegment.conf";
+import { GetFabricNetworkByNameAndCloudAccount } from "../../tasks/network/GetFabricNetworkByNameAndCloudAccount";
+import { GetFabricNetworksFromNetworkProfile } from "../../tasks/network/GetFabricNetworksFromNetworkProfile";
 import { GetOldestSegmentFromPool } from "../../tasks/network/GetOldestSegmentFromPool";
 import { PatchVlanSegment } from "../../tasks/network/PatchVlanSegment";
+import { UpdateFabricNetworksInNetworkProfile } from "../../tasks/network/UpdateFabricNetworksInNetworkProfile";
 import { GetSegmentFromPoolContext } from "../../types/network/GetSegmentFromPoolContext";
 
 @Workflow({
@@ -32,7 +35,7 @@ export class GetSegmentFromPoolWorkflow {
         const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
         const PipelineBuilder = VROES.import("default").from("com.vmware.pscoe.library.pipeline.PipelineBuilder");
         const ExecutionStrategy = VROES.import("default").from("com.vmware.pscoe.library.pipeline.ExecutionStrategy");
-        const { networkProfileIds } = ConfigurationAccessor.loadConfig(PATHS.VLAN_SEGMENT_CONFIG, {} as VlanSegment);
+        const { networkProfileIds, cloudAccountId } = ConfigurationAccessor.loadConfig(PATHS.VLAN_SEGMENT_CONFIG, {} as VlanSegment);
 
         // check to vlan id and transport id return segment
         const initialContext: GetSegmentFromPoolContext = {
@@ -45,6 +48,7 @@ export class GetSegmentFromPoolWorkflow {
             poolSize,
             // TODO: Use project id (as input) to determine the network profile
             networkProfileId: networkProfileIds[0],
+            cloudAccountId,
             currentFabricNetworkIds: []
         };
 
@@ -59,12 +63,11 @@ export class GetSegmentFromPoolWorkflow {
             .done()
             .stage("Apply update on segment")
             .exec(
-                PatchVlanSegment
-                // TODO: search by old name, search by new name or fail
-                // GetFabricNetworkByName,
-                // GetFabricNetworksFromNetworkProfile,
-                // UpdateFabricNetworksInNetworkProfile
-                // TODO: GetNetworkId
+                PatchVlanSegment,
+                GetFabricNetworkByNameAndCloudAccount,
+                GetFabricNetworksFromNetworkProfile,
+                UpdateFabricNetworksInNetworkProfile
+                // GetNetworkId
             )
             .done()
             .build();
