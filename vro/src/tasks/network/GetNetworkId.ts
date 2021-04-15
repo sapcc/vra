@@ -49,15 +49,16 @@ export class GetNetworkId extends Task {
         const response: GetFabricNetworksHttpResponse = this.networksService.getNetworks();
 
         validateResponse(response);
-        
-        const networks = response.body.content.filter(({ name }) => name === segmentName);
-        
+
+        const networks = response.body.content.filter(({ name }) => name === segmentName ||
+            name === segment.display_name);
+
         if (networks.length !== 1) {
             throw new Error(`Unable to filter network with name '${segmentName}' / '${segment.display_name}'.`);
         }
-        
+
         this.context.vRaNetworkId = networks[0].id;
-        
+
         this.logger.info(`Found Network:\n${stringify(networks[0])}`);
     }
 }
