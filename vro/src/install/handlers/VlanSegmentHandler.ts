@@ -12,7 +12,8 @@ import { PATHS } from "../../constants";
 exports = class {
     configure(input: any) {
         [
-            "transportZoneId"
+            "transportZoneId",
+            "cloudAccountId"
         ].forEach(key => {
             input.readString(`vlanSegment.${key}`)
                 .required()

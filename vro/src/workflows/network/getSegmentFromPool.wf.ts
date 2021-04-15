@@ -14,6 +14,7 @@ import { ConfigurationAccessor } from "../../elements/accessors/ConfigurationAcc
 import { VlanSegment } from "../../elements/configs/VlanSegment.conf";
 import { GetFabricNetworkByNameAndCloudAccount } from "../../tasks/network/GetFabricNetworkByNameAndCloudAccount";
 import { GetFabricNetworksFromNetworkProfile } from "../../tasks/network/GetFabricNetworksFromNetworkProfile";
+import { GetNetworkId } from "../../tasks/network/GetNetworkId";
 import { GetOldestSegmentFromPool } from "../../tasks/network/GetOldestSegmentFromPool";
 import { PatchVlanSegment } from "../../tasks/network/PatchVlanSegment";
 import { UpdateFabricNetworksInNetworkProfile } from "../../tasks/network/UpdateFabricNetworksInNetworkProfile";
@@ -66,8 +67,8 @@ export class GetSegmentFromPoolWorkflow {
                 PatchVlanSegment,
                 GetFabricNetworkByNameAndCloudAccount,
                 GetFabricNetworksFromNetworkProfile,
-                UpdateFabricNetworksInNetworkProfile
-                // GetNetworkId
+                UpdateFabricNetworksInNetworkProfile,
+                GetNetworkId
             )
             .done()
             .build();

@@ -15,7 +15,7 @@ TBD
   "vlanSegment": {
     "transportZoneId": "a95c914d-748d-497c-94ab-10d4647daeba",
     "networkProfileIds": ["fa5f5cd5-247d-4641-a004-62ecb5b4e8b3"],
-    "cloudAccountId": "14e255a5-8c20-4471-8c41-a636bdc9ca0b
+    "cloudAccountId": "14e255a5-8c20-4471-8c41-a636bdc9ca0b"
   },
   "endpoints": {
     "vra": {
