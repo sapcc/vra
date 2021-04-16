@@ -19,7 +19,7 @@ import { stringify } from "../../utils";
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
 
-export class GetOldestSegmentFromPool extends Task {
+export class GetExistingOrDefaultSegmentFromPool extends Task {
     private readonly logger: Logger;
     private readonly context: GetSegmentFromPoolContext;
     private segments: Segment[];
@@ -29,7 +29,7 @@ export class GetOldestSegmentFromPool extends Task {
         super(context);
 
         this.context = context;
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.network/GetOldestSegmentFromPool");
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.network/GetExistingOrDefaultSegmentFromPool");
     }
 
     prepare() {
@@ -55,11 +55,52 @@ export class GetOldestSegmentFromPool extends Task {
         if (this.context.poolSize <= 0) {
             throw new Error("'poolSize' should be greater that zero.");
         }
+
+        if (!this.context.transportZoneId) {
+            throw Error("'transportZoneId' is not set!");
+        }
+
+        if (!this.context.vlanId) {
+            throw Error("'vlanId' is not set!");
+        }
+
+        if (!this.context.segmentName) {
+            throw Error("'segmentName' is not set!");
+        }
+
+        if (!this.context.segmentTags) {
+            throw Error("'segmentTags' is not set!");
+        }
     }
 
     execute() {
-        this.context.segment = [...this.segments].sort((a, b) => a._create_time - b._create_time)[0];
+        const { vlanId, transportZoneId, segmentName, segmentTags } = this.context;
 
-        this.logger.info(`Found segment:\n${stringify(this.context.segment)}`);
+        this.logger.info("Checking for existing segment ...");
+
+        const segment = this.nsxService.checkForExistingSegment(vlanId, transportZoneId);
+
+        this.logger.debug(`Result for existing segment:\n${stringify(segment)}`);
+
+        if (!segment) {
+            this.logger.info("Not found existing segment.");
+            this.logger.info("Getting oldest default segment from pool ...");
+
+            this.context.segment = [...this.segments].sort((a, b) => a._create_time - b._create_time)[0];
+
+            this.logger.info(`Found default segment:\n${stringify(this.context.segment)}`);
+
+            this.nsxService.patchSegment(this.context.segment, {
+                display_name: segmentName,
+                vlan_ids: vlanId.replace(/[ ]/g, "").split(","),
+                tags: segmentTags
+            });
+
+            this.logger.info("The segment is patched.");
+        } else {
+            this.context.hasExistingSegment = true;
+            this.context.segment = segment;
+            this.logger.info(`Found existing segment:\n${stringify(segment)}`);
+        }
     }
 }

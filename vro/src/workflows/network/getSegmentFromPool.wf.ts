@@ -12,13 +12,11 @@ import { Out, Workflow } from "vrotsc-annotations";
 import { PATHS, SEGMENT_TAG } from "../../constants";
 import { ConfigurationAccessor } from "../../elements/accessors/ConfigurationAccessor";
 import { VlanSegment } from "../../elements/configs/VlanSegment.conf";
-import { CheckForExistingVlanAndTransportZoneSegment } from "../../tasks/network/CheckForExistingVlanAndTransportZoneSegment";
+import { GetExistingOrDefaultSegmentFromPool } from "../../tasks/network/GetExistingOrDefaultSegmentFromPool";
 import { GetFabricNetworkByNameAndCloudAccount } from "../../tasks/network/GetFabricNetworkByNameAndCloudAccount";
 import { GetFabricNetworksFromNetworkProfile } from "../../tasks/network/GetFabricNetworksFromNetworkProfile";
 import { GetNetworkId } from "../../tasks/network/GetNetworkId";
-import { GetOldestSegmentFromPool } from "../../tasks/network/GetOldestSegmentFromPool";
 import { MaintainPoolSize } from "../../tasks/network/MaintainPoolSize";
-import { PatchVlanSegment } from "../../tasks/network/PatchVlanSegment";
 import { UpdateFabricNetworksInNetworkProfile } from "../../tasks/network/UpdateFabricNetworksInNetworkProfile";
 import { GetSegmentFromPoolContext } from "../../types/network/GetSegmentFromPoolContext";
 
@@ -42,17 +40,18 @@ export class GetSegmentFromPoolWorkflow {
             ConfigurationAccessor.loadConfig(PATHS.VLAN_SEGMENT_CONFIG, {} as VlanSegment);
 
         const initialContext: GetSegmentFromPoolContext = {
-            segmentName: name,
             vlanId,
             transportZoneId,
+            segment: null,
+            segmentName: name,
             segmentTags: [{
                 scope: SEGMENT_TAG,
                 tag: name
             }],
             poolSize,
+            cloudAccountId,
             // TODO: Use project id (as input) to determine the network profile
             networkProfileId: networkProfileIds[0],
-            cloudAccountId,
             currentFabricNetworkIds: [],
             hasExistingSegment: false
         };
@@ -60,16 +59,13 @@ export class GetSegmentFromPoolWorkflow {
         const pipeline = new PipelineBuilder()
             .name("Get Segment from Pool")
             .context(initialContext)
-            .stage("Check for existing segment")
+            .stage("Prepare segment")
             .exec(
-                // TODO: 1te tri v edin task
-                CheckForExistingVlanAndTransportZoneSegment
+                GetExistingOrDefaultSegmentFromPool
             )
             .done()
-            .stage("Update default segment from pool", (context: GetSegmentFromPoolContext) => !context.hasExistingSegment)
+            .stage("Update segment", (context: GetSegmentFromPoolContext) => !context.hasExistingSegment)
             .exec(
-                GetOldestSegmentFromPool,
-                PatchVlanSegment,
                 GetFabricNetworkByNameAndCloudAccount,
                 GetFabricNetworksFromNetworkProfile,
                 UpdateFabricNetworksInNetworkProfile
@@ -83,7 +79,7 @@ export class GetSegmentFromPoolWorkflow {
             .done()
             .build();
 
-        pipeline.process(ExecutionStrategy.ROLLBACK);
+        pipeline.process(ExecutionStrategy.TERMINATE);
 
         outputVraNetworkId = initialContext.vRaNetworkId;
     }
