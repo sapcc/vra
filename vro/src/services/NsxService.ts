@@ -65,6 +65,32 @@ export class NsxService {
         return (response as any).results;
     }
 
+    public checkForExistingSegment(vlanId: string, transportZoneId: string): Segment {
+        const criteria = [{
+            key: "resource_type",
+            value: "segment"
+        }, {
+            key: "vlan_ids",
+            value: vlanId
+        }, {
+            key: "transport_zone_path",
+            value: `*${transportZoneId}`
+        }];
+
+        const response = this.httpClient.get(this.buildSearchQuery(criteria));
+
+        const results = (response as any).results;
+
+        if (results.length > 1) {
+            this.logger.error(`Found more than one result:\n${stringify(results)}`);
+            throw new Error("Found more than one result.");
+        } else if (results.length === 0) {
+            return null;
+        } else {
+            return results[0];
+        }
+    }
+
     private buildSearchQuery(criteria: any[]): string {
         const searchQuery = criteria.map(({ key, value }) => `${key}:${value}`).join(" AND ");
 

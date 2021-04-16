@@ -8,16 +8,16 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
-import { GetFabricNetworksHttpResponse } from "com.vmware.pscoe.ts.vra.iaas/models/GetFabricNetworksHttpResponse";
+import { AsyncWorkflowExecutor } from "com.vmware.pscoe.library.ts.util/AsyncWorkflowExecutor";
 import { NetworksService } from "com.vmware.pscoe.ts.vra.iaas/services/NetworksService";
+import { PATHS } from "../../constants";
 import { VraClientCreator } from "../../factories/creators/VraClientCreator";
 import { GetSegmentFromPoolContext } from "../../types/network/GetSegmentFromPoolContext";
-import { stringify, validateResponse } from "../../utils";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
 
-export class GetNetworkId extends Task {
+export class MaintainPoolSize extends Task {
     private readonly logger: Logger;
     private readonly context: GetSegmentFromPoolContext;
     private networksService: NetworksService;
@@ -26,7 +26,7 @@ export class GetNetworkId extends Task {
         super(context);
 
         this.context = context;
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.network/GetNetworkId");
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.network/MaintainPoolSize");
     }
 
     prepare() {
@@ -34,26 +34,18 @@ export class GetNetworkId extends Task {
     }
 
     validate() {
-        if (!this.context.segment) {
-            throw Error("'segment' is not set!");
+        if (!this.context.poolSize) {
+            throw Error("'poolSize' is not set!");
         }
     }
 
     execute() {
-        const { segment } = this.context;
+        const { poolSize } = this.context;
+        const props = new Properties();
 
-        const response: GetFabricNetworksHttpResponse = this.networksService.getNetworks();
+        props.put("poolSize", poolSize);
 
-        validateResponse(response);
-
-        const networks = response.body.content.filter(({ externalId }) => externalId === segment.id);
-
-        if (networks.length !== 1) {
-            throw new Error(`Unable to find network with externalId - '${segment.id}'.`);
-        }
-
-        this.context.vRaNetworkId = networks[0].id;
-
-        this.logger.info(`Found Network:\n${stringify(networks[0])}`);
+        this.logger.info(`Implicitly call non-blocking ${PATHS.CREATE_AND_MAINTAIN_VLAN_SEGMENTS_WORKFLOW}`);
+        AsyncWorkflowExecutor.executeByFqn(PATHS.CREATE_AND_MAINTAIN_VLAN_SEGMENTS_WORKFLOW, props);
     }
 }

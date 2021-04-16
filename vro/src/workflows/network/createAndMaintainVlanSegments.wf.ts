@@ -24,11 +24,11 @@ import { CreateAndMaintainVlanSegmentsContext } from "../../types/network/Create
 export class CreateAndMaintainVlanSegmentsWorkflow {
     public execute(poolSize: number): void {
         const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.network/CreateAndMaintainVlanSegmentsWorkflow");
-        
+
         const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
         const PipelineBuilder = VROES.import("default").from("com.vmware.pscoe.library.pipeline.PipelineBuilder");
         const ExecutionStrategy = VROES.import("default").from("com.vmware.pscoe.library.pipeline.ExecutionStrategy");
-        
+
         const { transportZoneId } = ConfigurationAccessor.loadConfig(PATHS.VLAN_SEGMENT_CONFIG, {} as VlanSegment);
         const nsxtService = new NsxService(NsxtClientCreator.build());
         const segments = nsxtService.listDefaultVlansPool();
@@ -41,8 +41,9 @@ export class CreateAndMaintainVlanSegmentsWorkflow {
 
         if (poolSize <= 0) {
             throw new Error("'poolSize' should be positive and non-zero value.");
-        } else if (topUp <= 0) {
-            throw new Error("'topUp' should be greater than zero.");
+        } else if (topUp === 0) {
+            logger.info("No need to top up pool with segments.");
+
         }
 
         const initialContext: CreateAndMaintainVlanSegmentsContext = {

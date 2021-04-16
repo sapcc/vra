@@ -44,7 +44,42 @@ TBD
       "authPassword": "VMware1!"
     }
   },
-  "pscoeLogLevel": "debug"
+  "logging": {
+    "name": "DefaultLoggerConfiguration",
+    "root": {
+      "level": "info",
+      "AppenderRef": [{ "ref": "System" }, { "ref": "Server" }]
+    },
+    "loggers": {
+      "com.vmware.pscoe.library": {
+        "level": "debug",
+        "AppenderRef": [{ "ref": "System" }]
+      },
+      "com.vmware.pscoe": {
+        "level": "info",
+        "AppenderRef": [{ "ref": "System" }]
+      }
+    },
+    "appenders": {
+      "System": {
+        "modulePath": "com.vmware.pscoe.library.logging.appenders",
+        "moduleName": "SystemAppender"
+      },
+      "Server": {
+        "modulePath": "com.vmware.pscoe.library.logging.appenders",
+        "moduleName": "ServerAppender"
+      },
+      "ResourceElement": {
+        "modulePath": "com.vmware.pscoe.library.logging.appenders",
+        "moduleName": "ResourceElementAppender",
+        "baseCategoryPath": "Logging",
+        "resolver": "PerExecution",
+        "resolver": "Singleton",
+        "maxSize": 10,
+        "resourcePrefixElementName": "Workflows_Log"
+      }
+    }
+  }
 }
 ```
 

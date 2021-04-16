@@ -39,11 +39,13 @@ export class GetOldestSegmentFromPool extends Task {
         if (!this.segments.length) {
             const props = new Properties();
             const { poolSize } = this.context;
-            
+
             props.put("poolSize", poolSize);
+            this.logger.info(`Implicitly call non-blocking ${PATHS.CREATE_AND_MAINTAIN_VLAN_SEGMENTS_WORKFLOW}`);
+
             AsyncWorkflowExecutor.executeByFqn(PATHS.CREATE_AND_MAINTAIN_VLAN_SEGMENTS_WORKFLOW, props);
-            
-            throw new Error("Unable to get segment from the pool! Fired Create and Maintain Vlan Segments workflow ...");
+
+            throw new Error("Unable to get segment from the pool!");
         }
 
         this.logger.info(`Current free segments count: ${this.segments.length}`);
@@ -51,7 +53,7 @@ export class GetOldestSegmentFromPool extends Task {
 
     validate() {
         if (this.context.poolSize <= 0) {
-            throw new Error("'poolSize' should be greater that zero.");   
+            throw new Error("'poolSize' should be greater that zero.");
         }
     }
 
