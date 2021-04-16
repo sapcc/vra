@@ -10,15 +10,15 @@ import { Tag } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Tag";
  * SAP One Strike Openstack vRA adapter - vRA/vRO Artifacts
  * #L%
  */
-export interface CreateVlanSegmentContext {
+export interface GetSegmentFromPoolContext {
     segmentName: string;
-    transportZoneId: string;
     vlanId: string;
     segment?: Segment;
     segmentTags: Tag[];
+    poolSize: number;
+    cloudAccountId: string;
     networkProfileId: string;
     newFabricNetworkId?: string;
     currentFabricNetworkIds: string[];
-    timeoutInSeconds: number;
-    sleepTimeInSeconds: number;
+    vRaNetworkId?: string;
 }

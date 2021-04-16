@@ -13,9 +13,10 @@ const PATH_ROOT = "SAP/One Strike";
 
 export const PATHS = {
     CONFIG: `${PATH_ROOT}/Config`,
-    VLAN_SEGMENT: `${PATH_ROOT}/VlanSegment`,
+    VLAN_SEGMENT_CONFIG: `${PATH_ROOT}/VlanSegment`,
     ENDPOINTS_CONFIG: `${PATH_ROOT}/Endpoints`,
-    ENDPOINTS_VCENTER_CONFIG: `${PATH_ROOT}/Vcenter`
+    ENDPOINTS_VCENTER_CONFIG: `${PATH_ROOT}/Vcenter`,
+    CREATE_AND_MAINTAIN_VLAN_SEGMENTS_WORKFLOW: `${PATH_ROOT}/Network/Create and Maintain Vlan Segments`
 };
 
 export const CONNECT_INFO_DEFAULTS = {
@@ -40,3 +41,6 @@ export const VOLUME_TAG = "openstack_volume_id";
 // Error messages
 export const CANNOT_SET_INITIAL_TAG_SEG_PORT = "Cannot add initial tag to Segment Port! Reason:";
 export const CANNOT_GET_SEG_PORT_BY_ATTACHMENT = "Error occurred while retrieving Segment Port by attachment! NSX-T response:";
+
+export const DEFAULT_SEGMENT_TAG = "pool";
+export const DEFAULT_VLAN_ID = "0";

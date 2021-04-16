@@ -50,7 +50,8 @@ export class GetExistingVolume extends Task {
         const { existingVolumeName } = this.context;
 
         const params: any = {
-            query_$filter: `tags.item.key eq '${VOLUME_TAG}' and tags.item.value eq '${existingVolumeName}'`
+            query_$filter:
+                `(tags.item.key eq '${VOLUME_TAG}' and tags.item.value eq '${existingVolumeName}') or name eq '${existingVolumeName}'`
         };
 
         const response: GetBlockDevicesHttpResponse = this.blockDevicesService.getBlockDevices(params);

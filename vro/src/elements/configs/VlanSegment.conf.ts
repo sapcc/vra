@@ -14,10 +14,13 @@ import { Configuration } from "vrotsc-annotations";
     path: "SAP/One Strike",
     attributes: {
         transportZoneId: "string",
-        networkProfileId: "string"
+        networkProfileIds: "Array/string",
+        cloudAccountId: "string"
+
     }
 })
 export class VlanSegment {
     transportZoneId: string;
-    networkProfileId: string;
+    networkProfileIds: string[];
+    cloudAccountId: string;
 }

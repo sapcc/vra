@@ -8,9 +8,10 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
+import { DEFAULT_SEGMENT_TAG } from "../../constants";
 import { NsxtClientCreator } from "../../factories/creators/NsxtClientCreator";
 import { NsxService } from "../../services/NsxService";
-import { CreateVlanSegmentContext } from "../../types/network/CreateVlanSegmentContext";
+import { CreateAndMaintainVlanSegmentsContext } from "../../types/network/CreateAndMaintainVlanSegmentsContext";
 import { stringify } from "../../utils";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
@@ -18,10 +19,10 @@ const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Tas
 
 export class CreateVlanSegment extends Task {
     private readonly logger: Logger;
-    private readonly context: CreateVlanSegmentContext;
+    private readonly context: CreateAndMaintainVlanSegmentsContext;
     private nsxService: NsxService;
 
-    constructor(context: CreateVlanSegmentContext) {
+    constructor(context: CreateAndMaintainVlanSegmentsContext) {
         super(context);
 
         this.context = context;
@@ -33,10 +34,6 @@ export class CreateVlanSegment extends Task {
     }
 
     validate() {
-        if (!this.context.segmentName) {
-            throw Error("'segmentName' is not set!");
-        }
-
         if (!this.context.transportZoneId) {
             throw Error("'transportZoneId' is not set!");
         }
@@ -48,11 +45,21 @@ export class CreateVlanSegment extends Task {
 
     execute() {
         this.logger.info("Creating Vlan segment ...");
-        
-        const { segmentName, transportZoneId, vlanId } = this.context;
-        const segment = this.nsxService.createVlanSegments(segmentName, transportZoneId, vlanId);
-        this.context.segment = segment;
-        
-        this.logger.info(`Created Vlan segment:\n${stringify(segment)}`);
+
+        const { topUp, transportZoneId, vlanId } = this.context;
+        const generatedSegmentNames = [];
+
+        for (let i = 0; i < topUp; i++) {
+            generatedSegmentNames.push(`${DEFAULT_SEGMENT_TAG}-${System.nextUUID()}`);
+        }
+
+        generatedSegmentNames
+            .forEach(name => {
+                this.logger.info(`Creating segment with name '${name}'.`);
+
+                const segment = this.nsxService.createVlanSegments(name, transportZoneId, vlanId);
+
+                this.logger.info(`Created Vlan segment:\n${stringify(segment)}`);
+            });
     }
 }

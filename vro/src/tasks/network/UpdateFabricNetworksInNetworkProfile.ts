@@ -12,17 +12,17 @@ import { NetworkProfileSpecification } from "com.vmware.pscoe.ts.vra.iaas/models
 import { UpdateNetworkProfileParameters } from "com.vmware.pscoe.ts.vra.iaas/models/UpdateNetworkProfileParameters";
 import { NetworkProfilesService } from "com.vmware.pscoe.ts.vra.iaas/services/NetworkProfilesService";
 import { VraClientCreator } from "../../factories/creators/VraClientCreator";
-import { CreateVlanSegmentContext } from "../../types/network/CreateVlanSegmentContext";
+import { GetSegmentFromPoolContext } from "../../types/network/GetSegmentFromPoolContext";
 
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
 
 export class UpdateFabricNetworksInNetworkProfile extends Task {
     private readonly logger: Logger;
-    private readonly context: CreateVlanSegmentContext;
+    private readonly context: GetSegmentFromPoolContext;
     private networkProfilesService: NetworkProfilesService;
 
-    constructor(context: CreateVlanSegmentContext) {
+    constructor(context: GetSegmentFromPoolContext) {
         super(context);
 
         this.context = context;

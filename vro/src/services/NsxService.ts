@@ -16,7 +16,7 @@ import { Segment } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Segment"
 import { SegmentPort } from "com.vmware.pscoe.library.ts.nsxt.policy/models/SegmentPort";
 import { Tag } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Tag";
 import { PolicyConnectivityService } from "com.vmware.pscoe.library.ts.nsxt.policy/services/PolicyConnectivityService";
-import { SEGMENT_PORT_TAG_SCOPE } from "../constants";
+import { DEFAULT_SEGMENT_TAG, DEFAULT_VLAN_ID, SEGMENT_PORT_TAG_SCOPE } from "../constants";
 import { stringify, validateResponse } from "../utils";
 import { WaitForGetSegPortByAttachment } from "../utils/http/WaitForGetSegPortByAttachment";
 
@@ -48,6 +48,29 @@ export class NsxService {
         return response.body;
     }
 
+    public listDefaultVlansPool(): Segment[] {
+        const criteria = [{
+            key: "resource_type",
+            value: "segment"
+        }, {
+            key: "vlan_ids",
+            value: DEFAULT_VLAN_ID
+        }, {
+            key: "display_name",
+            value: `${DEFAULT_SEGMENT_TAG}*`
+        }];
+
+        const response = this.httpClient.get(this.buildSearchQuery(criteria));
+
+        return (response as any).results;
+    }
+
+    private buildSearchQuery(criteria: any[]): string {
+        const searchQuery = criteria.map(({ key, value }) => `${key}:${value}`).join(" AND ");
+
+        return `policy/api/v1/search?query=${searchQuery}`;
+    }
+
     public deleteSegmentById(segmentId: string): boolean {
         const response = this.policyConnectivityService.deleteInfraSegment({
             "path_segment-id": segmentId
@@ -58,12 +81,10 @@ export class NsxService {
         return true;
     }
 
-    public applyTagToSegment(segment: Segment, tags: Tag[]) {
+    public patchSegment(segment: Segment, newSegment: Segment) {
         const response = this.policyConnectivityService.patchInfraSegmentWithForceTrue({
             "path_segment-id": segment.id,
-            "body_Segment": {
-                tags
-            } as Segment
+            "body_Segment": newSegment
         } as PatchInfraSegmentWithForceTrueParameters);
 
         validateResponse(response);
@@ -71,7 +92,7 @@ export class NsxService {
 
     public applyTagsToSegmentPort(segmentPort: SegmentPort, segmentPortTags: Tag[]) {
         segmentPort.tags = segmentPortTags;
-        
+
         const parentPathArr = segmentPort.parent_path.split("/");
         const segmentId = parentPathArr[parentPathArr.length - 1];
         const segmentPortId = segmentPort.id;
@@ -82,11 +103,11 @@ export class NsxService {
         };
 
         this.logger.debug(`Set Segment Port tags request payload: ${stringify(patchInfraPayload)}`);
-        
+
         const response = this.policyConnectivityService.patchInfraSegmentPort(patchInfraPayload);
-        
+
         this.logger.debug(`Set tags to Segment port with ID '${segmentPortId}' response: ${stringify(response)}`);
-        
+
         validateResponse(response);
 
         this.logger.info(`Segment Port tags: ${stringify(segmentPortTags)}`);
@@ -99,7 +120,7 @@ export class NsxService {
      */
     public getSegPortTagsMappingToSecGroup(segment: SegmentPort, openStackSecurityGroupIds: string[]): Tag[] {
         let segmentPortTags = segment.tags || [];
-        // remove current tags mapping to SGs which will be recreated/overriden later on
+        // remove current tags mapping to SGs which will be recreated/overridden later on
         segmentPortTags = segmentPortTags.filter(tag => tag.scope !== SEGMENT_PORT_TAG_SCOPE);
 
         openStackSecurityGroupIds.forEach(openStackSecurityGroupId => {
@@ -125,7 +146,7 @@ export class NsxService {
         const segment: SegmentPort = segmentResponse.body;
 
         this.logger.debug(`Segment matched by OpenStack UUID tag from NSX-T: ${stringify(segment)}`);
-        
+
         return segment;
     }
 
@@ -150,5 +171,4 @@ export class NsxService {
 
         return segment;
     }
-
 }
