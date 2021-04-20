@@ -11,9 +11,10 @@ import { Tag } from "com.vmware.pscoe.library.ts.nsxt.policy/models/Tag";
  * #L%
  */
 export interface GetSegmentFromPoolContext {
-    segmentName: string;
     vlanId: string;
-    segment?: Segment;
+    transportZoneId: string;
+    segment: Segment;
+    segmentName: string;
     segmentTags: Tag[];
     poolSize: number;
     cloudAccountId: string;
@@ -21,4 +22,5 @@ export interface GetSegmentFromPoolContext {
     newFabricNetworkId?: string;
     currentFabricNetworkIds: string[];
     vRaNetworkId?: string;
+    hasExistingSegment: boolean;
 }

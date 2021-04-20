@@ -35,10 +35,6 @@ export class GetFabricNetworkByNameAndCloudAccount extends Task {
     }
 
     validate() {
-        if (!this.context.segmentName) {
-            throw Error("'segmentName' is not set!");
-        }
-
         if (!this.context.segment) {
             throw Error("'segment' is not set!");
         }
@@ -49,19 +45,18 @@ export class GetFabricNetworkByNameAndCloudAccount extends Task {
     }
 
     execute() {
-        const { segmentName, segment, cloudAccountId } = this.context;
+        const { segment, cloudAccountId } = this.context;
 
         const params: GetFabricNetworksParameters = {
-            query_$filter:
-                `(name eq '${segmentName}' or name eq '${segment.display_name}') and cloudAccountIds.item eq '${cloudAccountId}'`
+            query_$filter: `externalId eq '${segment.id}' and cloudAccountIds.item eq '${cloudAccountId}'`
         };
         const response: GetFabricNetworksHttpResponse = this.fabricNetworkService.getFabricNetworks(params);
 
         validateResponse(response);
 
         if (response.body.content.length !== 1) {
-            throw new Error(`Unable to filter fabric network with name '${segmentName}' / '${segment.display_name}' 
-            and cloud account with id ${cloudAccountId}.`);
+            throw new
+                Error(`Unable to filter fabric network with externalId - '${segment.id}' and cloud account with id - '${cloudAccountId}'.`);
         }
 
         this.context.newFabricNetworkId = response.body.content[0].id;

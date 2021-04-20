@@ -5,7 +5,7 @@
   "typeId": "com.vmw.vro.workflow",
   "createdAt": "2021-04-13T11:55:46.897016Z",
   "createdBy": "configurationadmin",
-  "lastUpdatedAt": "2021-04-13T12:04:30.653942Z",
+  "lastUpdatedAt": "2021-04-16T08:32:03.420051Z",
   "lastUpdatedBy": "configurationadmin",
   "config": {
     "workflows": [
@@ -23,16 +23,6 @@
         "id": "d1cdf29e-1aca-394c-90bc-9271f3b05839",
         "name": "Detach Nic",
         "version": "1.0.1",
-        "integration": {
-          "name": "embedded-VRO",
-          "endpointUri": "https://vra-l-01a.corp.local:443",
-          "endpointConfigurationLink": "/resources/endpoints/512634d0-27a7-4d93-9955-afc4b512cb07"
-        }
-      },
-      {
-        "id": "c863f36a-5ca5-3274-985e-a5b105d8bac5",
-        "name": "Create Vlan Segment",
-        "version": "1.0.0",
         "integration": {
           "name": "embedded-VRO",
           "endpointUri": "https://vra-l-01a.corp.local:443",
@@ -68,12 +58,22 @@
           "endpointUri": "https://vra-l-01a.corp.local:443",
           "endpointConfigurationLink": "/resources/endpoints/512634d0-27a7-4d93-9955-afc4b512cb07"
         }
+      },
+      {
+        "id": "a65eb35a-cd0d-3832-9ba6-400845d04e5e",
+        "name": "Get Segment from Pool",
+        "version": "1.0.0",
+        "integration": {
+          "name": "embedded-VRO",
+          "endpointUri": "https://vra-l-01a.corp.local:443",
+          "endpointConfigurationLink": "/resources/endpoints/512634d0-27a7-4d93-9955-afc4b512cb07"
+        }
       }
     ]
   },
   "itemsImported": 6,
   "itemsFound": 6,
-  "lastImportStartedAt": "2021-04-13T12:04:29.323137Z",
-  "lastImportCompletedAt": "2021-04-13T12:04:30.653778Z",
+  "lastImportStartedAt": "2021-04-16T08:32:01.885538Z",
+  "lastImportCompletedAt": "2021-04-16T08:32:03.419825Z",
   "global": true
 }

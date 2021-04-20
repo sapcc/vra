@@ -44,3 +44,4 @@ export const CANNOT_GET_SEG_PORT_BY_ATTACHMENT = "Error occurred while retrievin
 
 export const DEFAULT_SEGMENT_TAG = "pool";
 export const DEFAULT_VLAN_ID = "0";
+export const HTTP_CLIENT_RETRY_COUNT = 5;

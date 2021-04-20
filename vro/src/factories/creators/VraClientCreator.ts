@@ -8,10 +8,12 @@
  * #L%
  */
 import AuthClientService from "com.vmware.pscoe.library.ts.vra.authentication/actions/AuthClientService";
+import { HTTP_CLIENT_RETRY_COUNT } from "../../constants";
 
 export class VraClientCreator {
     public static build(): AuthClientService {
-
-        return AuthClientService.withDefaultAuthentication();
+        return AuthClientService.withDefaultAuthentication({
+            retryCount: HTTP_CLIENT_RETRY_COUNT
+        });
     }
 }
