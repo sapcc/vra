@@ -16,7 +16,7 @@ const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Tas
 
 const RESOURCE_PATH = "/resources/compute/";
 
-export class CreateOnboardingResource extends Task {
+export class CreateOnBoardingResource extends Task {
     private readonly logger: Logger;
     private readonly context: OnboardVmContext;
 
@@ -24,7 +24,7 @@ export class CreateOnboardingResource extends Task {
         super(context);
 
         this.context = context;
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.tasks.vm/CreateOnboardingResource");
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.tasks.vm/CreateOnBoardingResource");
     }
 
     prepare() {

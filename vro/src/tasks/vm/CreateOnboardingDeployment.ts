@@ -21,7 +21,7 @@ const ONBOARDING_DEPLOYMENT = {
     PATH: "/deployment/api/deployments/"
 };
 
-export class CreateOnboardingDeployment extends Task {
+export class CreateOnBoardingDeployment extends Task {
     private readonly logger: Logger;
     private readonly context: OnboardVmContext;
 
@@ -29,7 +29,7 @@ export class CreateOnboardingDeployment extends Task {
         super(context);
 
         this.context = context;
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.tasks.vm/CreateOnboardingDeployment");
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.tasks.vm/CreateOnBoardingDeployment");
     }
 
     prepare() {

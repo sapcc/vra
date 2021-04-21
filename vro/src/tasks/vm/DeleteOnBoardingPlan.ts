@@ -14,6 +14,7 @@ import { validateResponse } from "../../utils";
 const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
 const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Task");
 
+const PLAN_LINK_SEPARATOR = "/";
 export class DeleteOnBoardingPlan extends Task {
     private readonly logger: Logger;
     private readonly context: OnboardVmContext;
@@ -41,8 +42,8 @@ export class DeleteOnBoardingPlan extends Task {
 
     execute() {
         const { relocationService, planLink } = this.context;
-        const response = relocationService.deleteRelocationApiWoExecutePlanById({
-            path_id: planLink
+        const response = relocationService.deleteRelocationOnboardingPlanById({
+            path_id: planLink.split(PLAN_LINK_SEPARATOR).pop()
         });
 
         validateResponse(response);

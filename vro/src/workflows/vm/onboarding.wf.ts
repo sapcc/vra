@@ -12,9 +12,10 @@ import { MachinesService } from "com.vmware.pscoe.ts.vra.iaas/services/MachinesS
 import { RelocationService } from "com.vmware.pscoe.ts.vra.relocation/services/RelocationService";
 import { Workflow } from "vrotsc-annotations";
 import { VraClientCreator } from "../../factories/creators/VraClientCreator";
-import { CreateOnboardingDeployment } from "../../tasks/vm/CreateOnboardingDeployment";
+import { CreateOnBoardingDeployment } from "../../tasks/vm/CreateOnBoardingDeployment";
 import { CreateOnBoardingPlan } from "../../tasks/vm/CreateOnBoardingPlan";
-import { CreateOnboardingResource } from "../../tasks/vm/CreateOnboardingResource";
+import { CreateOnBoardingResource } from "../../tasks/vm/CreateOnBoardingResource";
+import { DeleteOnBoardingDeployment } from "../../tasks/vm/DeleteOnBoardingDeployment";
 import { DeleteOnBoardingPlan } from "../../tasks/vm/DeleteOnBoardingPlan";
 import { OnboardVmContext } from "../../types/vm/OnboardVmContext";
 
@@ -46,21 +47,31 @@ export class OnboardingVmWorkflow {
         const pipeline = new PipelineBuilder()
             .name("Onboard VM")
             .context(initialContext)
+            .stage("Prepare onboarding plan")
+            .exec(
+                CreateOnBoardingPlan
+            )
+            .roll(
+                DeleteOnBoardingPlan
+            )
+            .done()
+            .stage("Prepare deployment")
+            .exec(
+                CreateOnBoardingDeployment
+            )
+            .roll(
+                DeleteOnBoardingDeployment
+            )
+            .done()
             .stage("Prepare VM for onboarding")
             .exec(
-                CreateOnBoardingPlan,
-                CreateOnboardingDeployment,
-                CreateOnboardingResource
+                CreateOnBoardingResource
             )
             .done()
             .stage("Execute VM onboarding")
             .exec(
                 // WaitForOnboardingPlan
                 DeleteOnBoardingPlan
-            )
-            .roll(
-                DeleteOnBoardingPlan
-                // DeleteOnBoardingDeployment
             )
             .done()
             .build();
