@@ -20,5 +20,14 @@ exports = class {
                 .config(PATHS.CONFIG)
                 .set(key);
         });
+
+        [
+            "onboardingCloudAccountId"
+        ].forEach(key => {
+            input.readString(key)
+                .required()
+                .config(PATHS.CONFIG)
+                .set(key);
+        });
     }
 };

@@ -26,7 +26,7 @@ export class WaitForVolume extends Task {
         super(context);
 
         this.context = context;
-        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.network/WaitForVolume");
+        this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.volume/WaitForVolume");
     }
 
     prepare() {

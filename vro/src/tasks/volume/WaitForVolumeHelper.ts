@@ -19,6 +19,7 @@ export class WaitForVolumeHelper extends Future<GetFabricNetworksHttpResponse> {
 
     constructor(private readonly context: BlockDevicesService, private readonly name: string) {
         super();
+        
         this.logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.tasks.volume/WaitForVolumeHelper");
     }
 
@@ -29,6 +30,7 @@ export class WaitForVolumeHelper extends Future<GetFabricNetworksHttpResponse> {
         const response: GetBlockDevicesHttpResponse = this.context.getBlockDevices(params);
 
         validateResponse(response);
+        
         this.value = response;
 
         return response.body.content.length === 1;

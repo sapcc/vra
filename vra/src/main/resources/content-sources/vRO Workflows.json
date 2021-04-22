@@ -5,7 +5,7 @@
   "typeId": "com.vmw.vro.workflow",
   "createdAt": "2021-04-13T11:55:46.897016Z",
   "createdBy": "configurationadmin",
-  "lastUpdatedAt": "2021-04-16T08:32:03.420051Z",
+  "lastUpdatedAt": "2021-04-22T11:52:48.087088Z",
   "lastUpdatedBy": "configurationadmin",
   "config": {
     "workflows": [
@@ -68,12 +68,22 @@
           "endpointUri": "https://vra-l-01a.corp.local:443",
           "endpointConfigurationLink": "/resources/endpoints/512634d0-27a7-4d93-9955-afc4b512cb07"
         }
+      },
+      {
+        "id": "b4f68226-2cc3-328c-965e-220b2cdd118d",
+        "name": "Onboarding VM",
+        "version": "1.0.1",
+        "integration": {
+          "name": "embedded-VRO",
+          "endpointUri": "https://vra-l-01a.corp.local:443",
+          "endpointConfigurationLink": "/resources/endpoints/512634d0-27a7-4d93-9955-afc4b512cb07"
+        }
       }
     ]
   },
-  "itemsImported": 6,
-  "itemsFound": 6,
-  "lastImportStartedAt": "2021-04-16T08:32:01.885538Z",
-  "lastImportCompletedAt": "2021-04-16T08:32:03.419825Z",
+  "itemsImported": 7,
+  "itemsFound": 7,
+  "lastImportStartedAt": "2021-04-22T11:52:46.715892Z",
+  "lastImportCompletedAt": "2021-04-22T11:52:48.086910Z",
   "global": true
 }

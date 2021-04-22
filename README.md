@@ -12,6 +12,7 @@ TBD
 {
   "timeoutInSeconds": 600,
   "sleepTimeInSeconds": 15,
+  "onboardingCloudAccountId": "435c719f-5972-4876-9cb2-0ad1a6a1c7fd",
   "vlanSegment": {
     "transportZoneId": "a95c914d-748d-497c-94ab-10d4647daeba",
     "networkProfileIds": ["fa5f5cd5-247d-4641-a004-62ecb5b4e8b3"],

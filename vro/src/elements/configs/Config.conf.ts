@@ -22,10 +22,12 @@ import { Configuration } from "vrotsc-annotations";
             type: "number",
             description: "The interval (in seconds) between making requests for retrieving request.",
             value: 15
-        }
+        },
+        onboardingCloudAccountId: "string"
     }
 })
 export class Config {
     timeoutInSeconds: number;
     sleepTimeInSeconds: number;
+    onboardingCloudAccountId: string;
 }
