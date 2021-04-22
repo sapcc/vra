@@ -1,3 +1,4 @@
+import { Tag } from "com.vmware.pscoe.ts.vra.iaas/models/Tag";
 
 /*-
  * #%L
@@ -15,5 +16,9 @@ export interface OnboardVmContext {
     machineId: string;
     deploymentLink?: string;
     resourceName?: string;
+    currentMachineTags?: Tag[];
+    newMachineTags?: string[];
     deploymentId?: string;
+    timeoutInSeconds: number;
+    sleepTimeInSeconds: number;
 }

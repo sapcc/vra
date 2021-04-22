@@ -95,5 +95,6 @@ export class CreateOnBoardingDeployment extends Task {
 
         this.context.deploymentLink = responseOnboardingDeployment.body.documentSelfLink;
         this.context.resourceName = machineResponse.body.name;
+        this.context.currentMachineTags = machineResponse.body.tags || [];
     }
 }

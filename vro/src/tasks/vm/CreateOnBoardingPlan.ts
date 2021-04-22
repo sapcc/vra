@@ -41,17 +41,20 @@ export class CreateOnBoardingPlan extends Task {
         if (!this.context.projectId) {
             throw Error("'projectId' is not set!");
         }
+
+        if (!this.context.onboardingCloudAccountId) {
+            throw Error("'onboardingCloudAccountId' is not set!");
+        }
     }
 
     execute() {
-        const { projectId } = this.context;
+        const { projectId, onboardingCloudAccountId } = this.context;
         const response = this.relocationService.postRelocationOnboardingPlan({
             body_body: {
                 name: ONBOARDING_PLAN.NAME,
                 description: ONBOARDING_PLAN.DESCRIPTION,
                 projectId,
-                // TODO: Add to configuration element
-                endpointIds: ["435c719f-5972-4876-9cb2-0ad1a6a1c7fd"]
+                endpointIds: [onboardingCloudAccountId]
             }
         });
 

@@ -16,6 +16,8 @@ import { CreateOnBoardingPlan } from "../../tasks/vm/CreateOnBoardingPlan";
 import { CreateOnBoardingResource } from "../../tasks/vm/CreateOnBoardingResource";
 import { DeleteOnBoardingDeployment } from "../../tasks/vm/DeleteOnBoardingDeployment";
 import { DeleteOnBoardingPlan } from "../../tasks/vm/DeleteOnBoardingPlan";
+import { UpdateVmTags } from "../../tasks/vm/UpdateVmTags";
+import { WaitForOnBoardingPlan } from "../../tasks/vm/WaitForOnBoardingPlan";
 import { OnboardVmContext } from "../../types/vm/OnboardVmContext";
 
 @Workflow({
@@ -23,7 +25,7 @@ import { OnboardVmContext } from "../../types/vm/OnboardVmContext";
     path: "SAP/One Strike/VM"
 })
 export class OnboardingVmWorkflow {
-    public execute(name: string, projectId: string): void {
+    public execute(name: string, projectId: string, tags?: string[]): void {
         const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
         const PipelineBuilder = VROES.import("default").from("com.vmware.pscoe.library.pipeline.PipelineBuilder");
         const ExecutionStrategy = VROES.import("default").from("com.vmware.pscoe.library.pipeline.ExecutionStrategy");
@@ -34,7 +36,10 @@ export class OnboardingVmWorkflow {
         const initialContext: OnboardVmContext = {
             projectId,
             onboardingCloudAccountId,
-            machineId: name
+            machineId: name,
+            newMachineTags: tags || [],
+            timeoutInSeconds,
+            sleepTimeInSeconds
         };
 
         const pipeline = new PipelineBuilder()
@@ -63,29 +68,13 @@ export class OnboardingVmWorkflow {
             .done()
             .stage("Execute VM onboarding")
             .exec(
-                // WaitForOnboardingPlan
-                DeleteOnBoardingPlan
+                WaitForOnBoardingPlan,
+                DeleteOnBoardingPlan,
+                UpdateVmTags
             )
             .done()
             .build();
 
         pipeline.process(ExecutionStrategy.ROLLBACK);
-
-        // TODO: Update tags?
-        // const inputTags = { applicationVendor, wbsCode, costCenter, platformOwner, domain, numbering, serverType };
-        // const newTags = machine.tags || [];
-        // for (let key in inputTags) {
-        //     newTags.push({ key, value: inputTags[key] });
-        // }
-        // machinesService.updateMachine({ path_id: machineId, body_body: { tags: newTags } });
-
-        // TODO: WaitForOnboardingPlan
-        // const executionResult = relocationService.executeOnboardingPlanAndWaitToFinish(planLink);
-
-        // if (executionResult == "FAILED") {
-        //     relocationService.deleteIaasDeployment(deploymentId);
-        //     throw Error("Onboarding Plan Execution has failed, Previous operations were rolled back!");
-        // }
-
     }
 }
