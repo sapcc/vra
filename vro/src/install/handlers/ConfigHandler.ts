@@ -13,10 +13,18 @@ exports = class {
     configure(input: any) {
         [
             "timeoutInSeconds",
-            "sleepTimeInSeconds",
-            "onboardingCloudAccountId"
+            "sleepTimeInSeconds"
         ].forEach(key => {
             input.readNumber(key)
+                .required()
+                .config(PATHS.CONFIG)
+                .set(key);
+        });
+
+        [
+            "onboardingCloudAccountId"
+        ].forEach(key => {
+            input.readString(key)
                 .required()
                 .config(PATHS.CONFIG)
                 .set(key);
