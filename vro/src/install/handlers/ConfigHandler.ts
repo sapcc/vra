@@ -13,7 +13,8 @@ exports = class {
     configure(input: any) {
         [
             "timeoutInSeconds",
-            "sleepTimeInSeconds"
+            "sleepTimeInSeconds",
+            "onboardingCloudAccountId"
         ].forEach(key => {
             input.readNumber(key)
                 .required()

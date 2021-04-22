@@ -8,6 +8,8 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
+import { DeploymentsService } from "com.vmware.pscoe.ts.vra.iaas/services/DeploymentsService";
+import { VraClientCreator } from "../../factories/creators/VraClientCreator";
 import { OnboardVmContext } from "../../types/vm/OnboardVmContext";
 import { validateResponse } from "../../utils";
 
@@ -17,6 +19,7 @@ const Task = VROES.import("default").from("com.vmware.pscoe.library.pipeline.Tas
 export class DeleteOnBoardingDeployment extends Task {
     private readonly logger: Logger;
     private readonly context: OnboardVmContext;
+    private deploymentService: DeploymentsService;
 
     constructor(context: OnboardVmContext) {
         super(context);
@@ -26,22 +29,18 @@ export class DeleteOnBoardingDeployment extends Task {
     }
 
     prepare() {
-        // no-op
+        this.deploymentService = new DeploymentsService(VraClientCreator.build());
     }
 
     validate() {
-        if (!this.context.deploymentService) {
-            throw Error("'deploymentService' is not set!");
-        }
-
         if (!this.context.deploymentId) {
             throw Error("'deploymentId' is not set!");
         }
     }
 
     execute() {
-        const { deploymentService, deploymentId } = this.context;
-        const response = deploymentService.deleteDeployment({
+        const { deploymentId } = this.context;
+        const response = this.deploymentService.deleteDeployment({
             path_id: deploymentId
         });
 

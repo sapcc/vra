@@ -7,11 +7,10 @@
  * SAP One Strike Openstack vRA adapter - vRA/vRO Artifacts
  * #L%
  */
-import { DeploymentsService } from "com.vmware.pscoe.ts.vra.iaas/services/DeploymentsService";
-import { MachinesService } from "com.vmware.pscoe.ts.vra.iaas/services/MachinesService";
-import { RelocationService } from "com.vmware.pscoe.ts.vra.relocation/services/RelocationService";
 import { Workflow } from "vrotsc-annotations";
-import { VraClientCreator } from "../../factories/creators/VraClientCreator";
+import { PATHS } from "../../constants";
+import { ConfigurationAccessor } from "../../elements/accessors/ConfigurationAccessor";
+import { Config } from "../../elements/configs/Config.conf";
 import { CreateOnBoardingDeployment } from "../../tasks/vm/CreateOnBoardingDeployment";
 import { CreateOnBoardingPlan } from "../../tasks/vm/CreateOnBoardingPlan";
 import { CreateOnBoardingResource } from "../../tasks/vm/CreateOnBoardingResource";
@@ -29,19 +28,13 @@ export class OnboardingVmWorkflow {
         const PipelineBuilder = VROES.import("default").from("com.vmware.pscoe.library.pipeline.PipelineBuilder");
         const ExecutionStrategy = VROES.import("default").from("com.vmware.pscoe.library.pipeline.ExecutionStrategy");
 
-        const vraClient = VraClientCreator.build();
-
+        const { timeoutInSeconds, sleepTimeInSeconds, onboardingCloudAccountId } =
+                ConfigurationAccessor.loadConfig(PATHS.CONFIG, {} as Config);
+                
         const initialContext: OnboardVmContext = {
-            // TODO: Remove services
-            machinesService: new MachinesService(vraClient),
-            relocationService: new RelocationService(vraClient),
-            deploymentService: new DeploymentsService(vraClient),
             projectId,
-            machineId: name,
-            // TODO: Remove this
-            _features: {
-                trace: false
-            }
+            onboardingCloudAccountId,
+            machineId: name
         };
 
         const pipeline = new PipelineBuilder()

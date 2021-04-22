@@ -1,6 +1,3 @@
-import { DeploymentsService } from "com.vmware.pscoe.ts.vra.iaas/services/DeploymentsService";
-import { MachinesService } from "com.vmware.pscoe.ts.vra.iaas/services/MachinesService";
-import { RelocationService } from "com.vmware.pscoe.ts.vra.relocation/services/RelocationService";
 
 /*-
  * #%L
@@ -12,16 +9,11 @@ import { RelocationService } from "com.vmware.pscoe.ts.vra.relocation/services/R
  * #L%
  */
 export interface OnboardVmContext {
-    machinesService: MachinesService;
-    relocationService: RelocationService;
-    deploymentService: DeploymentsService;
     projectId: string;
+    onboardingCloudAccountId: string;
     planLink?: string;
     machineId: string;
     deploymentLink?: string;
     resourceName?: string;
     deploymentId?: string;
-    _features?: {
-        trace?: boolean
-    };
 }

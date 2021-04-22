@@ -8,6 +8,8 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
+import { RelocationService } from "com.vmware.pscoe.ts.vra.relocation/services/RelocationService";
+import { VraClientCreator } from "../../factories/creators/VraClientCreator";
 import { OnboardVmContext } from "../../types/vm/OnboardVmContext";
 import { validateResponse } from "../../utils";
 
@@ -22,6 +24,7 @@ const ONBOARDING_PLAN = {
 export class CreateOnBoardingPlan extends Task {
     private readonly logger: Logger;
     private readonly context: OnboardVmContext;
+    private relocationService: RelocationService;
 
     constructor(context: OnboardVmContext) {
         super(context);
@@ -31,22 +34,18 @@ export class CreateOnBoardingPlan extends Task {
     }
 
     prepare() {
-        // no-op
+        this.relocationService = new RelocationService(VraClientCreator.build());
     }
 
     validate() {
-        if (!this.context.relocationService) {
-            throw Error("'relocationService' is not set!");
-        }
-
         if (!this.context.projectId) {
             throw Error("'projectId' is not set!");
         }
     }
 
     execute() {
-        const { relocationService, projectId } = this.context;
-        const response = relocationService.postRelocationOnboardingPlan({
+        const { projectId } = this.context;
+        const response = this.relocationService.postRelocationOnboardingPlan({
             body_body: {
                 name: ONBOARDING_PLAN.NAME,
                 description: ONBOARDING_PLAN.DESCRIPTION,

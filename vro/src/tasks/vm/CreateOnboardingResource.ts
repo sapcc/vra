@@ -8,6 +8,8 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
+import { RelocationService } from "com.vmware.pscoe.ts.vra.relocation/services/RelocationService";
+import { VraClientCreator } from "../../factories/creators/VraClientCreator";
 import { OnboardVmContext } from "../../types/vm/OnboardVmContext";
 import { validateResponse } from "../../utils";
 
@@ -19,6 +21,7 @@ const RESOURCE_PATH = "/resources/compute/";
 export class CreateOnBoardingResource extends Task {
     private readonly logger: Logger;
     private readonly context: OnboardVmContext;
+    private relocationService: RelocationService;
 
     constructor(context: OnboardVmContext) {
         super(context);
@@ -28,14 +31,10 @@ export class CreateOnBoardingResource extends Task {
     }
 
     prepare() {
-        // no-op
+        this.relocationService = new RelocationService(VraClientCreator.build());
     }
 
     validate() {
-        if (!this.context.relocationService) {
-            throw Error("'relocationService' is not set!");
-        }
-
         if (!this.context.resourceName) {
             throw Error("'resourceName' is not set!");
         }
@@ -54,8 +53,8 @@ export class CreateOnBoardingResource extends Task {
     }
 
     execute() {
-        const { relocationService, resourceName, machineId, planLink, deploymentLink } = this.context;
-        const response = relocationService.postRelocationOnboardingResource({
+        const { resourceName, machineId, planLink, deploymentLink } = this.context;
+        const response = this.relocationService.postRelocationOnboardingResource({
             body_body: {
                 resourceName,
                 resourceLink: `${RESOURCE_PATH}${machineId}`,

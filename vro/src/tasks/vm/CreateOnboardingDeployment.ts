@@ -9,6 +9,10 @@
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
 import { CreateDeploymentHttpResponse } from "com.vmware.pscoe.ts.vra.iaas/models/CreateDeploymentHttpResponse";
+import { DeploymentsService } from "com.vmware.pscoe.ts.vra.iaas/services/DeploymentsService";
+import { MachinesService } from "com.vmware.pscoe.ts.vra.iaas/services/MachinesService";
+import { RelocationService } from "com.vmware.pscoe.ts.vra.relocation/services/RelocationService";
+import { VraClientCreator } from "../../factories/creators/VraClientCreator";
 import { OnboardVmContext } from "../../types/vm/OnboardVmContext";
 import { validateResponse } from "../../utils";
 
@@ -24,7 +28,10 @@ const ONBOARDING_DEPLOYMENT = {
 export class CreateOnBoardingDeployment extends Task {
     private readonly logger: Logger;
     private readonly context: OnboardVmContext;
-
+    private machinesService: MachinesService;
+    private deploymentService: DeploymentsService;
+    private relocationService: RelocationService;
+    
     constructor(context: OnboardVmContext) {
         super(context);
 
@@ -33,22 +40,14 @@ export class CreateOnBoardingDeployment extends Task {
     }
 
     prepare() {
-        // no-op
+        const httpClient = VraClientCreator.build();
+        
+        this.machinesService = new MachinesService(httpClient);
+        this.deploymentService = new DeploymentsService(httpClient);
+        this.relocationService = new RelocationService(httpClient);
     }
 
     validate() {
-        if (!this.context.machinesService) {
-            throw Error("'machinesService' is not set!");
-        }
-
-        if (!this.context.deploymentService) {
-            throw Error("'deploymentService' is not set!");
-        }
-
-        if (!this.context.relocationService) {
-            throw Error("'relocationService' is not set!");
-        }
-
         if (!this.context.machineId) {
             throw Error("'machineId' is not set!");
         }
@@ -63,15 +62,15 @@ export class CreateOnBoardingDeployment extends Task {
     }
 
     execute() {
-        const { machinesService, deploymentService, relocationService, machineId, projectId, planLink } = this.context;
-        const machineResponse = machinesService.getMachine({
+        const { machineId, projectId, planLink } = this.context;
+        const machineResponse = this.machinesService.getMachine({
             path_id: machineId
         });
 
         validateResponse(machineResponse);
 
         const deploymentName = `${ONBOARDING_DEPLOYMENT.PREFIX}${machineResponse.body.name}`;
-        const deploymentResponse: CreateDeploymentHttpResponse = deploymentService.createDeployment({
+        const deploymentResponse: CreateDeploymentHttpResponse = this.deploymentService.createDeployment({
             body_body: {
                 name: deploymentName,
                 description: ONBOARDING_DEPLOYMENT.DESCRIPTION,
@@ -84,7 +83,7 @@ export class CreateOnBoardingDeployment extends Task {
         this.context.deploymentId = deploymentResponse.body.id;
         
         const consumerDeploymentLink = `${ONBOARDING_DEPLOYMENT.PATH}${this.context.deploymentId}`;
-        const responseOnboardingDeployment = relocationService.postRelocationOnboardingDeployment({
+        const responseOnboardingDeployment = this.relocationService.postRelocationOnboardingDeployment({
             body_body: {
                 name: deploymentName,
                 consumerDeploymentLink,

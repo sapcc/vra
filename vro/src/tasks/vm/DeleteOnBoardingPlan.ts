@@ -8,6 +8,8 @@
  * #L%
  */
 import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
+import { RelocationService } from "com.vmware.pscoe.ts.vra.relocation/services/RelocationService";
+import { VraClientCreator } from "../../factories/creators/VraClientCreator";
 import { OnboardVmContext } from "../../types/vm/OnboardVmContext";
 import { validateResponse } from "../../utils";
 
@@ -18,6 +20,7 @@ const PLAN_LINK_SEPARATOR = "/";
 export class DeleteOnBoardingPlan extends Task {
     private readonly logger: Logger;
     private readonly context: OnboardVmContext;
+    private relocationService: RelocationService;
 
     constructor(context: OnboardVmContext) {
         super(context);
@@ -27,22 +30,18 @@ export class DeleteOnBoardingPlan extends Task {
     }
 
     prepare() {
-        // no-op
+        this.relocationService = new RelocationService(VraClientCreator.build());
     }
 
     validate() {
-        if (!this.context.relocationService) {
-            throw Error("'relocationService' is not set!");
-        }
-
         if (!this.context.planLink) {
             throw Error("'planLink' is not set!");
         }
     }
 
     execute() {
-        const { relocationService, planLink } = this.context;
-        const response = relocationService.deleteRelocationOnboardingPlanById({
+        const { planLink } = this.context;
+        const response = this.relocationService.deleteRelocationOnboardingPlanById({
             path_id: planLink.split(PLAN_LINK_SEPARATOR).pop()
         });
 
