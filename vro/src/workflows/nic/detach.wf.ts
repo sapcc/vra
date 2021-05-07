@@ -1,0 +1,50 @@
+/*-
+ * #%L
+ * ccloud.vro
+ * %%
+ * Copyright (C) 2021 VMware&SAP
+ * %%
+ * SAP One Strike Openstack vRA adapter - vRA/vRO Artifacts
+ * #L%
+ */
+import { Logger } from "com.vmware.pscoe.library.ts.logging/Logger";
+import { Workflow } from "vrotsc-annotations";
+import { DestroyNics } from "../../tasks/nic/DestroyNics";
+import { PowerOffVm } from "../../tasks/vm/PowerOffVm";
+import { PowerOnVm } from "../../tasks/vm/PowerOnVm";
+import { RetrieveVcenterVm } from "../../tasks/vm/RetrieveVcenterVm";
+import { DetachNicFromVmContext } from "../../types/nic/DetachNicFromVmContext";
+
+@Workflow({
+    name: "Detach Nic",
+    path: "SAP/One Strike/Nic"
+})
+export class DetachNicWorkflow {
+    public execute(machineId: string, macAddress: string): void {
+        const logger = Logger.getLogger("com.vmware.pscoe.sap.ccloud.vro.workflows.nic/DetachNicWorkflow");
+
+        const VROES = System.getModule("com.vmware.pscoe.library.ecmascript").VROES();
+        const PipelineBuilder = VROES.import("default").from("com.vmware.pscoe.library.pipeline.PipelineBuilder");
+        const ExecutionStrategy = VROES.import("default").from("com.vmware.pscoe.library.pipeline.ExecutionStrategy");
+
+        const initialContext: DetachNicFromVmContext = {
+            machineId,
+            macAddresses: [macAddress]
+        };
+
+        const pipeline = new PipelineBuilder()
+            .name("Detach Nic from VM")
+            .context(initialContext)
+            .stage("Perform detach Nic from VM")
+            .exec(
+                RetrieveVcenterVm,
+                PowerOffVm,
+                DestroyNics,
+                PowerOnVm
+            )
+            .done()
+            .build();
+
+        pipeline.process(ExecutionStrategy.TERMINATE);
+    }
+}

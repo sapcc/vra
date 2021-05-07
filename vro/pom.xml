@@ -81,12 +81,12 @@
       <groupId>com.vmware.pscoe.library.ts.vra</groupId>
       <artifactId>authentication</artifactId>
       <type>package</type>
-      <version>2.0.3</version>
+      <version>2.0.7</version>
     </dependency>
     <dependency>
       <groupId>com.vmware.pscoe.library.ts.vra</groupId>
       <artifactId>authentication</artifactId>
-      <version>2.0.3</version>
+      <version>2.0.7</version>
       <type>tgz</type>
       <scope>compile</scope>
     </dependency>
@@ -94,12 +94,12 @@
       <groupId>com.vmware.pscoe.ts.vra</groupId>
       <artifactId>iaas</artifactId>
       <type>package</type>
-      <version>2.0.3</version>
+      <version>2.0.7</version>
     </dependency>
     <dependency>
       <groupId>com.vmware.pscoe.ts.vra</groupId>
       <artifactId>iaas</artifactId>
-      <version>2.0.3</version>
+      <version>2.0.7</version>
       <type>tgz</type>
       <scope>compile</scope>
     </dependency>
@@ -107,14 +107,61 @@
       <groupId>com.vmware.pscoe.ts.vra</groupId>
       <artifactId>deployment</artifactId>
       <type>package</type>
-      <version>2.0.3</version>
+      <version>2.0.7</version>
     </dependency>
     <dependency>
       <groupId>com.vmware.pscoe.ts.vra</groupId>
       <artifactId>deployment</artifactId>
-      <version>2.0.3</version>
+      <version>2.0.7</version>
       <type>tgz</type>
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.vmware.pscoe.ts.vra</groupId>
+      <artifactId>relocation</artifactId>
+      <type>package</type>
+      <version>2.0.7</version>
+    </dependency>
+    <dependency>
+      <groupId>com.vmware.pscoe.ts.vra</groupId>
+      <artifactId>relocation</artifactId>
+      <version>2.0.7</version>
+      <type>tgz</type>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.vmware.pscoe.library.ts</groupId>
+      <artifactId>nsxt.policy</artifactId>
+      <type>package</type>
+      <version>3.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.vmware.pscoe.library.ts</groupId>
+      <artifactId>nsxt.policy</artifactId>
+      <version>3.1.0</version>
+      <type>tgz</type>
+      <scope>compile</scope>
+    </dependency>
+    <!-- Util -->
+    <dependency>
+      <groupId>com.vmware.pscoe.library.ts</groupId>
+      <artifactId>util</artifactId>
+      <type>package</type>
+      <version>2.1.9</version>
+    </dependency>
+    <dependency>
+      <groupId>com.vmware.pscoe.library.ts</groupId>
+      <artifactId>util</artifactId>
+      <version>2.1.9</version>
+      <type>tgz</type>
+      <scope>compile</scope>
+    </dependency>
+    <!-- vCenter -->
+    <dependency>
+      <groupId>com.vmware.pscoe.library</groupId>
+      <artifactId>vc</artifactId>
+      <type>package</type>
+      <version>1.4.1</version>
     </dependency>
     <!-- Mocks -->
     <dependency>
@@ -134,6 +181,20 @@
     <dependency>
       <groupId>com.vmware.pscoe.library</groupId>
       <artifactId>context</artifactId>
+      <type>package</type>
+      <version>2.1.5</version>
+    </dependency>
+    <!-- Pipeline -->
+    <dependency>
+      <groupId>com.vmware.pscoe.library</groupId>
+      <artifactId>pipeline</artifactId>
+      <type>package</type>
+      <version>1.2.5</version>
+    </dependency>
+    <!-- vCenter SOAP -->
+    <dependency>
+      <groupId>com.vmware.pscoe.library</groupId>
+      <artifactId>vc-soap</artifactId>
       <type>package</type>
       <version>2.1.5</version>
     </dependency>

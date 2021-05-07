@@ -1,0 +1,89 @@
+{
+  "id": "a111f75c-a1db-4b31-a60f-b19702c29ab3",
+  "name": "vRO Workflows",
+  "description": null,
+  "typeId": "com.vmw.vro.workflow",
+  "createdAt": "2021-04-13T11:55:46.897016Z",
+  "createdBy": "configurationadmin",
+  "lastUpdatedAt": "2021-04-22T11:52:48.087088Z",
+  "lastUpdatedBy": "configurationadmin",
+  "config": {
+    "workflows": [
+      {
+        "id": "e307045a-cda9-3791-b1cd-d0e1e76b4923",
+        "name": "Attach Nic",
+        "version": "1.0.0",
+        "integration": {
+          "name": "embedded-VRO",
+          "endpointUri": "https://vra-l-01a.corp.local:443",
+          "endpointConfigurationLink": "/resources/endpoints/512634d0-27a7-4d93-9955-afc4b512cb07"
+        }
+      },
+      {
+        "id": "d1cdf29e-1aca-394c-90bc-9271f3b05839",
+        "name": "Detach Nic",
+        "version": "1.0.1",
+        "integration": {
+          "name": "embedded-VRO",
+          "endpointUri": "https://vra-l-01a.corp.local:443",
+          "endpointConfigurationLink": "/resources/endpoints/512634d0-27a7-4d93-9955-afc4b512cb07"
+        }
+      },
+      {
+        "id": "7721de97-a5c2-4af1-ad86-f6626533d899",
+        "name": "Set Segment Port Tags",
+        "version": "1.0.0",
+        "integration": {
+          "name": "embedded-VRO",
+          "endpointUri": "https://vra-l-01a.corp.local:443",
+          "endpointConfigurationLink": "/resources/endpoints/512634d0-27a7-4d93-9955-afc4b512cb07"
+        }
+      },
+      {
+        "id": "8cde527c-566b-36a6-b607-c0763f707a2e",
+        "name": "Create Volume from Snapshot",
+        "version": "1.0.0",
+        "integration": {
+          "name": "embedded-VRO",
+          "endpointUri": "https://vra-l-01a.corp.local:443",
+          "endpointConfigurationLink": "/resources/endpoints/512634d0-27a7-4d93-9955-afc4b512cb07"
+        }
+      },
+      {
+        "id": "809e71c7-0962-3335-85cf-a039e154eaf1",
+        "name": "Clone Volume",
+        "version": "1.0.0",
+        "integration": {
+          "name": "embedded-VRO",
+          "endpointUri": "https://vra-l-01a.corp.local:443",
+          "endpointConfigurationLink": "/resources/endpoints/512634d0-27a7-4d93-9955-afc4b512cb07"
+        }
+      },
+      {
+        "id": "a65eb35a-cd0d-3832-9ba6-400845d04e5e",
+        "name": "Get Segment from Pool",
+        "version": "1.0.0",
+        "integration": {
+          "name": "embedded-VRO",
+          "endpointUri": "https://vra-l-01a.corp.local:443",
+          "endpointConfigurationLink": "/resources/endpoints/512634d0-27a7-4d93-9955-afc4b512cb07"
+        }
+      },
+      {
+        "id": "b4f68226-2cc3-328c-965e-220b2cdd118d",
+        "name": "Onboarding VM",
+        "version": "1.0.1",
+        "integration": {
+          "name": "embedded-VRO",
+          "endpointUri": "https://vra-l-01a.corp.local:443",
+          "endpointConfigurationLink": "/resources/endpoints/512634d0-27a7-4d93-9955-afc4b512cb07"
+        }
+      }
+    ]
+  },
+  "itemsImported": 7,
+  "itemsFound": 7,
+  "lastImportStartedAt": "2021-04-22T11:52:46.715892Z",
+  "lastImportCompletedAt": "2021-04-22T11:52:48.086910Z",
+  "global": true
+}

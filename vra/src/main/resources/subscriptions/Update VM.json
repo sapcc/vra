@@ -1,0 +1,21 @@
+{
+  "id": "sub_1616517242823",
+  "type": "RUNNABLE",
+  "eventTopicId": "compute.provision.post",
+  "name": "Update VM",
+  "ownerId": "configurationadmin",
+  "subscriberId": "vro-gateway-L9revv3xR5DgcSrx",
+  "blocking": true,
+  "description": "",
+  "criteria": "",
+  "constraints": {
+    "projectId": null
+  },
+  "timeout": 0,
+  "broadcast": false,
+  "priority": 10,
+  "disabled": false,
+  "system": false,
+  "runnableType": "extensibility.vro",
+  "runnableId": "aaac2995-e27f-3f07-a70b-106d0d2364bf"
+}
